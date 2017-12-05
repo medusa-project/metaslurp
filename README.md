@@ -1,24 +1,7 @@
-# README
+Set the following environment variables:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* `METASLURP_DB_NAME`
+* `METASLURP_DB_USERNAME`
+* `METASLURP_DB_PASSWORD`
+* `METASLURP_DB_HOSTNAME`
+* `METASLURP_DB_PORT`
