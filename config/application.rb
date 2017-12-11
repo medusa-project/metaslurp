@@ -8,11 +8,13 @@ Bundler.require(*Rails.groups)
 
 module Metaslurp
   class Application < Rails::Application
+    attr_accessor :shibboleth_host
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Make pages embeddable within other websites.
+    config.action_dispatch.default_headers =
+        config.action_dispatch.default_headers.delete('X-Frame-Options')
   end
 end
