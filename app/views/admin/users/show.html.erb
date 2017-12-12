@@ -1,0 +1,21 @@
+<% provide :title, @user.username %>
+<% provide :active_nav, 'access' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li><%= link_to 'Users', admin_users_path %></li>
+  <li class="active"><%= @user.username %></li>
+</ol>
+
+<div class="btn-group pull-right">
+  <%= link_to edit_admin_user_path(@user), class: 'btn btn-default' do %>
+    <i class="fa fa-pencil"></i> Edit
+  <% end %>
+  <%= link_to admin_user_path(@user), method: :delete,
+              class: 'btn btn-danger',
+              data: { confirm: 'Are you sure you want to delete this user?' } do %>
+    <i class="fa fa-trash"></i> Delete
+  <% end %>
+</div>
+
+<h1><%= @user.username %></h1>

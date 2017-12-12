@@ -2,6 +2,9 @@ module Admin
 
   class UsersController < ControlPanelController
 
+    ##
+    # Responds to POST /admin/users
+    #
     def create
       begin
         user = User.create!(sanitized_params)
@@ -15,6 +18,9 @@ module Admin
       end
     end
 
+    ##
+    # Responds to DELETE /admin/users/:username
+    #
     def destroy
       user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless user
@@ -25,36 +31,45 @@ module Admin
         handle_error(e)
         redirect_to admin_users_url
       else
-        if user == current_user
-          flash['success'] = 'Your account has been deleted.'
-          sign_out
-          redirect_to root_url
-        else
-          flash['success'] = "User #{user.username} deleted."
-          redirect_to admin_users_url
-        end
+        flash['success'] = "User #{user.username} deleted."
+        redirect_to admin_users_url
       end
     end
 
+    ##
+    # Responds to GET /admin/users/:username/edit
+    #
     def edit
       @user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless @user
     end
 
+    ##
+    # Responds to GET /admin/users
+    #
     def index
       q = "%#{params[:q]}%"
       @users = User.where('users.username LIKE ?', q).order('username')
     end
 
+    ##
+    # Responds to GET /admin/users/new
+    #
     def new
       @user = User.new
     end
 
+    ##
+    # Responds to GET /admin/users/:username
+    #
     def show
       @user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless @user
     end
 
+    ##
+    # Responds to PATCH /admin/users/:username
+    #
     def update
       @user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless @user

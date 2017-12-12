@@ -5,5 +5,13 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  def sign_in_as(user)
+    post '/auth/developer/callback', params: {
+        name: user.username, email: "#{user.username}@example.org"
+    }
+  end
+
+  def sign_out
+    delete signout_path
+  end
 end
