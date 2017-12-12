@@ -6,6 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'bootstrap-sass', '~> 3.3.6'
+gem 'font-awesome-sass', '~> 4.7.0'
 gem 'jquery-rails'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
