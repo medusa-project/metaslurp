@@ -1,0 +1,18 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Key</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @content_services.each do |service| %>
+      <tr>
+        <td><%= link_to service.name, admin_content_service_path(service) %></td>
+        <td><%= service.key %></td>
+        <td><%= service.description %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

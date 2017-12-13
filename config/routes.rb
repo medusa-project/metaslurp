@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
+    resources :content_services, param: :key, path: 'content-services'
     resources :users, param: :username
   end
 

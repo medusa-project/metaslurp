@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171211163320) do
+ActiveRecord::Schema.define(version: 20171213164207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "content_services", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "key", null: false
+    t.string "uri"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_content_services_on_key", unique: true
+    t.index ["name"], name: "index_content_services_on_name", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "username", null: false

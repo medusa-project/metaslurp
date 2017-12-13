@@ -1,0 +1,14 @@
+<% provide(:title, 'New Content Service') %>
+<% provide(:body_id, 'new-content-service') %>
+<% provide :active_nav, 'entities' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li><%= link_to 'Content Services', admin_content_services_path %></li>
+  <li class="active">New Content Service</li>
+</ol>
+
+<h1>New Content Service</h1>
+
+<%= render partial: 'form', locals: { content_service: @content_service,
+                                      context: :new } %>

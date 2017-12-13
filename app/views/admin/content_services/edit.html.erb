@@ -1,0 +1,14 @@
+<% provide(:title, "Edit #{@content_service}") %>
+<% provide(:body_id, 'edit-content-service') %>
+<% provide :active_nav, 'entities' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li><%= link_to 'Content Services', admin_content_services_path %></li>
+  <li><%= link_to @content_service.name, admin_content_service_path(@content_service) %></li>
+  <li class="active">Edit</li>
+</ol>
+
+<h1>Edit <%= @content_service.name %></h1>
+
+<%= render partial: 'form', locals: { user: @content_service, context: :edit } %>
