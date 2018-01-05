@@ -22,7 +22,7 @@ group :development, :test do
 end
 
 group :production do
-  gem 'passenger'
+  gem 'passenger', '~> 4.0.60'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
