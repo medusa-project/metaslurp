@@ -10,6 +10,12 @@ Rails.application.routes.draw do
   match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
 
+  ############################ REST API routes ##############################
+
+  namespace :api do
+    root 'landing#index'
+  end
+
   ##################### Shibboleth-protected routes #########################
 
   namespace :admin do
