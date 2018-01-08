@@ -15,7 +15,9 @@ Rails.application.routes.draw do
   namespace :admin do
     root 'dashboard#index'
     resources :content_services, param: :key, path: 'content-services'
-    resources :users, param: :username
+    resources :users, param: :username do
+      match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'
+    end
   end
 
 end

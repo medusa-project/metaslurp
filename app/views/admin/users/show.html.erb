@@ -8,6 +8,22 @@
 </ol>
 
 <div class="btn-group pull-right">
+  <div class="btn-group">
+    <!-- Actions menu -->
+    <button type="button" class="btn btn-default dropdown-toggle"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <% if @user == current_user %>
+        <li>
+          <%= link_to admin_user_reset_api_key_path(@user), method: :post do %>
+            <i class="fa fa-key"></i> Reset API Key
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
   <%= link_to edit_admin_user_path(@user), class: 'btn btn-default' do %>
     <i class="fa fa-pencil"></i> Edit
   <% end %>
@@ -19,3 +35,23 @@
 </div>
 
 <h1><%= @user.username %></h1>
+
+<div class="row">
+
+  <div class="col-sm-3">
+    <dl>
+      <% if @user == current_user %>
+        <dt>API Key</dt>
+        <dd>
+          <% if @user.api_key.present? %>
+            <code><%= @user.api_key %></code>
+          <% else %>
+            None
+          <% end %>
+        </dd>
+      <% end %>
+      <dt>Account Created</dt>
+      <dd><%= local_time_ago(@user.created_at) %></dd>
+    </dl>
+  </div>
+</div>
