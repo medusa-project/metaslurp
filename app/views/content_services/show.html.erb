@@ -1,0 +1,11 @@
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', root_path %></li>
+  <li><%= link_to 'Services', content_services_path %></li>
+  <li class="active"><%= @service %></li>
+</ol>
+
+<h1><%= @service %></h1>
+
+<% if @service.description.present? %>
+  <p><%= @service.description %></p>
+<% end %>

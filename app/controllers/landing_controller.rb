@@ -1,7 +1,7 @@
 class LandingController < ApplicationController
 
   def index
-    render plain: 'Hello world'
+    @services = ContentService.all.order(:name)
   end
 
 end

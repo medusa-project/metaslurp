@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
 
+  resources :content_services, param: :key, path: 'services', only: [:index, :show]
+
   ############################ REST API routes ##############################
 
   namespace :api do

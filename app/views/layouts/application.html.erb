@@ -2,13 +2,26 @@
 <html>
   <head>
     <title>Metaslurp</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
     <%= csrf_meta_tags %>
+    <%= favicon_link_tags %>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
+
+    <!--[if lt IE 9]>
+    <script src="https://raw.githubusercontent.com/aFarkas/html5shiv/master/src/html5shiv.js"></script>
+    <![endif]-->
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container-fluid">
+      <div id="dl-page-content">
+        <%= yield.force_encoding(Encoding::UTF_8) %>
+      </div>
+    </div>
   </body>
 </html>

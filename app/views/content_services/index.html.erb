@@ -1,0 +1,10 @@
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', root_path %></li>
+  <li class="active">Services</li>
+</ol>
+
+<ul>
+  <% @services.each do |service| %>
+    <li><%= link_to service, service %></li>
+  <% end %>
+</ul>
