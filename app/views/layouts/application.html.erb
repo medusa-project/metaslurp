@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Metaslurp</title>
+    <title><%= yield :title %> |
+      <%= Option.string(Option::Keys::WEBSITE_NAME) %></title>
 
     <meta charset="utf-8"/>
+    <meta name="copyright" content="<%= Option.string(Option::Keys::COPYRIGHT_STATEMENT) %>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <%= csrf_meta_tags %>
