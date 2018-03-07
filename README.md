@@ -7,7 +7,7 @@ This is a basic getting-started guide for developers.
 # Dependencies
 
 * PostgreSQL 9.x
-* Elasticsearch 6
+* Elasticsearch 6.1
     * The [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
       is also required
 
@@ -21,9 +21,10 @@ This is a basic getting-started guide for developers.
 
 ## 2) Clone the repository:
 
-`$ git clone https://github.com/medusa-project/metaslurp.git`
-
-`$ cd metaslurp`
+```
+$ git clone https://github.com/medusa-project/metaslurp.git
+$ cd metaslurp
+```
 
 ## 3) Install Ruby
 
@@ -39,9 +40,8 @@ This is a basic getting-started guide for developers.
 
 ## 6) Configure the application
 
-`$ cp config/database.template.yml config/database.yml` and edit as necessary
-
-`$ cp config/shibboleth.template.yml config/shibboleth.yml`
+Open `config/database.yml` and add the environment variables it needs to your
+environment.
 
 ## 7) Create and seed the database
 
