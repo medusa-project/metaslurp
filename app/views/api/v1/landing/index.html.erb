@@ -1,0 +1,52 @@
+<div class="pull-right" style="margin-top: 1em">
+  <%= link_to 'Control Panel', admin_root_path %> |
+  <%= link_to 'Public Website', root_path %>
+</div>
+
+<h1><%= Option::string(Option::Keys::WEBSITE_NAME) %>
+  HTTP API <small>version 1</small></h1>
+
+<h2>Elements</h2>
+
+<h3>List elements</h3>
+
+<table class="table table-striped">
+  <tr>
+    <td>Request Method</td>
+    <td><code>GET</code></td>
+  </tr>
+  <tr>
+    <td>URI Path</td>
+    <td><code>/api/<%= @version_path_component %>/elements</code></td>
+  </tr>
+  <tr>
+    <td>Query Arguments</td>
+    <td>
+      <table class="table table-condensed">
+        <tr>
+          <th></th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>start</code></td>
+          <td>No</td>
+          <td>Results cursor position</td>
+        </tr>
+        <tr>
+          <td><code>limit</code></td>
+          <td>No</td>
+          <td>Result window size</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>Expected Response Status</td>
+    <td><code>200 OK</code></td>
+  </tr>
+  <tr>
+    <td>Expected Response Content Type</td>
+    <td><code>application/json</code></td>
+  </tr>
+</table>

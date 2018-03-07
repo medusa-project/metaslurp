@@ -1,5 +1,7 @@
+# For details on the DSL available within this file, see
+# http://guides.rubyonrails.org/routing.html
+
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   root 'landing#index'
 
@@ -15,7 +17,11 @@ Rails.application.routes.draw do
   ############################ REST API routes ##############################
 
   namespace :api do
-    root 'landing#index'
+    match '/', to: redirect('/api/v1', status: 303), via: :all
+    namespace :v1 do
+      root 'landing#index'
+      resources :elements, only: :index
+    end
   end
 
   ##################### Shibboleth-protected routes #########################

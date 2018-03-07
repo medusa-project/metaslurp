@@ -4,7 +4,7 @@ module Api
 
     protect_from_forgery with: :null_session
 
-    layout false
+    layout 'api/application'
 
     before_action :authorize_user
     skip_before_action :verify_authenticity_token
