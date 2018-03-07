@@ -1,0 +1,40 @@
+<% can_edit_name = !%w(admin).include?(@role.key) %>
+<% can_edit_key = !%w(admin).include?(@role.key) %>
+
+<%= form_for [:admin, @role] do |f| %>
+  <% render 'admin/shared/error_messages', :object => f.object %>
+
+  <section>
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control', disabled: !can_edit_name %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :key %>
+      <%= f.text_field :key, class: 'form-control', disabled: !can_edit_key %>
+    </div>
+  </section>
+
+  <hr>
+
+  <h3>Users</h3>
+
+  <% @users.each do |user| %>
+    <div class="checkbox">
+      <%= label_tag do %>
+        <%= check_box_tag :user_ids, user.id,
+                          @role.user_ids.include?(user.id),
+                          name: 'role[user_ids][]' %>
+        <%= user.username %>
+      <% end %>
+    </div>
+  <% end %>
+
+
+  <div class="pull-right">
+    <%= f.submit(context == :new ? 'Create Role' : 'Save Changes',
+                 class: 'btn btn-primary') %>
+  </div>
+
+<% end %>

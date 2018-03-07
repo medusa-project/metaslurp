@@ -53,18 +53,21 @@
               Access <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
+              <li><%= link_to 'Roles', admin_roles_path %></li>
               <li><%= link_to 'Users', admin_users_path %></li>
             </ul>
           </li>
 
-          <li class="dropdown" id="server-nav">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              Server <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li><%= link_to 'Configuration', admin_configuration_path %></li>
-            </ul>
-          </li>
+          <% if current_user.admin? %>
+            <li class="dropdown" id="server-nav">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Server <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Configuration', admin_configuration_path %></li>
+              </ul>
+            </li>
+          <% end %>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">

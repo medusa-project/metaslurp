@@ -1,13 +1,15 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>NetID</th>
+      <th>NetID or Username</th>
+      <th>Type</th>
     </tr>
   </thead>
   <tbody>
     <% @users.each do |user| %>
       <tr>
         <td><%= link_to user.username, admin_user_path(user) %></td>
+        <td><%= user.human ? 'Human' : 'Non-Human' %></td>
       </tr>
     <% end %>
   </tbody>

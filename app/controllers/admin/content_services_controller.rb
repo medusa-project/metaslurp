@@ -3,6 +3,7 @@ module Admin
   class ContentServicesController < ControlPanelController
 
     before_action :load_model, only: [:destroy, :edit, :show, :update]
+    before_action :require_admin, except: [:index, :show]
 
     ##
     # Responds to POST /admin/content-services

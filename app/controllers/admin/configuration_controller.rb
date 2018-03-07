@@ -2,6 +2,8 @@ module Admin
 
   class ConfigurationController < ControlPanelController
 
+    before_action :require_admin
+
     def index
     end
 

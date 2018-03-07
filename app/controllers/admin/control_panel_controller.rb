@@ -7,6 +7,15 @@ module Admin
     before_action :signed_in_user
     after_action :flash_in_response_headers
 
+    protected
+
+    def require_admin
+      unless current_user.admin?
+        flash['error'] = 'You are not authorized to access this resource.'
+        redirect_to admin_root_url
+      end
+    end
+
   end
 
 end
