@@ -57,6 +57,17 @@ module Admin
     end
 
     ##
+    # Responds to POST /admin/content-services/:key/reindex
+    #
+    def reindex
+      @content_service = ContentService.find_by_key(params[:content_service_key])
+      raise ActiveRecord::RecordNotFound unless @content_service
+
+      flash['error'] = 'Reindexing doesn\'t work yet.'
+      redirect_back fallback_location: admin_content_service_path(@content_service)
+    end
+
+    ##
     # Responds to GET /admin/content-services/:key
     #
     def show

@@ -24,7 +24,9 @@ Rails.application.routes.draw do
     root 'dashboard#index'
     match '/configuration', to: 'configuration#index', via: :get
     match '/configuration', to: 'configuration#update', via: :patch
-    resources :content_services, param: :key, path: 'content-services'
+    resources :content_services, param: :key, path: 'content-services' do
+      match '/reindex', to: 'content_services#reindex', via: :post, as: 'reindex'
+    end
     resources :elements, param: :name, except: :show
     match '/elements/import', to: 'elements#import', via: :post, as: 'elements_import'
     resources :roles, param: :key

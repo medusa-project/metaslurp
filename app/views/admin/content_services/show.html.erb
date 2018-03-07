@@ -7,15 +7,21 @@
   <li class="active"><%= @content_service.name %></li>
 </ol>
 
-<%= button_bar({ label: 'Edit',
-                 icon: 'fa-pencil',
-                 url: edit_admin_content_service_path(@content_service) },
-               { label: 'Delete',
-                 icon: 'fa-trash',
-                 url: admin_content_service_path(@content_service),
-                 method: 'delete',
-                 class: 'btn-danger',
-                 confirm: 'Are you sure you want to delete this content service?' }) %>
+<% if current_user.admin? %>
+  <%= button_bar({ label: 'Reindex',
+                   icon: 'fa-refresh',
+                   method: 'post',
+                   url: admin_content_service_reindex_path(@content_service) },
+                 { label: 'Edit',
+                   icon: 'fa-pencil',
+                   url: edit_admin_content_service_path(@content_service) },
+                 { label: 'Delete',
+                   icon: 'fa-trash',
+                   url: admin_content_service_path(@content_service),
+                   method: 'delete',
+                   class: 'btn-danger',
+                   confirm: 'Are you sure you want to delete this content service?' }) %>
+<% end %>
 
 <h1><%= @content_service.name %></h1>
 
