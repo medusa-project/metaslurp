@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180307155349) do
+ActiveRecord::Schema.define(version: 20180307172547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,23 @@ ActiveRecord::Schema.define(version: 20180307155349) do
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_content_services_on_key", unique: true
     t.index ["name"], name: "index_content_services_on_name", unique: true
+  end
+
+  create_table "elements", force: :cascade do |t|
+    t.string "name"
+    t.string "label"
+    t.string "description"
+    t.integer "index"
+    t.boolean "searchable", default: true
+    t.boolean "sortable", default: true
+    t.boolean "facetable", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facetable"], name: "index_elements_on_facetable"
+    t.index ["index"], name: "index_elements_on_index"
+    t.index ["name"], name: "index_elements_on_name"
+    t.index ["searchable"], name: "index_elements_on_searchable"
+    t.index ["sortable"], name: "index_elements_on_sortable"
   end
 
   create_table "options", force: :cascade do |t|

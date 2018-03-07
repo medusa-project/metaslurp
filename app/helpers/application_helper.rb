@@ -1,5 +1,16 @@
 module ApplicationHelper
 
+  ##
+  # Formats a boolean for display.
+  #
+  # @param boolean [Boolean]
+  # @return [String]
+  #
+  def boolean(boolean)
+    raw(boolean ? '<span class="text-success">&check;</span>' :
+            '<span class="text-danger">&times;</span>')
+  end
+
   def bootstrap_class_for(flash_type)
     case flash_type.to_sym
       when :success
@@ -72,7 +83,7 @@ module ApplicationHelper
   def flashes
     html = ''
     flash.each do |type, message|
-      html += "<div class=\"pt-flash alert alert-dismissable #{bootstrap_class_for(type)}\">
+      html += "<div class=\"dl-flash alert alert-dismissable #{bootstrap_class_for(type)}\">
           <button type=\"button\" class=\"close\" data-dismiss=\"alert\"
                   aria-hidden=\"true\">&times;</button>
           #{message}

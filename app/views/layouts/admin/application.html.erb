@@ -44,6 +44,7 @@
               Entities <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
+              <li><%= link_to 'Elements', admin_elements_path %></li>
               <li><%= link_to 'Content Services', admin_content_services_path %></li>
             </ul>
           </li>
@@ -90,8 +91,12 @@
   <div class="container-fluid">
     <%= flashes %>
 
+    <%= hidden_field_tag('dl-root-path', root_path) %>
+    <%= hidden_field_tag('dl-root-url', root_url) %>
+    <%= hidden_field_tag('dl-current-path', request.fullpath) %>
+
     <div id="dl-page-content">
-      <%= yield %>
+      <%= yield.force_encoding(Encoding::UTF_8) %>
     </div>
   </div>
 

@@ -25,6 +25,8 @@ Rails.application.routes.draw do
     match '/configuration', to: 'configuration#index', via: :get
     match '/configuration', to: 'configuration#update', via: :patch
     resources :content_services, param: :key, path: 'content-services'
+    resources :elements, param: :name, except: :show
+    match '/elements/import', to: 'elements#import', via: :post, as: 'elements_import'
     resources :roles, param: :key
     resources :users, param: :username do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'

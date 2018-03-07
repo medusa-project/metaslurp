@@ -21,3 +21,9 @@ Role.create!(key: 'admin', name: 'Administrators')
 
 # Users
 User.create!(username: 'admin')
+
+# Elements
+Element.create!(index: 0, name: 'title', label: 'Title',
+                facetable: false)
+Element.create!(index: 1, name: 'description', label: 'Description',
+                sortable: false, facetable: false)
