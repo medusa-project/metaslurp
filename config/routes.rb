@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       root 'landing#index'
       resources :elements, only: :index
+      resources :items, only: :update
     end
   end
 

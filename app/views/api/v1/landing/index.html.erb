@@ -6,14 +6,116 @@
 <h1><%= Option::string(Option::Keys::WEBSITE_NAME) %>
   HTTP API <small>version 1</small></h1>
 
+<section id="table-of-contents">
+  <ul>
+    <li><a href="#basic-info">Basic information</a></li>
+    <li>
+      Items
+      <ul>
+        <li><a href="#create-item">Create or update an item</a></li>
+      </ul>
+    </li>
+    <li>
+      Elements
+      <ul>
+        <li><a href="#list-elements">List elements</a></li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<section id="basic-info">
+  <h2>Basic information</h2>
+  <ul>
+    <li>All request and response entities should be in JSON format and
+      accompanied by a <code>Content-Type: application/json</code> header.</li>
+    <li>All requests require HTTP Basic authentication. The username is that
+      of the <%= link_to 'Control Panel user', admin_users_path %> and the
+      secret is their API key.</li>
+    <li>In addition to the documented response statuses, clients should be
+      prepared to handle 500-level errors in response to any request.</li>
+  </ul>
+</section>
+
+<h2>Items</h2>
+
+<h3 id="create-item">Create or update an item</h3>
+
+<table class="table">
+  <tr>
+    <td>Request Method</td>
+    <td><code>PUT</code></td>
+  </tr>
+  <tr>
+    <td>Request Content Type</td>
+    <td><code>application/json</code></td>
+  </tr>
+  <tr>
+    <td>Request Entity</td>
+    <td><code class="code-block">{
+    "index_id": "unique-item-id",
+    "source_uri": "http://example.org/unique-item-id",
+    "elements" : [
+        {
+            "name": "some-element-name",
+            "value": "some element value"
+        },
+        {
+            "name": "some-element-name",
+            "value": "some element value"
+        }
+        ... more elements
+    ]
+}</code>
+      <ul>
+        <li><code>index_id</code> must be unique across all items in the
+          endpoint, and should be stable from harvest to harvest.</li>
+        <li><code>source_uri</code> is the URI of the item's main public
+          human-accessible representation.</li>
+        <li>Element names are arbitrary and can be mapped to local names via
+        the <%= link_to 'Control Panel', admin_root_path %>.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>URI Path</td>
+    <td><code>/api/<%= @version_path_component %>/items/:id</code></td>
+  </tr>
+  <tr>
+    <td>Query Arguments</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Response Status</td>
+    <td>
+      <ul>
+        <li><code>204 No Content</code> upon success</li>
+        <li><code>400 Bad Request</code> upon illegal argument</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Response Entity</td>
+    <td>None</td>
+  </tr>
+</table>
+
 <h2>Elements</h2>
 
-<h3>List elements</h3>
+<h3 id="list-elements">List elements</h3>
 
-<table class="table table-striped">
+<table class="table">
   <tr>
     <td>Request Method</td>
     <td><code>GET</code></td>
+  </tr>
+  <tr>
+    <td>Request Content Type</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Request Entity</td>
+    <td></td>
   </tr>
   <tr>
     <td>URI Path</td>
@@ -42,11 +144,11 @@
     </td>
   </tr>
   <tr>
-    <td>Expected Response Status</td>
+    <td>Response Status</td>
     <td><code>200 OK</code></td>
   </tr>
   <tr>
-    <td>Expected Response Content Type</td>
-    <td><code>application/json</code></td>
+    <td>Response Entity</td>
+    <td>JSON array</td>
   </tr>
 </table>
