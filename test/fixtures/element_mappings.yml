@@ -1,0 +1,6 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+title_to_title:
+  content_service: one
+  source_name: title
+  element: title

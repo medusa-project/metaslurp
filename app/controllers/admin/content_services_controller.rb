@@ -79,6 +79,11 @@ module Admin
     def update
       begin
         @content_service.update_attributes!(sanitized_params)
+
+        params[:content_service][:element_mappings].each do |k, v|
+          element_id = v.values[0]
+          ElementMapping.find(k).update!(element_id: element_id)
+        end
       rescue => e
         handle_error(e)
         render 'edit'
@@ -96,7 +101,7 @@ module Admin
     end
 
     def sanitized_params
-      params.require(:content_service).permit(:description, :key, :name, :uri)
+      params.require(:content_service).permit(:description, :element_mappings, :key, :name, :uri)
     end
 
   end

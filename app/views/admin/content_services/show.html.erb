@@ -25,13 +25,38 @@
 
 <h1><%= @content_service.name %></h1>
 
-<dl>
-  <dt>URI</dt>
-  <dd><%= @content_service.uri.present? ?
-              link_to(@content_service.uri, @content_service.uri) : 'None' %></dd>
-  <dt>Key</dt>
-  <dd><code><%= @content_service.key %></code></dd>
-  <dt>Description</dt>
-  <dd><%= @content_service.description.present? ?
-              @content_service.description : 'None' %></dd>
-</dl>
+<div class="row">
+  <div class="col-sm-4">
+    <dl>
+      <dt>URI</dt>
+      <dd><%= @content_service.uri.present? ?
+                  link_to(@content_service.uri, @content_service.uri) : 'None' %></dd>
+      <dt>Key</dt>
+      <dd><code><%= @content_service.key %></code></dd>
+      <dt>Description</dt>
+      <dd><%= @content_service.description.present? ?
+                  @content_service.description : 'None' %></dd>
+    </dl>
+  </div>
+  <div class="col-sm-8">
+    <h2>Element Mappings</h2>
+
+    <div class="alert alert-info">Reindex the service to update the source
+      element list.</div>
+
+    <table class="table table-striped">
+      <tr>
+        <th>Source Element</th>
+        <th>Local Element</th>
+      </tr>
+      <% @content_service.element_mappings.order(:source_name).each do |mapping| %>
+        <tr>
+          <td><code><%= mapping.source_name %></code></td>
+          <td>
+            <%= mapping.element&.label %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

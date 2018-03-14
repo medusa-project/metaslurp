@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180307172547) do
+ActiveRecord::Schema.define(version: 20180314190758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,15 @@ ActiveRecord::Schema.define(version: 20180307172547) do
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_content_services_on_key", unique: true
     t.index ["name"], name: "index_content_services_on_name", unique: true
+  end
+
+  create_table "element_mappings", force: :cascade do |t|
+    t.integer "content_service_id"
+    t.string "source_name"
+    t.integer "element_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["content_service_id", "source_name"], name: "index_element_mappings_on_content_service_id_and_source_name", unique: true
   end
 
   create_table "elements", force: :cascade do |t|
@@ -73,6 +82,8 @@ ActiveRecord::Schema.define(version: 20180307172547) do
     t.index ["username"], name: "index_users_on_username"
   end
 
+  add_foreign_key "element_mappings", "content_services", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "element_mappings", "elements", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "roles", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "users", on_update: :cascade, on_delete: :cascade
 end

@@ -23,6 +23,33 @@
     <%= f.text_area :description, class: 'form-control' %>
   </div>
 
+  <h2>Element Mappings</h2>
+
+  <table class="table table-striped dl-elements">
+    <thead>
+      <tr>
+        <th>Source Element</th>
+        <th>Local Element</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @content_service.element_mappings.order(:source_name).each do |mapping| %>
+        <tr>
+          <td style="width:50%">
+            <code><%= mapping.source_name %></code>
+          </td>
+          <td style="width:50%">
+            <%= select_tag "content_service[element_mappings][#{mapping.id}][element_id]",
+                           options_from_collection_for_select(Element.all.order(:name),
+                                                              'id', 'label', mapping.element_id),
+                           include_blank: true,
+                           class: 'form-control' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
   <div class="pull-right">
     <%= f.submit(context == :new ? 'Create Content Service' : 'Save Changes',
                  class: 'btn btn-primary') %>
