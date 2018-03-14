@@ -9,17 +9,23 @@ module Api
       # items.
       #
       def update
-        id = params[:id]
-
+        item = nil
         entity = request.body
         entity = entity.is_a?(StringIO) ? entity.string : entity.to_s
         begin
           json = JSON.parse(entity)
-          Item.from_json(json)
+          item = Item.from_json(json)
+
+          # example.org source URIs are used in testing.
+          if item.source_uri.start_with?('http://example.org')
+            Rails.logger.debug("Ignoring test item: #{item}")
+          else
+            # TODO: handle the item
+            Rails.logger.info("Ingested #{item}")
+          end
         rescue ArgumentError, JSON::ParserError => e
           render plain: e.message, status: :bad_request
         else
-          Rails.logger.info("Ingested #{id}")
           head :no_content
         end
       end

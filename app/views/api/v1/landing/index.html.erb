@@ -72,8 +72,11 @@
           endpoint, and should be stable from harvest to harvest.</li>
         <li><code>source_uri</code> is the URI of the item's main public
           human-accessible representation.</li>
+        <li>If <code>source_uri</code> has an <code>example.org</code> domain,
+          the item will be silently discarded. This can be used when
+          testing.</li>
         <li>Element names are arbitrary and can be mapped to local names via
-        the <%= link_to 'Control Panel', admin_root_path %>.</li>
+          the <%= link_to 'Control Panel', admin_root_path %>.</li>
       </ul>
     </td>
   </tr>
