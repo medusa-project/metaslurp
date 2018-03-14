@@ -1,6 +1,15 @@
+##
+# # Adding Attributes
+#
+# 1. Add an attribute to the `attr_accessor`
+# 2. Add it to validate()
+# 3. Add it to from_json()
+# 4. Add it to as_json()
+# 5. Update tests for all of the above
+#
 class Item
 
-  attr_accessor :index_id, :source_uri, :elements
+  attr_accessor :index_id, :service_key, :source_uri, :elements
 
   ##
   # @param obj [Hash] Deserialized JSON.
@@ -11,6 +20,7 @@ class Item
     jobj = jobj.stringify_keys
     item = Item.new
     item.index_id = jobj['index_id']
+    item.service_key = jobj['service_key']
     item.source_uri = jobj['source_uri']
     jobj['elements'].each do |jelement|
       item.elements << ItemElement.from_json(jelement)
@@ -37,9 +47,17 @@ class Item
   def as_json(options = {})
     struct = super(options)
     struct['index_id'] = self.index_id
+    struct['service_key'] = self.service_key
     struct['source_uri'] = self.source_uri
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
     struct
+  end
+
+  ##
+  # @return [ContentService] Service corresponding to `service_key`.
+  #
+  def content_service
+    ContentService.find_by_key(self.service_key)
   end
 
   def to_s
@@ -52,6 +70,8 @@ class Item
   #
   def validate
     raise ArgumentError, 'Missing ID' if self.index_id.blank?
+    raise ArgumentError, 'Invalid service key' unless
+        ContentService.pluck(:key).include?(self.service_key)
     raise ArgumentError, 'Missing source URI' if self.source_uri.blank?
     raise ArgumentError, 'No elements' if self.elements.empty?
   end

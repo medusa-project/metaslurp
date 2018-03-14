@@ -54,6 +54,7 @@
     <td>Request Entity</td>
     <td><code class="code-block">{
     "index_id": "unique-item-id",
+    "service_key": "service-key",
     "source_uri": "http://example.org/unique-item-id",
     "elements" : [
         {
@@ -70,6 +71,9 @@
       <ul>
         <li><code>index_id</code> must be unique across all items in the
           endpoint, and should be stable from harvest to harvest.</li>
+        <li><code>service_key</code> must be one of the available
+          <%= link_to 'content service', admin_content_services_path %>
+          keys.</li>
         <li><code>source_uri</code> is the URI of the item's main public
           human-accessible representation.</li>
         <li>If <code>source_uri</code> has an <code>example.org</code> domain,

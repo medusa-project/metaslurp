@@ -7,6 +7,7 @@ module Api
 
     setup do
       @valid_item = Item.new(index_id: 'cats',
+                             service_key: content_services(:one).key,
                              source_uri: 'http://example.org/cats')
       @valid_item.elements << ItemElement.new(name: 'name', value: 'value')
     end

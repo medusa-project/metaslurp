@@ -4,6 +4,7 @@ class ItemTest < ActiveSupport::TestCase
 
   setup do
     @instance = Item.new(index_id: 'cats',
+                         service_key: content_services(:one).key,
                          source_uri: 'http://example.org/cats')
     @instance.elements << ItemElement.new(name: 'name', value: 'value')
   end
@@ -14,6 +15,7 @@ class ItemTest < ActiveSupport::TestCase
     item = Item.from_json(
         {
             'index_id': 'cats',
+            'service_key': content_services(:one).key,
             'source_uri': 'http://example.org/cats',
             'elements': [
                 'name': 'name',
@@ -21,6 +23,7 @@ class ItemTest < ActiveSupport::TestCase
             ]
         })
     assert_equal 'cats', item.index_id
+    assert_equal content_services(:one).key, item.service_key
     assert_equal 'http://example.org/cats', item.source_uri
     assert_equal 1, item.elements.length
     assert_equal 'name', item.elements.to_a[0].name
@@ -59,10 +62,29 @@ class ItemTest < ActiveSupport::TestCase
   test 'as_json() works' do
     struct = @instance.as_json
     assert_equal 'cats', struct['index_id']
+    assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'http://example.org/cats', struct['source_uri']
     assert_equal 1, struct['elements'].length
     assert_equal 'name', struct['elements'][0]['name']
     assert_equal 'value', struct['elements'][0]['value']
+  end
+
+  # content_service()
+
+  test 'content_service() returns a content service when the service key is '\
+  'set to an existing content service key' do
+    assert_kind_of ContentService, @instance.content_service
+  end
+
+  test 'content_service() returns nil when the service key is not set' do
+    @instance.service_key = nil
+    assert_nil @instance.content_service
+  end
+
+  test 'content_service() returns nil when the service key is set to an '\
+   'invalid value' do
+    @instance.service_key = 'bogus'
+    assert_nil @instance.content_service
   end
 
   # to_s()
@@ -79,6 +101,20 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'validate() raises error for invalid index_id' do
     @instance.index_id = ''
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for missing service key' do
+    @instance.service_key = ''
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for invalid service key' do
+    @instance.service_key = 'dogs'
     assert_raises ArgumentError do
       @instance.validate
     end
