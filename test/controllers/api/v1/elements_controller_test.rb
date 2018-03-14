@@ -8,7 +8,7 @@ module Api
     # index()
 
     test 'index() with no credentials should return 401' do
-      get('/api/elements')
+      get('/api/v1/elements')
       assert_response :unauthorized
     end
 
@@ -16,12 +16,12 @@ module Api
       headers = valid_headers.merge(
           'Authorization' => ActionController::HttpAuthentication::Basic.
               encode_credentials('bogus', 'bogus'))
-      get '/api/elements', headers: headers
+      get '/api/v1/elements', headers: headers
       assert_response :unauthorized
     end
 
     test 'index() with valid credentials should return 200' do
-      get '/api/elements', headers: valid_headers
+      get '/api/v1/elements', headers: valid_headers
       assert_response :success
     end
 

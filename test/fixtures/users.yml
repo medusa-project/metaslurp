@@ -3,3 +3,5 @@
 admin:
   username: admin
   api_key: h6jkpC6YRRPVYPXhmfjQ1Q==
+  roles:
+    - admin

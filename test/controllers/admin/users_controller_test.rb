@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MetadataProfilesControllerTest < ActionDispatch::IntegrationTest
+class UsersControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     sign_in_as(users(:admin))
