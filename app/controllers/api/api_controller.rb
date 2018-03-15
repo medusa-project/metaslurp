@@ -18,7 +18,7 @@ module Api
     # Authenticates a user via HTTP Basic and authorizes by IP address.
     #
     def authorize_user
-      authenticate_or_request_with_http_basic do |username, secret|
+      authenticate_or_request_with_http_basic('HTTP API') do |username, secret|
         user = User.find_by_username(username)
         if user
           return user.api_key == secret
