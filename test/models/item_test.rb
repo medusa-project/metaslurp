@@ -5,7 +5,8 @@ class ItemTest < ActiveSupport::TestCase
   setup do
     @instance = Item.new(index_id: 'cats',
                          service_key: content_services(:one).key,
-                         source_uri: 'http://example.org/cats')
+                         source_uri: 'http://example.org/cats',
+                         access_image_uri: 'http://example.org/cats/image.jpg')
     @instance.elements << ItemElement.new(name: 'name', value: 'value')
   end
 
@@ -17,6 +18,7 @@ class ItemTest < ActiveSupport::TestCase
             'index_id': 'cats',
             'service_key': content_services(:one).key,
             'source_uri': 'http://example.org/cats',
+            'access_image_uri': 'http://example.org/cats/image.jpg',
             'elements': [
                 'name': 'name',
                 'value': 'value'
@@ -25,6 +27,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'cats', item.index_id
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'http://example.org/cats', item.source_uri
+    assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal 1, item.elements.length
     assert_equal 'name', item.elements.to_a[0].name
     assert_equal 'value', item.elements.to_a[0].value
@@ -64,6 +67,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'cats', struct['index_id']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'http://example.org/cats', struct['source_uri']
+    assert_equal 'http://example.org/cats/image.jpg', struct['access_image_uri']
     assert_equal 1, struct['elements'].length
     assert_equal 'name', struct['elements'][0]['name']
     assert_equal 'value', struct['elements'][0]['value']

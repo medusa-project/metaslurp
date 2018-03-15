@@ -56,6 +56,7 @@
     "index_id": "unique-item-id",
     "service_key": "service-key",
     "source_uri": "http://example.org/unique-item-id",
+    "access_image_uri": "http://example.org/unique-item-it/image.jp2",
     "elements" : [
         {
             "name": "some-element-name",
@@ -68,25 +69,52 @@
         ... more elements
     ]
 }</code>
-      <ul>
-        <li><code>index_id</code> must be unique across all items in the
-          endpoint, and should be stable from harvest to harvest.</li>
-        <li><code>service_key</code> must be one of the available
-          <%= link_to 'content service', admin_content_services_path %>
-          keys.</li>
-        <li><code>source_uri</code> is the URI of the item's main public
-          human-accessible representation.</li>
-        <li>If <code>source_uri</code> has an <code>example.org</code> domain,
-          the item will be silently discarded. This can be used when
-          testing.</li>
-        <li>Element names are arbitrary and can be mapped to local names via
-          the <%= link_to 'Control Panel', admin_root_path %>.</li>
-      </ul>
+
+      <table class="table table-condensed">
+        <tr>
+          <th></th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>index_id</code></td>
+          <td>Yes</td>
+          <td>Must be unique across all items in the harvesting application,
+            and should be stable from harvest to harvest.</td>
+        </tr>
+        <tr>
+          <td><code>service_key</code></td>
+          <td>Yes</td>
+          <td>Must be one of the available
+            <%= link_to 'content service', admin_content_services_path %> keys.
+          </td>
+        </tr>
+        <tr>
+          <td><code>source_uri</code></td>
+          <td>Yes</td>
+          <td>URI of the item's main public human-consumable representation.
+            If it has an <code>example.org</code> domain, the item will be
+            silently discarded.</td>
+        </tr>
+        <tr>
+          <td><code>access_image_uri</code></td>
+          <td>No</td>
+          <td>URI of a high-quality image that depicts or represents the
+            item.</td>
+        </tr>
+        <tr>
+          <td><code>elements</code></td>
+          <td>No</td>
+          <td>Element names are arbitrary and can be mapped to local names via
+            the <%= link_to 'Control Panel', admin_root_path %>. At a minimum,
+            <code>title</code> should be provided, if possible.</td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
     <td>URI Path</td>
-    <td><code>/api/<%= @version_path_component %>/items/:id</code></td>
+    <td><code>/api/<%= @version_path_component %>/items/:index_id</code></td>
   </tr>
   <tr>
     <td>Query Arguments</td>
@@ -156,6 +184,6 @@
   </tr>
   <tr>
     <td>Response Entity</td>
-    <td>JSON array</td>
+    <td>JSON object</td>
   </tr>
 </table>
