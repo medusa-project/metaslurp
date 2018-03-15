@@ -7,11 +7,13 @@
   <li class="active">Users</li>
 </ol>
 
-<div class="btn-group pull-right">
-  <%= link_to new_admin_user_path, class: 'btn btn-default' do %>
-    <i class="fa fa-plus"></i> New User
-  <% end %>
-</div>
+<% if current_user.admin? %>
+  <div class="btn-group pull-right">
+    <%= link_to new_admin_user_path, class: 'btn btn-default' do %>
+      <i class="fa fa-plus"></i> New User
+    <% end %>
+  </div>
+<% end %>
 
 <h1>Users <small class="entity_count"></small></h1>
 

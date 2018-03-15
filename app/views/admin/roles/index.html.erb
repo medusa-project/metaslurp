@@ -7,12 +7,14 @@
   <li class="active">Roles</li>
 </ol>
 
-<div class="btn-group pull-right">
-  <!-- New Role -->
-  <%= link_to new_admin_role_path, class: 'btn btn-default' do %>
-    <span class="fa fa-plus"></span> New Role
-  <% end %>
-</div>
+<% if current_user.admin? %>
+  <div class="btn-group pull-right">
+    <!-- New Role -->
+    <%= link_to new_admin_role_path, class: 'btn btn-default' do %>
+      <span class="fa fa-plus"></span> New Role
+    <% end %>
+  </div>
+<% end %>
 
 <h1>Roles</h1>
 
