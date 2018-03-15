@@ -6,6 +6,25 @@ module Admin
     before_action :require_admin, except: [:index, :show]
 
     ##
+    # Responds to DELETE /admin/content-services/:id/element-mappings
+    #
+    def clear_element_mappings
+      service = ContentService.find_by_key(params[:content_service_key])
+      raise ActiveRecord::RecordNotFound unless service
+
+      begin
+        service.element_mappings.destroy_all
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = 'Element mappings cleared. Reindex to '\
+            'repopulate the element list.'
+      ensure
+        redirect_back fallback_location: admin_content_service_path(service)
+      end
+    end
+
+    ##
     # Responds to POST /admin/content-services
     #
     def create

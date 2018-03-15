@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     match '/configuration', to: 'configuration#index', via: :get
     match '/configuration', to: 'configuration#update', via: :patch
     resources :content_services, param: :key, path: 'content-services' do
+      match '/element-mappings', to: 'content_services#clear_element_mappings',
+            via: :delete, as: 'element_mappings'
       match '/reindex', to: 'content_services#reindex', via: :post, as: 'reindex'
     end
     resources :elements, param: :name, except: :show

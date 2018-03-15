@@ -39,10 +39,23 @@
     </dl>
   </div>
   <div class="col-sm-8">
+    <% if current_user.admin? %>
+      <%= button_bar({ label: 'Clear Element Mappings',
+                       icon: 'fa-close',
+                       url: admin_content_service_element_mappings_path(@content_service),
+                       method: 'delete',
+                       class: 'btn-danger btn-sm',
+                       confirm: 'Are you sure you want to clear the element mappings?' }) %>
+    <% end %>
+
     <h2>Element Mappings</h2>
 
-    <div class="alert alert-info">Reindex the service to update the source
-      element list.</div>
+    <div class="alert alert-info">
+      <ul>
+        <li>To add new elements from the service, reindex the service.</li>
+        <li>To remove obsolete elements, clear the mappings and reindex.</li>
+      </ul>
+    </div>
 
     <table class="table table-striped">
       <tr>
