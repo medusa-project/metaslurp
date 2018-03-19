@@ -6,7 +6,8 @@ class ItemTest < ActiveSupport::TestCase
     @instance = Item.new(index_id: 'cats',
                          service_key: content_services(:one).key,
                          source_uri: 'http://example.org/cats',
-                         access_image_uri: 'http://example.org/cats/image.jpg')
+                         access_image_uri: 'http://example.org/cats/image.jpg',
+                         variant: Item::Variants::ITEM)
     @instance.elements << ItemElement.new(name: 'name', value: 'value')
   end
 
@@ -15,6 +16,7 @@ class ItemTest < ActiveSupport::TestCase
   test 'from_json() with valid data returns an instance' do
     item = Item.from_json(
         {
+            'class': Item::Variants::ITEM,
             'index_id': 'cats',
             'service_key': content_services(:one).key,
             'source_uri': 'http://example.org/cats',
@@ -24,6 +26,7 @@ class ItemTest < ActiveSupport::TestCase
                 'value': 'value'
             ]
         })
+    assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.index_id
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'http://example.org/cats', item.source_uri
@@ -64,6 +67,7 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'as_json() works' do
     struct = @instance.as_json
+    assert_equal Item::Variants::ITEM, struct['class']
     assert_equal 'cats', struct['index_id']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'http://example.org/cats', struct['source_uri']
@@ -133,6 +137,13 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'validate() raises error for empty elements' do
     @instance.elements.clear
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for invalid variant' do
+    @instance.variant = 'Dog'
     assert_raises ArgumentError do
       @instance.validate
     end

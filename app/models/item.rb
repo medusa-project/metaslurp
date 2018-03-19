@@ -10,7 +10,19 @@
 class Item
 
   attr_accessor :access_image_uri, :index_id, :service_key, :source_uri,
-                :elements
+                :elements, :variant
+
+  class Variants
+    COLLECTION = 'Collection'
+    ITEM = 'Item'
+
+    ##
+    # @return [Enumerable<String>] String values of all variants.
+    #
+    def self.all
+      self.constants.map{ |c| self.const_get(c) }
+    end
+  end
 
   ##
   # @param obj [Hash] Deserialized JSON.
@@ -24,6 +36,7 @@ class Item
     item.service_key = jobj['service_key']
     item.source_uri = jobj['source_uri']
     item.access_image_uri = jobj['access_image_uri']
+    item.variant = jobj['class']
     jobj['elements'].each do |jelement|
       item.elements << ItemElement.from_json(jelement)
     end
@@ -48,6 +61,7 @@ class Item
   #
   def as_json(options = {})
     struct = super(options)
+    struct['class'] = self.variant
     struct['index_id'] = self.index_id
     struct['service_key'] = self.service_key
     struct['source_uri'] = self.source_uri
@@ -77,6 +91,8 @@ class Item
         ContentService.pluck(:key).include?(self.service_key)
     raise ArgumentError, 'Missing source URI' if self.source_uri.blank?
     raise ArgumentError, 'No elements' if self.elements.empty?
+    raise ArgumentError, 'Invalid variant' unless
+        Variants.all.include?(self.variant)
   end
 
 end

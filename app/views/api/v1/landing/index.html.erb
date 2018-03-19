@@ -53,10 +53,11 @@
   <tr>
     <td>Request Entity</td>
     <td><code class="code-block">{
+    "class": "Item",
     "index_id": "unique-item-id",
     "service_key": "service-key",
     "source_uri": "http://example.org/unique-item-id",
-    "access_image_uri": "http://example.org/unique-item-it/image.jp2",
+    "access_image_uri": "http://example.org/unique-item-id/image.jp2",
     "elements" : [
         {
             "name": "some-element-name",
@@ -75,6 +76,11 @@
           <th></th>
           <th>Required</th>
           <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>class</code></td>
+          <td>Yes</td>
+          <td><code>Item</code> or <code>Collection</code></td>
         </tr>
         <tr>
           <td><code>index_id</code></td>
