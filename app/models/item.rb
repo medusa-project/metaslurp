@@ -90,7 +90,6 @@ class Item
     raise ArgumentError, 'Invalid service key' unless
         ContentService.pluck(:key).include?(self.service_key)
     raise ArgumentError, 'Missing source URI' if self.source_uri.blank?
-    raise ArgumentError, 'No elements' if self.elements.empty?
     raise ArgumentError, 'Invalid variant' unless
         Variants.all.include?(self.variant)
   end

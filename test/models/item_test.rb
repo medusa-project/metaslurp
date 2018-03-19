@@ -135,13 +135,6 @@ class ItemTest < ActiveSupport::TestCase
     end
   end
 
-  test 'validate() raises error for empty elements' do
-    @instance.elements.clear
-    assert_raises ArgumentError do
-      @instance.validate
-    end
-  end
-
   test 'validate() raises error for invalid variant' do
     @instance.variant = 'Dog'
     assert_raises ArgumentError do
