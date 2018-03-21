@@ -54,10 +54,11 @@
     <td>Request Entity</td>
     <td><code class="code-block">{
     "class": "Item",
-    "index_id": "unique-item-id",
+    "index_id": "local-item-id",
     "service_key": "service-key",
-    "source_uri": "http://example.org/unique-item-id",
-    "access_image_uri": "http://example.org/unique-item-id/image.jp2",
+    "source_id": "some-item",
+    "source_uri": "http://example.org/some-item",
+    "access_image_uri": "http://example.org/some-item/image.jp2",
     "elements" : [
         {
             "name": "some-element-name",
@@ -94,6 +95,11 @@
           <td>Must be one of the available
             <%= link_to 'content service', admin_content_services_path %> keys.
           </td>
+        </tr>
+        <tr>
+          <td><code>source_id</code></td>
+          <td>Yes</td>
+          <td>Identifier of the item in the source service.</td>
         </tr>
         <tr>
           <td><code>source_uri</code></td>

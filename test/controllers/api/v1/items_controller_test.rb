@@ -9,6 +9,7 @@ module Api
       @valid_item = Item.new(variant: Item::Variants::ITEM,
                              index_id: 'cats',
                              service_key: content_services(:one).key,
+                             source_id: 'source-id',
                              source_uri: 'http://example.net/cats')
       @valid_item.elements << ItemElement.new(name: 'name1',
                                               value: 'value1')

@@ -5,6 +5,7 @@ class ItemTest < ActiveSupport::TestCase
   setup do
     @instance = Item.new(index_id: 'cats',
                          service_key: content_services(:one).key,
+                         source_id: 'cats',
                          source_uri: 'http://example.org/cats',
                          access_image_uri: 'http://example.org/cats/image.jpg',
                          variant: Item::Variants::ITEM)
@@ -19,6 +20,7 @@ class ItemTest < ActiveSupport::TestCase
             'class': Item::Variants::ITEM,
             'index_id': 'cats',
             'service_key': content_services(:one).key,
+            'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
             'access_image_uri': 'http://example.org/cats/image.jpg',
             'elements': [
@@ -29,6 +31,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.index_id
     assert_equal content_services(:one).key, item.service_key
+    assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal 1, item.elements.length
@@ -70,6 +73,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Item::Variants::ITEM, struct['class']
     assert_equal 'cats', struct['index_id']
     assert_equal content_services(:one).key, struct['service_key']
+    assert_equal 'cats', struct['source_id']
     assert_equal 'http://example.org/cats', struct['source_uri']
     assert_equal 'http://example.org/cats/image.jpg', struct['access_image_uri']
     assert_equal 1, struct['elements'].length
@@ -107,7 +111,7 @@ class ItemTest < ActiveSupport::TestCase
     @instance.validate
   end
 
-  test 'validate() raises error for invalid index_id' do
+  test 'validate() raises error for missing index_id' do
     @instance.index_id = ''
     assert_raises ArgumentError do
       @instance.validate
@@ -123,6 +127,13 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'validate() raises error for invalid service key' do
     @instance.service_key = 'dogs'
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for missing source ID' do
+    @instance.source_id = ''
     assert_raises ArgumentError do
       @instance.validate
     end

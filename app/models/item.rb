@@ -6,11 +6,12 @@
 # 3. Add it to from_json()
 # 4. Add it to as_json()
 # 5. Update tests for all of the above
+# 6. Add it to the API documentation
 #
 class Item
 
-  attr_accessor :access_image_uri, :index_id, :service_key, :source_uri,
-                :elements, :variant
+  attr_accessor :access_image_uri, :index_id, :service_key, :source_id,
+                :source_uri, :elements, :variant
 
   class Variants
     COLLECTION = 'Collection'
@@ -34,6 +35,7 @@ class Item
     item = Item.new
     item.index_id = jobj['index_id']
     item.service_key = jobj['service_key']
+    item.source_id = jobj['source_id']
     item.source_uri = jobj['source_uri']
     item.access_image_uri = jobj['access_image_uri']
     item.variant = jobj['class']
@@ -64,6 +66,7 @@ class Item
     struct['class'] = self.variant
     struct['index_id'] = self.index_id
     struct['service_key'] = self.service_key
+    struct['source_id'] = self.source_id
     struct['source_uri'] = self.source_uri
     struct['access_image_uri'] = self.access_image_uri
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
@@ -86,9 +89,10 @@ class Item
   # @raises [ArgumentError] if the instance is invalid.
   #
   def validate
-    raise ArgumentError, 'Missing ID' if self.index_id.blank?
+    raise ArgumentError, 'Missing index ID' if self.index_id.blank?
     raise ArgumentError, 'Invalid service key' unless
         ContentService.pluck(:key).include?(self.service_key)
+    raise ArgumentError, 'Missing source ID' if self.source_id.blank?
     raise ArgumentError, 'Missing source URI' if self.source_uri.blank?
     raise ArgumentError, 'Invalid variant' unless
         Variants.all.include?(self.variant)
