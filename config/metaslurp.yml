@@ -1,0 +1,8 @@
+development: &development
+  :elasticsearch_endpoint: <%= ENV['METASLURP_DEV_ELASTICSEARCH_ENDPOINT'] %>
+
+test:
+  :elasticsearch_endpoint: <%= ENV['METASLURP_TEST_ELASTICSEARCH_ENDPOINT'] %>
+
+production:
+  <<: *development
