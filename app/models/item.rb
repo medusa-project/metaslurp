@@ -36,7 +36,7 @@
 #
 # * access_image_uri URI of a high-quality access image.
 # * elements:        Enumerable of ItemElements.
-# * index_id:        Identifier within the application.
+# * id:              Identifier within the application.
 # * service_key:     Key of the ContentService from which the instance was
 #                    obtained.
 # * source_id:       Identifier of the instance within its ContentService.
@@ -60,13 +60,13 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :elements, :index_id, :last_indexed,
+  attr_accessor :access_image_uri, :elements, :id, :last_indexed,
                 :service_key, :source_id, :source_uri, :variant
 
   class IndexFields
     ACCESS_IMAGE_URI = 'access_image_uri'
+    ID = '_id'
     LAST_INDEXED = 'date_last_indexed'
-    LOCAL_ID = '_id'
     SERVICE_KEY = 'service_key'
     SOURCE_ID = 'source_id'
     SOURCE_URI = 'source_uri'
@@ -93,7 +93,7 @@ class Item
     jobj = jobj.stringify_keys
     item = Item.new
     item.access_image_uri = jobj[IndexFields::ACCESS_IMAGE_URI]
-    item.index_id = jobj[IndexFields::LOCAL_ID]
+    item.id = jobj[IndexFields::ID]
     item.last_indexed = Time.iso8601(jobj[IndexFields::LAST_INDEXED]) rescue nil
     item.service_key = jobj[IndexFields::SERVICE_KEY]
     item.source_id = jobj[IndexFields::SOURCE_ID]
@@ -118,7 +118,7 @@ class Item
     item = Item.new
     item.access_image_uri = jobj['access_image_uri']
     jobj['elements'].each { |je| item.elements << ItemElement.from_json(je) }
-    item.index_id = jobj['index_id']
+    item.id = jobj['id']
     item.service_key = jobj['service_key']
     item.source_id = jobj['source_id']
     item.source_uri = jobj['source_uri']
@@ -136,8 +136,7 @@ class Item
   end
 
   def ==(obj)
-    obj.object_id == self.object_id ||
-        (obj.kind_of?(Item) and obj.index_id == self.index_id)
+    obj.object_id == self.object_id ||(obj.is_a?(Item) and obj.id == self.id)
   end
 
   ##
@@ -178,7 +177,7 @@ class Item
     struct['access_image_uri'] = self.access_image_uri
     struct['class'] = self.variant
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
-    struct['index_id'] = self.index_id
+    struct['id'] = self.id
     struct['service_key'] = self.service_key
     struct['source_id'] = self.source_id
     struct['source_uri'] = self.source_uri
@@ -197,7 +196,7 @@ class Item
   end
 
   def hash
-    self.index_id.hash
+    self.id.hash
   end
 
   ##
@@ -210,14 +209,14 @@ class Item
     index = ElasticsearchIndex.latest(ELASTICSEARCH_INDEX)
     ElasticsearchClient.instance.index_document(index.name,
                                                 ELASTICSEARCH_TYPE,
-                                                self.index_id,
+                                                self.id,
                                                 self.as_indexed_json)
   end
 
   alias_method :save!, :save
 
   def to_s
-    "#{self.index_id}"
+    "#{self.id}"
   end
 
   ##
@@ -225,7 +224,7 @@ class Item
   # @raises [ArgumentError] if the instance is invalid.
   #
   def validate
-    raise ArgumentError, 'Missing index ID' if self.index_id.blank?
+    raise ArgumentError, 'Missing ID' if self.id.blank?
     raise ArgumentError, 'Invalid service key' unless
         ContentService.pluck(:key).include?(self.service_key)
     raise ArgumentError, 'Missing source ID' if self.source_id.blank?

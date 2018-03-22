@@ -6,8 +6,8 @@ module Api
   class ItemsControllerTest < ApiControllerTest
 
     setup do
-      @valid_item = Item.new(variant: Item::Variants::ITEM,
-                             index_id: 'cats',
+      @valid_item = Item.new(id: 'cats',
+                             variant: Item::Variants::ITEM,
                              service_key: content_services(:one).key,
                              source_id: 'source-id',
                              source_uri: 'http://example.net/cats')
@@ -20,7 +20,7 @@ module Api
     # update()
 
     test 'update() with no credentials returns 401' do
-      put '/api/v1/items/' + @valid_item.index_id
+      put '/api/v1/items/' + @valid_item.id
       assert_response :unauthorized
     end
 
@@ -28,12 +28,12 @@ module Api
       headers = valid_headers.merge(
           'Authorization' => ActionController::HttpAuthentication::Basic.
               encode_credentials('bogus', 'bogus'))
-      put '/api/v1/items/' + @valid_item.index_id, headers: headers
+      put '/api/v1/items/' + @valid_item.id, headers: headers
       assert_response :unauthorized
     end
 
     test 'update() with valid credentials and valid entity returns 200' do
-      put '/api/v1/items/' + @valid_item.index_id,
+      put '/api/v1/items/' + @valid_item.id,
           env: { 'rack.input': JSON.generate(@valid_item.as_json) },
           headers: valid_headers
       assert_response :success
@@ -46,7 +46,7 @@ module Api
       assert_nil @valid_item.content_service.element_mappings.
           find_by_source_name('name2')
 
-      put '/api/v1/items/' + @valid_item.index_id,
+      put '/api/v1/items/' + @valid_item.id,
           env: { 'rack.input': JSON.generate(@valid_item.as_json) },
           headers: valid_headers
 
@@ -57,12 +57,12 @@ module Api
     end
 
     test 'update() with valid credentials and empty entity returns 400' do
-      put '/api/v1/items/' + @valid_item.index_id, headers: valid_headers
+      put '/api/v1/items/' + @valid_item.id, headers: valid_headers
       assert_response :bad_request
     end
 
     test 'update() with valid credentials and malformed entity returns 400' do
-      put '/api/v1/items/' + @valid_item.index_id,
+      put '/api/v1/items/' + @valid_item.id,
           env: { 'rack.input': StringIO.new('malformed') },
           headers: valid_headers
       assert_response :bad_request

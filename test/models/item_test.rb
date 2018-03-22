@@ -3,7 +3,7 @@ require 'test_helper'
 class ItemTest < ActiveSupport::TestCase
 
   setup do
-    @instance = Item.new(index_id: 'cats',
+    @instance = Item.new(id: 'cats',
                          service_key: content_services(:one).key,
                          source_id: 'cats',
                          source_uri: 'http://example.org/cats',
@@ -18,8 +18,8 @@ class ItemTest < ActiveSupport::TestCase
     item = Item.from_indexed_json(
         {
             Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
+            Item::IndexFields::ID => 'cats',
             Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
-            Item::IndexFields::LOCAL_ID => 'cats',
             Item::IndexFields::SERVICE_KEY => content_services(:one).key,
             Item::IndexFields::SOURCE_ID => 'cats',
             Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
@@ -29,7 +29,7 @@ class ItemTest < ActiveSupport::TestCase
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
-    assert_equal 'cats', item.index_id
+    assert_equal 'cats', item.id
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
@@ -45,7 +45,7 @@ class ItemTest < ActiveSupport::TestCase
     item = Item.from_json(
         {
             'class': Item::Variants::ITEM,
-            'index_id': 'cats',
+            'id': 'cats',
             'service_key': content_services(:one).key,
             'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
@@ -56,7 +56,7 @@ class ItemTest < ActiveSupport::TestCase
             ]
         })
     assert_equal Item::Variants::ITEM, item.variant
-    assert_equal 'cats', item.index_id
+    assert_equal 'cats', item.id
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
@@ -75,21 +75,21 @@ class ItemTest < ActiveSupport::TestCase
   # initialize()
 
   test 'initialize() works' do
-    item = Item.new(index_id: 'cats',
+    item = Item.new(id: 'cats',
                     source_uri: 'http://example.org/cats')
-    assert_equal 'cats', item.index_id
+    assert_equal 'cats', item.id
     assert_equal 'http://example.org/cats', item.source_uri
   end
 
   # ==()
 
   test '==() works with equal instance' do
-    item2 = Item.new(index_id: 'cats')
+    item2 = Item.new(id: 'cats')
     assert_equal(@instance, item2)
   end
 
   test '==() works with unequal instance' do
-    item2 = Item.new(index_id: 'cats2')
+    item2 = Item.new(id: 'cats2')
     assert_not_equal(@instance, item2)
   end
 
@@ -115,7 +115,7 @@ class ItemTest < ActiveSupport::TestCase
   test 'as_json() works' do
     struct = @instance.as_json
     assert_equal Item::Variants::ITEM, struct['class']
-    assert_equal 'cats', struct['index_id']
+    assert_equal 'cats', struct['id']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'cats', struct['source_id']
     assert_equal 'http://example.org/cats', struct['source_uri']
@@ -153,12 +153,12 @@ class ItemTest < ActiveSupport::TestCase
 
       assert !client.get_document(index.name,
                                   Item::ELASTICSEARCH_TYPE,
-                                  @instance.index_id)
+                                  @instance.id)
       @instance.save
 
       assert client.get_document(index.name,
                                  Item::ELASTICSEARCH_TYPE,
-                                 @instance.index_id)
+                                 @instance.id)
     ensure
       client.delete_index(index.name)
     end
@@ -167,7 +167,7 @@ class ItemTest < ActiveSupport::TestCase
   # to_s()
 
   test 'to_s() works' do
-    assert_equal @instance.index_id, @instance.to_s
+    assert_equal @instance.id, @instance.to_s
   end
 
   # validate()
@@ -176,8 +176,8 @@ class ItemTest < ActiveSupport::TestCase
     @instance.validate
   end
 
-  test 'validate() raises error for missing index_id' do
-    @instance.index_id = ''
+  test 'validate() raises error for missing id' do
+    @instance.id = ''
     assert_raises ArgumentError do
       @instance.validate
     end
