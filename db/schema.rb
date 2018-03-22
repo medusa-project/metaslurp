@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180314190758) do
+ActiveRecord::Schema.define(version: 20180322174158) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,9 +27,9 @@ ActiveRecord::Schema.define(version: 20180314190758) do
   end
 
   create_table "element_mappings", force: :cascade do |t|
-    t.integer "content_service_id"
+    t.bigint "content_service_id"
     t.string "source_name"
-    t.integer "element_id"
+    t.bigint "element_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["content_service_id", "source_name"], name: "index_element_mappings_on_content_service_id_and_source_name", unique: true
