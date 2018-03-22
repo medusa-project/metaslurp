@@ -89,7 +89,7 @@ class Element < ApplicationRecord
   # zero-based.
   #
   def adjust_element_indexes_after_update
-    if self.index_changed?
+    if self.saved_change_to_index?
       min = [self.index_was, self.index].min
       max = [self.index_was, self.index].max
       increased = (self.index_was < self.index)
