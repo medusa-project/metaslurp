@@ -1,5 +1,8 @@
 class ItemElement
 
+  # N.B.: This should harmonize with Element::INDEX_FIELD_PREFIX.
+  INDEX_FIELD_PREFIX = 'source_element_'
+
   attr_accessor :name, :value
 
   ##
@@ -33,6 +36,13 @@ class ItemElement
     struct['name'] = self.name
     struct['value'] = self.value
     struct
+  end
+
+  ##
+  # @return [String] Name of the indexed field for the instance.
+  #
+  def indexed_field
+    [INDEX_FIELD_PREFIX, self.name].join
   end
 
   ##

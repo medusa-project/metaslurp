@@ -12,6 +12,33 @@ class ItemTest < ActiveSupport::TestCase
     @instance.elements << ItemElement.new(name: 'name', value: 'value')
   end
 
+  # from_indexed_json()
+
+  test 'from_indexed_json() with valid data returns an instance' do
+    item = Item.from_indexed_json(
+        {
+            Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
+            Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
+            Item::IndexFields::LOCAL_ID => 'cats',
+            Item::IndexFields::SERVICE_KEY => content_services(:one).key,
+            Item::IndexFields::SOURCE_ID => 'cats',
+            Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
+            Item::IndexFields::VARIANT => Item::Variants::ITEM,
+            ItemElement::INDEX_FIELD_PREFIX + 'title' => 'the title',
+            Element::INDEX_FIELD_PREFIX + 'title' => 'the title'
+        })
+    assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
+    assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
+    assert_equal 'cats', item.index_id
+    assert_equal content_services(:one).key, item.service_key
+    assert_equal 'cats', item.source_id
+    assert_equal 'http://example.org/cats', item.source_uri
+    assert_equal Item::Variants::ITEM, item.variant
+    assert_equal 1, item.elements.length
+    assert_equal 'title', item.elements.to_a[0].name
+    assert_equal 'the title', item.elements.to_a[0].value
+  end
+
   # from_json()
 
   test 'from_json() with valid data returns an instance' do
@@ -66,6 +93,23 @@ class ItemTest < ActiveSupport::TestCase
     assert_not_equal(@instance, item2)
   end
 
+  # as_indexed_json()
+
+  test 'as_indexed_json() works' do
+    struct = @instance.as_indexed_json
+    assert_equal @instance.access_image_uri,
+                 struct[Item::IndexFields::ACCESS_IMAGE_URI]
+    assert_not_empty struct[Item::IndexFields::LAST_INDEXED]
+    assert_equal @instance.service_key,
+                 struct[Item::IndexFields::SERVICE_KEY]
+    assert_equal @instance.source_id,
+                 struct[Item::IndexFields::SOURCE_ID]
+    assert_equal @instance.source_uri,
+                 struct[Item::IndexFields::SOURCE_URI]
+    assert_equal @instance.variant,
+                 struct[Item::IndexFields::VARIANT]
+  end
+
   # as_json()
 
   test 'as_json() works' do
@@ -97,6 +141,27 @@ class ItemTest < ActiveSupport::TestCase
    'invalid value' do
     @instance.service_key = 'bogus'
     assert_nil @instance.content_service
+  end
+
+  # save()
+
+  test 'save() works' do
+    client = ElasticsearchClient.instance
+    index = ElasticsearchIndex.latest(Item::ELASTICSEARCH_INDEX)
+    begin
+      client.delete_index(index.name) if client.index_exists?(index.name)
+
+      assert !client.get_document(index.name,
+                                  Item::ELASTICSEARCH_TYPE,
+                                  @instance.index_id)
+      @instance.save
+
+      assert client.get_document(index.name,
+                                 Item::ELASTICSEARCH_TYPE,
+                                 @instance.index_id)
+    ensure
+      client.delete_index(index.name)
+    end
   end
 
   # to_s()

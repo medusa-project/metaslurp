@@ -9,6 +9,15 @@ class ContentService < ApplicationRecord
   validates_format_of :uri, with: URI.regexp,
                       message: 'is invalid', allow_blank: true
 
+  ##
+  # @param src_element [ItemElement]
+  # @return [Element]
+  #
+  def element_for_source_element(src_element)
+    self.element_mappings.
+        select{ |m| m.source_name == src_element.name}.first&.element
+  end
+
   def to_param
     self.key
   end

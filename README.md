@@ -7,7 +7,7 @@ This is a basic getting-started guide for developers.
 # Dependencies
 
 * PostgreSQL 9.x
-* Elasticsearch 6.1
+* Elasticsearch 6.x
     * The [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
       is also required
 
@@ -40,7 +40,7 @@ $ cd metaslurp
 
 ## 6) Configure the application
 
-Open `config/database.yml` and add the environment variables it needs to your
+Open `config/database.yml` and add the environment variables it uses to your
 environment.
 
 ## 7) Create and seed the database
@@ -49,7 +49,10 @@ environment.
 
 ## 8) Create the Elasticsearch indexes
 
-`$ bin/rails elasticsearch:indexes:create_all_latest`
+```
+$ bin/rails elasticsearch:indexes:create_latest
+$ bin/rails elasticsearch:indexes:migrate
+```
 
 # Upgrading
 
@@ -57,19 +60,21 @@ environment.
 
 `bin/rails db:migrate`
 
-## Migrating the Elasticsearch index schema(s)
+## Migrating the Elasticsearch indexes
 
 Rather than trying to change the existing indexes in place, the recommended
 procedure is to create a new set of indexes, populate them with documents, and
-then switch the application over to use them. The steps are:
+then switch the application over to use them. The application doesn't refer to
+index names, but rather stable aliases of the indexes, so the steps are:
 
-1. `bin/rails elasticsearch:indexes:create_all_latest`
-2. `bin/rails elasticsearch:indexes:populate_latest`
-3. `bin/rails elasticsearch:indexes:migrate_to_latest`
-4. Restart Rails
+1. Create the latest indexes: `bin/rails elasticsearch:indexes:create_latest`
+2. Populate them with documents (this hasn't been written yet)
+3. Switch over the aliases: `bin/rails elasticsearch:indexes:migrate`
 
 # Notes
 
 ## Using Shibboleth locally
 
-Log in as user `admin` and password `admin@example.org`.
+Log in as:
+* `admin`/`admin@example.org` for admin privileges
+* `user`/`user@example.org` for normal-user privileges

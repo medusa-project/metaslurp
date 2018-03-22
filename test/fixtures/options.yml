@@ -8,6 +8,10 @@ default_result_window:
   key: <%= Option::Keys::DEFAULT_RESULT_WINDOW %>
   value: '{"value" : 20}'
 
+elasticsearch_index_version:
+  key: <%= Option::Keys::ELASTICSEARCH_INDEX_VERSION %>
+  value: '{"value" : <%= ElasticsearchIndex.latest_version %>}'
+
 website_name:
   key: <%= Option::Keys::WEBSITE_NAME %>
   value: '{"value" : "My Great Website"}'

@@ -21,15 +21,17 @@ module Api
           if item.source_uri.start_with?('http://example.org')
             Rails.logger.debug("Ignoring test item: #{item}")
           else
-            service = item.content_service
-            update_content_service_element_mappings(service, item.elements)
+            update_element_mappings(item.content_service, item.elements)
 
-            # TODO: index the item
+            item.save!
             Rails.logger.debug("Ingested #{item}: #{json}")
           end
         rescue ArgumentError, JSON::ParserError => e
           Rails.logger.debug("Invalid: #{json}")
           render plain: e.message, status: :bad_request
+        rescue IOError => e
+          Rails.logger.error("#{e}")
+          render plain: e.message, status: :internal_server_error
         else
           head :no_content
         end
@@ -37,16 +39,16 @@ module Api
 
       private
 
-      def update_content_service_element_mappings(service, item_elements)
+      def update_element_mappings(content_service, item_elements)
         if item_elements.any?
-          mappings = service.element_mappings
+          mappings = content_service.element_mappings
 
           item_elements.each do |element|
             if mappings.select { |m| m.source_name == element.name }.empty?
               mappings.build(source_name: element.name)
             end
           end
-          service.save!
+          content_service.save!
         end
       end
 

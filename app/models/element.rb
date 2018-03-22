@@ -3,6 +3,9 @@
 #
 class Element < ApplicationRecord
 
+  # N.B.: This should harmonize with ItemElement::INDEX_FIELD_PREFIX.
+  INDEX_FIELD_PREFIX = 'local_element_'
+
   has_many :element_mappings, inverse_of: :element
 
   validates :index, numericality: { only_integer: true,
@@ -25,6 +28,13 @@ class Element < ApplicationRecord
     e = Element.new
     e.update_from_json_struct(struct)
     e
+  end
+
+  ##
+  # @return [String] Name of the indexed field for the instance.
+  #
+  def indexed_field
+    [INDEX_FIELD_PREFIX, self.name].join
   end
 
   def to_param
