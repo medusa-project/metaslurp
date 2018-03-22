@@ -49,6 +49,12 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
     end
   end
 
+  test 'delete_index() raises an error when deleting a nonexistent index' do
+    assert_raises IOError do
+      @instance.delete_index('bogus')
+    end
+  end
+
   test 'delete_index_alias() works' do
     alias_name = 'test1-alias'
 
@@ -60,6 +66,20 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
     @instance.delete_index_alias(@test_index.name, alias_name)
     assert @instance.index_exists?(@test_index.name)
     assert !@instance.index_exists?(alias_name)
+  end
+
+  test 'delete_index_if_exists() works' do
+    begin
+      @instance.create_index(@test_index)
+      assert @instance.index_exists?(@test_index.name)
+    ensure
+      @instance.delete_index_if_exists(@test_index.name)
+      assert !@instance.index_exists?(@test_index.name)
+    end
+  end
+
+  test 'delete_index_if_exists() does nothing when deleting a nonexistent index' do
+    @instance.delete_index_if_exists('bogus')
   end
 
   test 'get_document() with missing document' do

@@ -6,6 +6,9 @@ class Element < ApplicationRecord
   # N.B.: This should harmonize with SourceElement::INDEX_FIELD_PREFIX.
   INDEX_FIELD_PREFIX = 'local_element_'
 
+  KEYWORD_FIELD_SUFFIX = '.keyword'
+  SORT_FIELD_SUFFIX = '.sort'
+
   has_many :element_mappings, inverse_of: :element
 
   validates :index, numericality: { only_integer: true,
@@ -19,6 +22,14 @@ class Element < ApplicationRecord
   after_update :adjust_element_indexes_after_update
   after_destroy :adjust_element_indexes_after_destroy
   before_update :restrict_name_changes
+
+  ##
+  # @return [Element]
+  #
+  def self.default_sortable_element
+    # TODO: make this customizable
+    Element.new(name: 'title')
+  end
 
   ##
   # @param struct [Hash] Deserialized hash from JSON.parse()
@@ -35,6 +46,20 @@ class Element < ApplicationRecord
   #
   def indexed_field
     [INDEX_FIELD_PREFIX, self.name].join
+  end
+
+  ##
+  # @return [String] Name of the indexed keyword field for the instance.
+  #
+  def indexed_keyword_field
+    [INDEX_FIELD_PREFIX, self.name, KEYWORD_FIELD_SUFFIX].join
+  end
+
+  ##
+  # @return [String] Name of the indexed sort field for the instance.
+  #
+  def indexed_sort_field
+    [INDEX_FIELD_PREFIX, self.name, SORT_FIELD_SUFFIX].join
   end
 
   def to_param

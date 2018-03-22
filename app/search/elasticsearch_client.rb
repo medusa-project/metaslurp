@@ -121,6 +121,15 @@ class ElasticsearchClient
   end
 
   ##
+  # @param name [String] Index name.
+  # @return [void]
+  # @raises [IOError]
+  #
+  def delete_index_if_exists(name)
+    delete_index(name) if index_exists?(name)
+  end
+
+  ##
   # @param index_name [String]
   # @param id [String]
   # @return [Hash, nil]
@@ -181,8 +190,9 @@ class ElasticsearchClient
   # @return [String] Response body.
   #
   def query(index, query)
-    url = sprintf('%s/%s/_search?size=0&pretty', endpoint, index)
-    @@http_client.post(url, query).body
+    url = sprintf('%s/%s/_search?pretty', endpoint, index)
+    @@logger.debug("ElasticsearchClient.query(): #{url}\n    #{query}")
+    @@http_client.post(url, query, 'Content-Type': 'application/json').body
   end
 
   private

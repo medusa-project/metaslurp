@@ -35,6 +35,9 @@ class ElasticsearchIndexTest < ActiveSupport::TestCase
     current_index = ElasticsearchIndex.current('entities')
     latest_index = ElasticsearchIndex.latest('entities')
 
+    client.delete_index_if_exists(current_index.name)
+    client.delete_index_if_exists(latest_index.name)
+
     begin
       client.create_index(current_index)
       client.create_index(latest_index)

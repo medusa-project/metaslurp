@@ -17,15 +17,17 @@ class ItemTest < ActiveSupport::TestCase
   test 'from_indexed_json() with valid data returns an instance' do
     item = Item.from_indexed_json(
         {
-            Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
             Item::IndexFields::ID => 'cats',
-            Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
-            Item::IndexFields::SERVICE_KEY => content_services(:one).key,
-            Item::IndexFields::SOURCE_ID => 'cats',
-            Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
-            Item::IndexFields::VARIANT => Item::Variants::ITEM,
-            SourceElement::INDEX_FIELD_PREFIX + 'title' => 'the title',
-            Element::INDEX_FIELD_PREFIX + 'title' => 'the title'
+            '_source' => {
+                Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
+                Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
+                Item::IndexFields::SERVICE_KEY => content_services(:one).key,
+                Item::IndexFields::SOURCE_ID => 'cats',
+                Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
+                Item::IndexFields::VARIANT => Item::Variants::ITEM,
+                SourceElement::INDEX_FIELD_PREFIX + 'title' => 'the title',
+                Element::INDEX_FIELD_PREFIX + 'title' => 'the title'
+            }
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed

@@ -90,10 +90,11 @@ class Item
   # @return [Item]
   #
   def self.from_indexed_json(jobj)
-    jobj = jobj.stringify_keys
     item = Item.new
-    item.access_image_uri = jobj[IndexFields::ACCESS_IMAGE_URI]
     item.id = jobj[IndexFields::ID]
+
+    jobj = jobj['_source']
+    item.access_image_uri = jobj[IndexFields::ACCESS_IMAGE_URI]
     item.last_indexed = Time.iso8601(jobj[IndexFields::LAST_INDEXED]) rescue nil
     item.service_key = jobj[IndexFields::SERVICE_KEY]
     item.source_id = jobj[IndexFields::SOURCE_ID]
