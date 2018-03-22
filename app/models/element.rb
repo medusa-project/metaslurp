@@ -3,7 +3,7 @@
 #
 class Element < ApplicationRecord
 
-  # N.B.: This should harmonize with ItemElement::INDEX_FIELD_PREFIX.
+  # N.B.: This should harmonize with SourceElement::INDEX_FIELD_PREFIX.
   INDEX_FIELD_PREFIX = 'local_element_'
 
   has_many :element_mappings, inverse_of: :element

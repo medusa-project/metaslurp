@@ -16,11 +16,11 @@
 # # Description
 #
 # Items have a number of hard-coded attributes (see below) as well as a
-# collection of ItemElements, which are source metadata elements (metadata
-# elements of the instance within the content service). The former are used by
-# the system, and ItemElements contain free-form strings and can be mapped to
-# Elements (local application elements) to control how they work with regard
-# to searching, faceting, etc. on a per-ContentService basis.
+# collection of SourceElements, which represent metadata elements of the
+# instance within the content service. The former are used by the system, and
+# SourceElements contain free-form strings and can be mapped to Elements (local
+# application elements) to control how they work with regard to searching,
+# faceting, etc. on a per-ContentService basis.
 #
 # # Indexing
 #
@@ -35,7 +35,7 @@
 # # Attributes
 #
 # * access_image_uri URI of a high-quality access image.
-# * elements:        Enumerable of ItemElements.
+# * elements:        Enumerable of SourceElements.
 # * id:              Identifier within the application.
 # * service_key:     Key of the ContentService from which the instance was
 #                    obtained.
@@ -100,10 +100,10 @@ class Item
     item.source_uri = jobj[IndexFields::SOURCE_URI]
     item.variant = jobj[IndexFields::VARIANT]
 
-    prefix = ItemElement::INDEX_FIELD_PREFIX
+    prefix = SourceElement::INDEX_FIELD_PREFIX
     jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
-      item.elements << ItemElement.new(name: key[prefix.length..key.length],
-                                       value: jobj[key])
+      item.elements << SourceElement.new(name: key[prefix.length..key.length],
+                                         value: jobj[key])
     end
     item
   end
@@ -117,7 +117,7 @@ class Item
     jobj = jobj.stringify_keys
     item = Item.new
     item.access_image_uri = jobj['access_image_uri']
-    jobj['elements'].each { |je| item.elements << ItemElement.from_json(je) }
+    jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     item.id = jobj['id']
     item.service_key = jobj['service_key']
     item.source_id = jobj['source_id']

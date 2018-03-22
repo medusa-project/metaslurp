@@ -9,7 +9,7 @@ class ItemTest < ActiveSupport::TestCase
                          source_uri: 'http://example.org/cats',
                          access_image_uri: 'http://example.org/cats/image.jpg',
                          variant: Item::Variants::ITEM)
-    @instance.elements << ItemElement.new(name: 'name', value: 'value')
+    @instance.elements << SourceElement.new(name: 'name', value: 'value')
   end
 
   # from_indexed_json()
@@ -24,7 +24,7 @@ class ItemTest < ActiveSupport::TestCase
             Item::IndexFields::SOURCE_ID => 'cats',
             Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
             Item::IndexFields::VARIANT => Item::Variants::ITEM,
-            ItemElement::INDEX_FIELD_PREFIX + 'title' => 'the title',
+            SourceElement::INDEX_FIELD_PREFIX + 'title' => 'the title',
             Element::INDEX_FIELD_PREFIX + 'title' => 'the title'
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
@@ -68,7 +68,7 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'from_json() with invalid data raises an error' do
     assert_raises ArgumentError do
-      ItemElement.from_json({ 'cats': 'cats', 'dogs': 'dogs' })
+      SourceElement.from_json({ 'cats': 'cats', 'dogs': 'dogs' })
     end
   end
 

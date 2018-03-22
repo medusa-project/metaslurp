@@ -39,11 +39,11 @@ module Api
 
       private
 
-      def update_element_mappings(content_service, item_elements)
-        if item_elements.any?
+      def update_element_mappings(content_service, source_elements)
+        if source_elements.any?
           mappings = content_service.element_mappings
 
-          item_elements.each do |element|
+          source_elements.each do |element|
             if mappings.select { |m| m.source_name == element.name }.empty?
               mappings.build(source_name: element.name)
             end

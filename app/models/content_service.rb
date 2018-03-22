@@ -10,7 +10,7 @@ class ContentService < ApplicationRecord
                       message: 'is invalid', allow_blank: true
 
   ##
-  # @param src_element [ItemElement]
+  # @param src_element [SourceElement]
   # @return [Element]
   #
   def element_for_source_element(src_element)
