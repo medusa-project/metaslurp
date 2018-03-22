@@ -21,8 +21,7 @@ module Api
           if item.source_uri.start_with?('http://example.org')
             Rails.logger.debug("Ignoring test item: #{item}")
           else
-            update_element_mappings(item.content_service, item.elements)
-
+            item.content_service.update_element_mappings(item.elements)
             item.save!
             Rails.logger.debug("Ingested #{item}: #{json}")
           end
@@ -34,21 +33,6 @@ module Api
           render plain: e.message, status: :internal_server_error
         else
           head :no_content
-        end
-      end
-
-      private
-
-      def update_element_mappings(content_service, source_elements)
-        if source_elements.any?
-          mappings = content_service.element_mappings
-
-          source_elements.each do |element|
-            if mappings.select { |m| m.source_name == element.name }.empty?
-              mappings.build(source_name: element.name)
-            end
-          end
-          content_service.save!
         end
       end
 

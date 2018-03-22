@@ -26,4 +26,26 @@ class ContentService < ApplicationRecord
     self.name.present? ? "#{self.name}" : "#{self.key}"
   end
 
+  ##
+  # Adds new element mappings based on the given collection of source elements.
+  # For example, if the collection contains `a`, `b`, and `c` elements, and the
+  # instance already has mappings for `a` and `b`, then a `c` mapping will be
+  # added.
+  #
+  # @param source_elements [Enumerable<SourceElement>]
+  # @return [void]
+  #
+  def update_element_mappings(source_elements)
+    return if source_elements.empty?
+
+    mappings = self.element_mappings
+
+    source_elements.each do |element|
+      if mappings.select { |m| m.source_name == element.name }.empty?
+        mappings.build(source_name: element.name)
+      end
+    end
+    self.save!
+  end
+
 end
