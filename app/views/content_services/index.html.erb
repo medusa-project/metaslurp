@@ -1,8 +1,9 @@
-<%= breadcrumb({ label: 'Home', url: root_path },
-    { label: 'Services' }) %>
+<h1>Services</h1>
 
-<ul>
-  <% @services.each do |service| %>
-    <li><%= link_to service, service %></li>
-  <% end %>
-</ul>
+<div class="row">
+  <div>
+  </div>
+  <div class="col-9">
+    <%= content_services_as_cards(@services, description: true) %>
+  </div>
+</div>

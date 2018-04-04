@@ -1,8 +1,23 @@
-<%= breadcrumb({ label: 'Home', url: root_path },
-    { label: 'Services', url: content_services_path },
-    { label: @service }) %>
+<% if signed_in? %>
+  <div class="btn-group pull-right" role="group">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-light dropdown-toggle"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        View
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" role="menu">
+        <%= link_to admin_content_service_path(@service), class: 'dropdown-item',
+                    target: '_blank' do %>
+          <i class="fa fa-eye"></i> Admin View
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <h1><%= @service %></h1>
+
+<%= pluralize(@num_items, 'item') %>
 
 <% if @service.description.present? %>
   <p><%= @service.description %></p>

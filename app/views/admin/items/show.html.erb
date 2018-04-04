@@ -1,0 +1,51 @@
+<h1><%= @item.title %></h1>
+
+<nav style="margin-bottom: 1em">
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-system-info-tab" data-toggle="tab"
+       href="#nav-system-info" role="tab" aria-controls="nav-system-info"
+       aria-selected="true">System Information</a>
+    <a class="nav-item nav-link" id="nav-descriptive-info-tab" data-toggle="tab"
+       href="#nav-descriptive-info" role="tab" aria-controls="nav-descriptive-info"
+       aria-selected="false">Descriptive Information</a>
+    <a class="nav-item nav-link" id="nav-document-tab" data-toggle="tab"
+       href="#nav-document" role="tab" aria-controls="nav-document"
+       aria-selected="false">Indexed Document</a>
+  </div>
+</nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="nav-system-info" role="tabpanel"
+       aria-labelledby="nav-system-info-tab">
+    <dl>
+      <dt>Content Service</dt>
+      <dd><%= link_to @item.content_service.name,
+                      admin_content_service_path(@item.content_service) %></dd>
+      <dt>Local ID</dt>
+      <dd><%= @item.id %></dd>
+      <dt>Source ID</dt>
+      <dd><%= @item.source_id %></dd>
+      <dt>Source URI</dt>
+      <dd><%= link_to @item.source_uri, @item.source_uri, target: '_blank' %></dd>
+      <dt>Variant</dt>
+      <dd><%= @item.variant %></dd>
+      <dt>Last Indexed</dt>
+      <dd><%= local_time @item.last_indexed %></dd>
+    </dl>
+  </div>
+
+  <div class="tab-pane fade" id="nav-descriptive-info" role="tabpanel"
+       aria-labelledby="nav-descriptive-info-tab">
+    <dl>
+      <% @item.elements.sort_by{ |e| e.name }.each do |element| %>
+        <dt><code><%= element.name %></code></dt>
+        <dd><%= element.value %></dd>
+      <% end %>
+    </dl>
+  </div>
+
+  <div class="tab-pane fade" id="nav-document" role="tabpanel"
+       aria-labelledby="nav-document-tab">
+    <pre><%= JSON.pretty_unparse(@indexed_document) %></pre>
+  </div>
+</div>

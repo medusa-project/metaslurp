@@ -1,0 +1,11 @@
+@import "application";
+@import "sitewide";
+@import "items";
+
+nav.navbar {
+  margin-bottom: 1em;
+}
+
+.list-unstyled h5 a, .card-deck h5 a {
+  color: black;
+}

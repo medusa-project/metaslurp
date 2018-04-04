@@ -1,7 +1,3 @@
 <h1><%= Option.string(Option::Keys::WEBSITE_NAME) %></h1>
 
-<ul>
-  <% @services.each do |service| %>
-    <li><%= link_to service, service %></li>
-  <% end %>
-</ul>
+<%= content_services_as_cards(@services) %>

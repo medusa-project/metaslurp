@@ -66,7 +66,7 @@ module ApplicationHelper
 
     items.select{ |item| !item[:if] or item[:if].call }.each do |item|
       options = {}
-      options[:class] = 'btn ' + (item[:class].present? ? item[:class] : 'btn-secondary')
+      options[:class] = 'btn ' + (item[:class].present? ? item[:class] : 'btn-light')
       item[:class] = nil
       if item[:method].present?
         options[:method] = item[:method]

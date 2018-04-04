@@ -86,6 +86,33 @@ class Item
   end
 
   ##
+  # @param id [String] Item ID.
+  # @return [Hash, nil] The current indexed document for the item with the
+  #                     given ID.
+  # @raises [IOError]
+  #
+  def self.fetch_indexed_json(id)
+    index = ElasticsearchIndex.latest(ELASTICSEARCH_INDEX)
+    ElasticsearchClient.instance.get_document(index.name,
+                                              ELASTICSEARCH_TYPE, id)
+  end
+
+  ##
+  # @param id [String] Item ID.
+  # @return [Item]
+  # @raises [ActiveRecord::RecordNotFound]
+  # @raises [IOError]
+  #
+  def self.find(id)
+    doc = fetch_indexed_json(id)
+    if doc
+      Item.from_indexed_json(doc)
+    else
+      raise ActiveRecord::RecordNotFound
+    end
+  end
+
+  ##
   # @param jobj [Hash] Deserialized JSON from an indexed document.
   # @return [Item]
   #
@@ -141,6 +168,10 @@ class Item
   end
 
   ##
+  # Returns an indexable JSON representation of the instance. Note that this
+  # will not be the same as what is currently indexed; for that, see
+  # fetch_indexed_json().
+  #
   # N.B.: Changing this may require reindexing and maybe even updating the
   # index schema.
   #
@@ -192,6 +223,13 @@ class Item
     ContentService.find_by_key(self.service_key)
   end
 
+  ##
+  # @return [String]
+  #
+  def description
+    self.elements.select{ |e| e.name == 'description' }.first&.value
+  end
+
   def eql?(obj)
     self.==(obj)
   end
@@ -215,6 +253,13 @@ class Item
   end
 
   alias_method :save!, :save
+
+  ##
+  # @return [String]
+  #
+  def title
+    self.elements.select{ |e| e.name == 'title' }.first&.value
+  end
 
   def to_s
     "#{self.id}"

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   match '/signout', to: 'sessions#destroy', via: :delete
 
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
+  resources :items, only: :index
 
   ############################ REST API routes ##############################
 
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
     end
     resources :elements, param: :name, except: :show
     match '/elements/import', to: 'elements#import', via: :post, as: 'elements_import'
+    resources :items, only: :show
     resources :roles, param: :key
     resources :users, param: :username do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'

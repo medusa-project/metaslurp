@@ -6,9 +6,9 @@
       <%= form_tag(admin_elements_import_path(format: :json),
                    { multipart: true }) do %>
           <div class="modal-header">
+            <h5 class="modal-title" id="dl-import-modal-label">Import Elements</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="dl-import-modal-label">Import Elements</h4>
           </div>
           <div class="modal-body">
             <%= file_field_tag('elements') %>

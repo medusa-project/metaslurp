@@ -1,0 +1,9 @@
+<h1>Items</h1>
+
+<div class="row">
+  <div class="col-3">
+  </div>
+  <div class="col">
+    <%= items_as_media(@items, link_to_admin: !current_user.nil?) %>
+  </div>
+</div>

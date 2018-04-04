@@ -21,7 +21,7 @@
                    url: @permitted_params.merge(format: 'json') }) %>
 <% end %>
 
-<h1>Elements <span class="badge"><%= @elements.count %></span></h1>
+<h1>Elements</h1>
 
 <table class="table table-striped">
   <thead>
@@ -41,7 +41,7 @@
       <tr>
         <td>
           <% if current_user.admin? %>
-            <button type="button" class="btn btn-default btn-xs dl-edit-element"
+            <button type="button" class="btn btn-default btn-sm dl-edit-element"
                     data-toggle="modal" data-target="#dl-edit-element-modal"
                     data-element-name="<%= element.name %>">
               <i class="fa fa-pencil"></i> Edit
@@ -51,7 +51,7 @@
         <td>
           <% if current_user.admin? %>
             <%= link_to admin_element_path(element),
-                        class: 'btn btn-danger btn-xs', method: :delete,
+                        class: 'btn btn-danger btn-sm', method: :delete,
                         data: { confirm: 'Are you sure you want to delete '\
                         'this element?' } do %>
                <i class="fa fa-trash"></i> Delete
