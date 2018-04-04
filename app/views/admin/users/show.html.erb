@@ -1,31 +1,27 @@
 <% provide :title, @user.username %>
 <% provide :active_nav, 'access' %>
 
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', admin_root_path %></li>
-  <li><%= link_to 'Users', admin_users_path %></li>
-  <li class="active"><%= @user.username %></li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+    { label: 'Users', url: admin_users_path },
+    { label: @user.username }) %>
 
-<div class="btn-group pull-right">
-  <div class="btn-group">
+<div class="btn-group pull-right" role="group">
+  <div class="btn-group" role="group">
     <!-- Actions menu -->
     <% if current_user.admin? or @user == current_user %>
-      <button type="button" class="btn btn-default dropdown-toggle"
+      <button type="button" class="btn btn-secondary dropdown-toggle"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Actions <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <%= link_to admin_user_reset_api_key_path(@user), method: :post do %>
-            <i class="fa fa-key"></i> Reset API Key
-          <% end %>
-        </li>
-      </ul>
+      <div class="dropdown-menu" role="menu">
+        <%= link_to admin_user_reset_api_key_path(@user), method: :post, class: 'dropdown-item' do %>
+          <i class="fa fa-key"></i> Reset API Key
+        <% end %>
+      </div>
     <% end %>
   </div>
   <% if current_user.admin? or current_user == @user %>
-    <%= link_to edit_admin_user_path(@user), class: 'btn btn-default' do %>
+    <%= link_to edit_admin_user_path(@user), class: 'btn btn-secondary' do %>
       <i class="fa fa-pencil"></i> Edit
     <% end %>
   <% end %>

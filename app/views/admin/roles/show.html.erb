@@ -1,29 +1,21 @@
 <% provide :title, @role.name %>
 <% provide :active_nav, 'access' %>
 
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', admin_root_path %></li>
-  <li><%= link_to 'Roles', admin_roles_path %></li>
-  <li class="active"><%= @role.name %></li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+    { label: 'Roles', url: admin_roles_path },
+    { label: @role.name }) %>
 
-<div class="btn-group pull-right">
-  <% if current_user.admin? %>
-    <%= link_to edit_admin_role_path(@role), class: 'btn btn-default' do %>
-      <%= content_tag(:span, '', class: 'fa fa-pencil') %>
-      Edit
-    <% end %>
-
-    <% unless @role.required %>
-      <%= link_to admin_role_path(@role), method: 'delete',
-                  class: 'btn btn-danger',
-                  data: { confirm: 'Are you sure you want to delete this role?' } do %>
-        <%= content_tag(:span, '', class: 'fa fa-trash') %>
-        Delete
-      <% end %>
-    <% end %>
-  <% end %>
-</div>
+<%= button_bar({ label: 'Edit',
+                 icon: 'fa-pencil',
+                 if: lambda { current_user.admin? },
+                 url: edit_admin_role_path(@role) },
+               { label: 'Delete',
+                 method: 'delete',
+                 icon: 'fa-trash',
+                 class: 'btn-danger',
+                 confirm: 'Are you sure you want to delete this role?',
+                 url: admin_role_path(@role),
+                 if: lambda { @role.required } }) %>
 
 <h1><%= @role.name %> <small><%= @role.key %></small></h1>
 

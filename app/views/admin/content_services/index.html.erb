@@ -2,10 +2,8 @@
 <% provide :body_id, 'dl-content-services' %>
 <% provide :active_nav, 'entities' %>
 
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', admin_root_path %></li>
-  <li class="active">Content Services</li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+    { label: 'Content Services' }) %>
 
 <% if current_user.admin? %>
   <%= button_bar({ label: 'New Content Service',

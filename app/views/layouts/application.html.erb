@@ -6,17 +6,13 @@
 
     <meta charset="utf-8"/>
     <meta name="copyright" content="<%= Option.string(Option::Keys::COPYRIGHT_STATEMENT) %>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <%= csrf_meta_tags %>
     <%= favicon_link_tags %>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
-
-    <!--[if lt IE 9]>
-    <script src="https://raw.githubusercontent.com/aFarkas/html5shiv/master/src/html5shiv.js"></script>
-    <![endif]-->
   </head>
 
   <body>

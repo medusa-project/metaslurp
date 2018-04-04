@@ -27,25 +27,65 @@ module ApplicationHelper
   end
 
   ##
-  # @param items [Enumerable<Hash>] Hashes with optional :label, :url, :class,
-  #                                 :icon, :method, and :confirm keys.
+  # @param items [Enumerable<Hash>] Enumerable of hashes with :label and
+  #                                 :url keys.
+  # @return [String] HTML string
+  #
+  def breadcrumb(*items)
+    html = '<nav aria-label="breadcrumb">'\
+      '<ol class="breadcrumb">'
+    items.each_with_index do |item, index|
+      if index < items.length - 1
+        html += "<li class=\"breadcrumb-item\"><a href=\"#{item[:url]}\">#{item[:label]}</a></li>"
+      else
+        html += "<li class=\"breadcrumb-item active\" aria-current=\"page\">#{item[:label]}</li>"
+      end
+    end
+    html += '</ol></nav>'
+    raw(html)
+  end
+
+  ##
+  # The argument is a list of hashes. A hash may contain any HTML attribute.
+  # Also:
+  #
+  # * A :label key is required.
+  # * If a :type key is present with a value of `button`, a button element will
+  #   be rendered for it; otherwise, an anchor.
+  # * If the element is an anchor, a :url key should present, corresponding to
+  #   an "href" attribute.
+  # * An :icon key may be present referring to a Font Awesome icon name.
+  # * :method and :confirm keys are available.
+  # * If an :if key is present pointing to a lambda, the item will only be
+  #   added to the button bar if the lambda returns true.
+  #
+  # @param items [Enumerable<Hash>]
   #
   def button_bar(*items)
-    html = '<div class="btn-group pull-right">'
+    html = '<div class="btn-group pull-right" role="group">'
 
-    items.each do |item|
+    items.select{ |item| !item[:if] or item[:if].call }.each do |item|
       options = {}
-      options[:class] = 'btn ' + (item[:class].present? ? item[:class] : 'btn-default')
+      options[:class] = 'btn ' + (item[:class].present? ? item[:class] : 'btn-secondary')
+      item[:class] = nil
       if item[:method].present?
         options[:method] = item[:method]
+        item[:method] = nil
       end
       if item[:confirm].present?
         options[:data] = { confirm: item[:confirm] }
+        item[:confirm] = nil
       end
 
-      html += link_to(item[:url], options) do
-        raw((item[:icon].present? ? "<i class=\"fa #{item[:icon]}\"></i> " : ' ')) +
-        item[:label]
+      if item[:type] == 'button'
+        html += "<button type=\"button\" class=\"#{options[:class]}\" #{item.map{ |k,v| "#{k}=\"#{v}\"" }.join(' ')}>" +
+            raw((item[:icon].present? ? "<i class=\"fa #{item[:icon]}\"></i> " : ' ')) +
+            item[:label] + '</button>'
+      else
+        html += link_to(item[:url], options) do
+          raw((item[:icon].present? ? "<i class=\"fa #{item[:icon]}\"></i> " : ' ')) +
+          item[:label]
+        end
       end
     end
 

@@ -1,15 +1,7 @@
 body.dl-admin {
-  padding-top: 70px;
-
   nav.navbar {
-    background-color: rgba(0, 0, 0, 0.75);
-    li.dl-icon-only {
-      font-size: 20px;
-      margin: 0px;
-      padding: 0px;
-    }
+    margin-bottom: 1em;
     .navbar-nav > li > a {
-      color: #c0c0c0;
       font-size: 0.9em;
       letter-spacing: 1.1px;
       text-transform: uppercase;
@@ -20,11 +12,4 @@ body.dl-admin {
     text-transform: uppercase;
   }
 
-  footer {
-    margin-top: 2em;
-  }
-
-  .row .btn-group.pull-right {
-    margin-top: 1.6em;
-  }
 }

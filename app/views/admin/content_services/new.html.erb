@@ -2,11 +2,9 @@
 <% provide(:body_id, 'new-content-service') %>
 <% provide :active_nav, 'entities' %>
 
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', admin_root_path %></li>
-  <li><%= link_to 'Content Services', admin_content_services_path %></li>
-  <li class="active">New Content Service</li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+    { label: 'Content Services', url: admin_content_services_path },
+    { label: 'New Content Service' }) %>
 
 <h1>New Content Service</h1>
 

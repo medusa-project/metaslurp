@@ -2,28 +2,23 @@
 <% provide :body_id, 'admin_elements' %>
 <% provide :active_nav, 'entities' %>
 
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', admin_root_path %></li>
-  <li class="active">Elements</li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+    { label: 'Elements' }) %>
 
 <% if current_user.admin? %>
-  <div class="btn-group pull-right">
-    <!-- Add Element button -->
-    <button type="button" class="btn btn-default" data-toggle="modal"
-            data-target="#dl-add-element-modal">
-      <span class="fa fa-plus"></span> Add Element
-    </button>
-    <!-- Import button -->
-    <button type="button" class="btn btn-default" data-toggle="modal"
-            data-target="#dl-import-modal">
-      <i class="fa fa-upload"></i> Import&hellip;
-    </button>
-    <!-- Export button -->
-    <%= link_to @permitted_params.merge(format: 'json'), type: 'button', class: 'btn btn-default' do %>
-      <i class="fa fa-download"></i> Export
-    <% end %>
-  </div>
+  <%= button_bar({ type: 'button',
+                   label: 'Add Element',
+                   'data-toggle': 'modal',
+                   'data-target': '#dl-add-element-modal',
+                   icon: 'fa-plus' },
+                 { type: 'button',
+                   label: 'Import&hellip;',
+                   'data-toggle': 'modal',
+                   'data-target': '#dl-import-modal',
+                   icon: 'fa-upload' },
+                 { label: 'Export',
+                   icon: 'fa-download',
+                   url: @permitted_params.merge(format: 'json') }) %>
 <% end %>
 
 <h1>Elements <span class="badge"><%= @elements.count %></span></h1>

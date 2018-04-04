@@ -1,8 +1,6 @@
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', root_path %></li>
-  <li><%= link_to 'Services', content_services_path %></li>
-  <li class="active"><%= @service %></li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: root_path },
+    { label: 'Services', url: content_services_path },
+    { label: @service }) %>
 
 <h1><%= @service %></h1>
 

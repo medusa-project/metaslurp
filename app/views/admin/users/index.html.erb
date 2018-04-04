@@ -2,18 +2,13 @@
 <% provide :body_id, 'users' %>
 <% provide :active_nav, 'access' %>
 
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', admin_root_path %></li>
-  <li class="active">Users</li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+    { label: 'Users' }) %>
 
-<% if current_user.admin? %>
-  <div class="btn-group pull-right">
-    <%= link_to new_admin_user_path, class: 'btn btn-default' do %>
-      <i class="fa fa-plus"></i> New User
-    <% end %>
-  </div>
-<% end %>
+<%= button_bar({ label: 'New User',
+                 icon: 'fa-plus',
+                 if: lambda { current_user.admin? },
+                 url: new_admin_user_path }) %>
 
 <h1>Users <small class="entity_count"></small></h1>
 

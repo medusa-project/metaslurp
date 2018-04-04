@@ -1,6 +1,10 @@
-<div class="pull-right" style="margin-top: 1em">
-  <%= link_to 'Control Panel', admin_root_path %> |
-  <%= link_to 'Public Website', root_path %>
+<div class="container-fluid">
+  <div class="row justify-content-end">
+    <div class="col-5" style="text-align: right">
+      <%= link_to 'Control Panel', admin_root_path %> |
+      <%= link_to 'Public Website', root_path %>
+    </div>
+  </div>
 </div>
 
 <h1><%= Option::string(Option::Keys::WEBSITE_NAME) %>

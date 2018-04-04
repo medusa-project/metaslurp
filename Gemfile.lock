@@ -41,9 +41,10 @@ GEM
     arel (8.0.0)
     autoprefixer-rails (8.2.0)
       execjs
-    bootstrap-sass (3.3.7)
-      autoprefixer-rails (>= 5.2.1)
-      sass (>= 3.3.4)
+    bootstrap (4.0.0)
+      autoprefixer-rails (>= 6.0.3)
+      popper_js (>= 1.12.9, < 2)
+      sass (>= 3.5.2)
     builder (3.2.3)
     concurrent-ruby (1.0.5)
     crass (1.0.3)
@@ -95,6 +96,7 @@ GEM
       rake (>= 0.8.1)
     pg (1.0.0)
     puma (3.11.3)
+    popper_js (1.12.9)
     rack (2.0.4)
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
@@ -159,7 +161,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bootstrap-sass (~> 3.3.6)
+  bootstrap (~> 4.0.0)
   font-awesome-sass (~> 4.7.0)
   httpclient
   jbuilder (~> 2.5)

@@ -1,7 +1,5 @@
-<ol class="breadcrumb">
-  <li><%= link_to 'Home', root_path %></li>
-  <li class="active">Services</li>
-</ol>
+<%= breadcrumb({ label: 'Home', url: root_path },
+    { label: 'Services' }) %>
 
 <ul>
   <% @services.each do |service| %>
