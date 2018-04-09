@@ -9,6 +9,12 @@ class ContentService < ApplicationRecord
   validates_format_of :uri, with: URI.regexp,
                       message: 'is invalid', allow_blank: true
 
+  after_initialize :init
+
+  def init
+    @num_items = -1
+  end
+
   ##
   # @param src_element [SourceElement]
   # @return [Element]
@@ -16,6 +22,15 @@ class ContentService < ApplicationRecord
   def element_for_source_element(src_element)
     self.element_mappings.
         select{ |m| m.source_name == src_element.name}.first&.element
+  end
+
+  ##
+  # @return [Integer] The number of items contained in the service. The result
+  #                   is cached.
+  #
+  def num_items
+    @num_items = ItemFinder.new.content_service(self).count if @num_items < 0
+    @num_items
   end
 
   def to_param

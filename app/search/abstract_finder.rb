@@ -186,6 +186,10 @@ class AbstractFinder
     end
   end
 
+  def facetable_elements
+    Element.where(facetable: true)
+  end
+
   def load
     return if @loaded
 
@@ -194,22 +198,26 @@ class AbstractFinder
     raise IOError, response['error'] if response['error']
 
     # Assemble the response aggregations into Facets.
-    response['aggregations']&.each do |key, agg|
-      element = facetable_elements.
-          select{ |e| e.indexed_keyword_field == key }.first
-      if element
-        facet = Facet.new
-        facet.name = element.label
-        facet.field = element.indexed_keyword_field
-        agg['buckets'].each do |es_bucket|
-          bucket = Bucket.new
-          bucket.name = es_bucket['key'].to_s
-          bucket.label = es_bucket['key'].to_s
-          bucket.count = es_bucket['doc_count']
-          bucket.facet = facet
-          facet.buckets << bucket
+    facetable_elements.each do |element|
+      response['aggregations']&.each do |key, agg|
+        if key == element.indexed_keyword_field and agg['buckets'].length > 1
+          facet = Facet.new
+          facet.name = element.label
+          facet.field = element.indexed_keyword_field
+          agg['buckets'].each do |es_bucket|
+            bucket = Bucket.new
+            bucket.name = es_bucket['key'].to_s
+            if element.name == Item::IndexFields::SERVICE_KEY
+              bucket.label = ContentService.find_by_key(es_bucket['key']).name
+            else
+              bucket.label = es_bucket['key'].to_s
+            end
+            bucket.count = es_bucket['doc_count']
+            bucket.facet = facet
+            facet.buckets << bucket
+          end
+          @result_facets << facet
         end
-        @result_facets << facet
       end
     end
 
@@ -221,10 +229,6 @@ class AbstractFinder
   end
 
   private
-
-  def facetable_elements
-    Element.where(facetable: true)
-  end
 
   def get_response
     index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)

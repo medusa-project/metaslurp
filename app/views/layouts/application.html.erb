@@ -15,8 +15,13 @@
     <%= javascript_include_tag 'application' %>
   </head>
 
-  <body>
+  <body <%= yield(:body_id).present? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
+        <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
     <%= render partial: 'layouts/main_menu' %>
+
+    <%= hidden_field_tag('dl-root-path', root_path) %>
+    <%= hidden_field_tag('dl-root-url', root_url) %>
+    <%= hidden_field_tag('dl-current-path', request.fullpath) %>
 
     <div class="container-fluid">
       <div id="dl-page-content">

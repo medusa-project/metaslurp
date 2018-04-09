@@ -1,9 +1,5 @@
-<h1>Services</h1>
+<% provide(:body_id, 'content_services_index') %>
+<% provide(:active_nav, 'content-services') %>
+<% provide(:title, 'Services') %>
 
-<div class="row">
-  <div>
-  </div>
-  <div class="col-9">
-    <%= content_services_as_cards(@services, description: true) %>
-  </div>
-</div>
+<%= content_services_as_cards(@services, description: true) %>

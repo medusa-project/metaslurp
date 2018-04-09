@@ -9,6 +9,8 @@ class Element < ApplicationRecord
   KEYWORD_FIELD_SUFFIX = '.keyword'
   SORT_FIELD_SUFFIX = '.sort'
 
+  attr_accessor :indexed_keyword_field
+
   has_many :element_mappings, inverse_of: :element
 
   validates :index, numericality: { only_integer: true,
@@ -52,7 +54,11 @@ class Element < ApplicationRecord
   # @return [String] Name of the indexed keyword field for the instance.
   #
   def indexed_keyword_field
-    [INDEX_FIELD_PREFIX, self.name, KEYWORD_FIELD_SUFFIX].join
+    if @indexed_keyword_field
+      @indexed_keyword_field
+    else
+      [INDEX_FIELD_PREFIX, self.name, KEYWORD_FIELD_SUFFIX].join
+    end
   end
 
   ##

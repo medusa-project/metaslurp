@@ -36,12 +36,24 @@
 
   <div class="tab-pane fade" id="nav-descriptive-info" role="tabpanel"
        aria-labelledby="nav-descriptive-info-tab">
-    <dl>
+    <table class="table">
+      <tr>
+        <th>Source Element</th>
+        <th>Local Element Mapping</th>
+        <th>Value</th>
+      </tr>
       <% @item.elements.sort_by{ |e| e.name }.each do |element| %>
-        <dt><code><%= element.name %></code></dt>
-        <dd><%= element.value %></dd>
+        <tr>
+          <td>
+            <code><%= element.name %></code>
+          </td>
+          <td>
+            <%= @item.content_service.element_for_source_element(element)&.label %>
+          </td>
+          <td><%= element.value %></td>
+        </tr>
       <% end %>
-    </dl>
+    </table>
   </div>
 
   <div class="tab-pane fade" id="nav-document" role="tabpanel"

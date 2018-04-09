@@ -2,9 +2,6 @@
 <% provide :body_id, 'admin_elements' %>
 <% provide :active_nav, 'entities' %>
 
-<%= breadcrumb({ label: 'Home', url: admin_root_path },
-    { label: 'Elements' }) %>
-
 <% if current_user.admin? %>
   <%= button_bar({ type: 'button',
                    label: 'Add Element',
@@ -23,7 +20,7 @@
 
 <h1>Elements</h1>
 
-<table class="table table-striped">
+<table class="table">
   <thead>
     <tr>
       <th style="width: 1px"></th>

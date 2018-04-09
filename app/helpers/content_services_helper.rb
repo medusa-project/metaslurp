@@ -10,13 +10,13 @@ module ContentServicesHelper
     html = '<div class="card-deck">'
     services.each do |service|
       html += '<div class="card">'
+      html +=   link_to(service) do
+        image_tag('test-pattern.jpg', class: 'card-img-top', alt: "Thumbnail for #{service}")
+      end
       html +=   '<div class="card-body">'
-      html +=     link_to(service) do
-                    image_tag('test-pattern.jpg', class: 'card-img-top',
-                              alt: "Thumbnail for #{service}")
-                  end
       html +=     '<h5 class="card-title">'
       html +=       link_to(service.name, service)
+      html +=       " <small><span class=\"badge badge-pill badge-secondary\">#{service.num_items}</span></small>"
       html +=     '</h5>'
       if options[:description]
         html +=   truncate(service.description, length: 200)

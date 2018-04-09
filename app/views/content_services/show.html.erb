@@ -1,3 +1,7 @@
+<% provide(:body_id, 'content_services_show') %>
+<% provide(:active_nav, 'content-services') %>
+<% provide(:title, @service.name) %>
+
 <% if signed_in? %>
   <div class="btn-group pull-right" role="group">
     <div class="btn-group" role="group">
@@ -15,10 +19,44 @@
   </div>
 <% end %>
 
-<h1><%= @service %></h1>
+<h1>
+  <%= @service %>
+  <%= link_to @service.uri, role: 'button', class: 'btn btn-light',
+              target: '_blank' do %>
+    <i class="fa fa-globe"></i> Website
+  <% end %>
+</h1>
 
-<%= pluralize(@num_items, 'item') %>
+<div class="row">
 
-<% if @service.description.present? %>
-  <p><%= @service.description %></p>
-<% end %>
+  <div class="col-sm-8">
+
+    <% if @num_items > 0 %>
+      <div class="row justify-content-md-center">
+        <div class="col-md-auto" style="margin: 1em 0em">
+          <%= link_to items_path('fq[]': Item::IndexFields::SERVICE_KEY + Element::KEYWORD_FIELD_SUFFIX + ':' + @service.key),
+                      role: 'button',
+                      class: 'btn btn-lg btn-primary' do %>
+            <i class="fa fa-cube"></i>
+              <%= number_with_delimiter(@num_items) %> items
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i>
+        We haven't yet harvested any items from this service.
+      </div>
+    <% end %>
+
+    <% if @service.description.present? %>
+      <p><%= @service.description %></p>
+    <% end %>
+  </div>
+
+  <div class="col-sm-4">
+    <%= image_tag('test-pattern.jpg', class: 'img-fluid',
+                  alt: "Thumbnail for #{@service}") %>
+  </div>
+
+</div>

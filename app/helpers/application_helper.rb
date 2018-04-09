@@ -1,5 +1,7 @@
 module ApplicationHelper
 
+  MAX_PAGINATION_LINKS = 9
+
   ##
   # Formats a boolean for display.
   #
@@ -94,6 +96,20 @@ module ApplicationHelper
   end
 
   ##
+  # @param facets [Enumerable<Facet>]
+  # @param permitted_params [ActionController::Parameters]
+  # @return [String] HTML string
+  #
+  def facets_as_cards(facets, permitted_params)
+    return nil unless facets
+    html = ''
+    facets.select{ |f| f.buckets.any? }.each do |facet|
+      html += facet_card(facet, params.permit(permitted_params))
+    end
+    raw(html)
+  end
+
+  ##
   # @return [String]
   #
   def favicon_link_tags
@@ -130,6 +146,108 @@ module ApplicationHelper
         </div>"
     end
     raw(html)
+  end
+
+  ##
+  # @param total_entities [Integer]
+  # @param per_page [Integer]
+  # @param permitted_params [ActionController::Parameters]
+  # @param current_page [Integer]
+  # @param remote [Boolean]
+  # @param max_links [Integer] Ideally an odd number.
+  #
+  def paginate(total_entities, per_page, current_page, permitted_params,
+               remote = false, max_links = MAX_PAGINATION_LINKS)
+    return '' if total_entities <= per_page
+    num_pages = (total_entities / per_page.to_f).ceil
+    first_page = [1, current_page - (max_links / 2.0).floor].max
+    last_page = [first_page + max_links - 1, num_pages].min
+    first_page = last_page - max_links + 1 if
+        last_page - first_page < max_links and num_pages > max_links
+    prev_page = [1, current_page - 1].max
+    next_page = [last_page, current_page + 1].min
+    prev_start = (prev_page - 1) * per_page
+    next_start = (next_page - 1) * per_page
+    last_start = (num_pages - 1) * per_page
+    permitted_params = params.permit(params.permit(permitted_params))
+
+    first_link = link_to(permitted_params.except(:start),
+                         remote: remote, class: 'page-link', 'aria-label': 'First') do
+      raw('<span aria-hidden="true">First</span>')
+    end
+    prev_link = link_to(permitted_params.merge(start: prev_start),
+                        remote: remote,
+                        class: 'page-link',
+                        'aria-label': 'Previous') do
+      raw('<span aria-hidden="true">&laquo;</span>')
+    end
+    next_link = link_to(permitted_params.merge(start: next_start),
+                        remote: remote,
+                        class: 'page-link',
+                        'aria-label': 'Next') do
+      raw('<span aria-hidden="true">&raquo;</span>')
+    end
+    last_link = link_to(permitted_params.merge(start: last_start),
+                        remote: remote,
+                        class: 'page-link',
+                        'aria-label': 'Last') do
+      raw('<span aria-hidden="true">Last</span>')
+    end
+
+    # http://getbootstrap.com/components/#pagination
+    html = '<nav>' +
+        '<ul class="pagination">' +
+          "<li class=\"page-item #{current_page == first_page ? 'disabled' : ''}\">#{first_link}</li>" +
+          "<li class=\"page-item #{current_page == prev_page ? 'disabled' : ''}\">#{prev_link}</li>"
+    (first_page..last_page).each do |page|
+      start = (page - 1) * per_page
+      page_link = link_to((start == 0) ? permitted_params.except(:start) :
+                              permitted_params.merge(start: start), class: 'page-link', remote: remote) do
+        raw("#{page} #{(page == current_page) ?
+            '<span class="sr-only">(current)</span>' : ''}")
+      end
+      html += "<li class=\"page-item #{page == current_page ? 'active' : ''}\">" +
+          page_link + '</li>'
+    end
+    html += "<li class=\"page-item #{current_page == next_page ? 'disabled' : ''}\">#{next_link}</li>" +
+        "<li class=\"page-item #{current_page == last_page ? 'disabled' : ''}\">#{last_link}</li>"
+    html += '</ul>' +
+        '</nav>'
+    raw(html)
+  end
+
+  private
+
+  ##
+  # @param facet [Facet]
+  #
+  def facet_card(facet, permitted_params)
+    panel = "<div class=\"card dl-facet\" id=\"#{facet.field}\">
+      <h5 class=\"card-header\">
+        #{facet.name}
+      </h5>
+      <div class=\"card-body\">
+        <ul>"
+    facet.buckets.each do |bucket|
+      checked = params[:fq]&.include?(bucket.query) ? 'checked' : nil
+      checked_params = bucket.removed_from_params(permitted_params.deep_dup).except(:start)
+      unchecked_params = bucket.added_to_params(permitted_params.deep_dup).except(:start)
+      term_label = truncate(bucket.label, length: 80)
+
+      panel += "<li class=\"dl-term\">"\
+               "  <div class=\"checkbox\">"\
+               "    <label>"\
+               "      <input type=\"checkbox\" name=\"dl-facet-term\" #{checked} "\
+               "          data-query=\"#{bucket.query.gsub('"', '&quot;')}\" "\
+               "          data-checked-href=\"#{url_for(unchecked_params)}\" "\
+               "          data-unchecked-href=\"#{url_for(checked_params)}\">"\
+               "      #{term_label} "\
+               "      <span class=\"dl-count\">#{bucket.count}</span>"\
+               "    </label>"\
+               "  </div>"\
+               "</li>"
+    end
+    raw(panel + '</ul></div></div>')
   end
 
 end

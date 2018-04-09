@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   match '/signout', to: 'sessions#destroy', via: :delete
 
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
+  resources :favorites, only: :index
   resources :items, only: :index
 
   ############################ REST API routes ##############################

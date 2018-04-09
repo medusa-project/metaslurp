@@ -65,7 +65,7 @@ class ItemFinder < AbstractFinder
             end
           end
 
-          if @filters.any?
+          if @filters.any? or @content_service
             j.filter do
               @filters.each do |field, value|
                 j.child! do
@@ -77,6 +77,13 @@ class ItemFinder < AbstractFinder
                     j.term do
                       j.set! field, value
                     end
+                  end
+                end
+              end
+              if @content_service
+                j.child! do
+                  j.term do
+                    j.set! Item::IndexFields::SERVICE_KEY, @content_service.key
                   end
                 end
               end
@@ -138,6 +145,19 @@ class ItemFinder < AbstractFinder
     # curl -XGET 'localhost:9200/items_development/_search?size=0&pretty' -H 'Content-Type: application/json' -d @query.json
 
     json
+  end
+
+  ##
+  # @Override
+  #
+  def facetable_elements
+    elements = [
+        Element.new(name: Item::IndexFields::SERVICE_KEY,
+                    indexed_keyword_field: Item::IndexFields::SERVICE_KEY + Element::KEYWORD_FIELD_SUFFIX,
+                    label: 'Service',
+                    facetable: true)
+    ]
+    elements + super.to_a
   end
 
 end

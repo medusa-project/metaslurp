@@ -1,0 +1,21 @@
+<% @pagination_links = paginate(@count, @limit, @current_page, @permitted_params, true) %>
+
+<div class="card" id="dl-search-status">
+  <div class="card-body">
+    <%= search_status(@count, @start, @num_results_shown) %>
+  </div>
+</div>
+
+<div class="row justify-content-md-center">
+  <div class="col-md-auto">
+    <%= @pagination_links %>
+  </div>
+</div>
+
+<%= items_as_media(@items, link_to_admin: !current_user.nil?) %>
+
+<div class="row justify-content-md-center">
+  <div class="col-md-auto">
+    <%= @pagination_links %>
+  </div>
+</div>

@@ -2,9 +2,6 @@
 <% provide :body_id, 'users' %>
 <% provide :active_nav, 'access' %>
 
-<%= breadcrumb({ label: 'Home', url: admin_root_path },
-    { label: 'Users' }) %>
-
 <%= button_bar({ label: 'New User',
                  icon: 'fa-plus',
                  if: lambda { current_user.admin? },

@@ -9,3 +9,37 @@ nav.navbar {
 .list-unstyled h5 a, .card-deck h5 a {
   color: black;
 }
+
+.dl-facet {
+  margin-bottom: 1em;
+  ul {
+    list-style: none;
+    margin: 0px;
+    padding-left: 0px;
+  }
+
+  .dl-term {
+    font-size: 0.9em;
+    text-indent: -1.2em;
+    margin-left: 2.4em;
+  }
+
+  .dl-count {
+    background-color: #a0a0a0;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    border-radius: 0.8em;
+    padding: 0.1em 0.3em;
+  }
+}
+
+.dl-add-to-favorites {
+  border:0px;
+  color: #e00000;
+  display:none;
+}
+
+.dl-remove-from-favorites {
+  display:none;
+}

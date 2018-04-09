@@ -8,8 +8,7 @@ class ContentServicesController < ApplicationController
     @service = ContentService.find_by_key(params[:key])
     raise ActiveRecord::RecordNotFound unless @service
 
-    finder = ItemFinder.new.content_service(@service)
-    @num_items = finder.count
+    @num_items = @service.num_items
   end
 
 end
