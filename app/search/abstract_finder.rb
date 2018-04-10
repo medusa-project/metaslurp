@@ -200,7 +200,7 @@ class AbstractFinder
     # Assemble the response aggregations into Facets.
     facetable_elements.each do |element|
       response['aggregations']&.each do |key, agg|
-        if key == element.indexed_keyword_field and agg['buckets'].length > 1
+        if key == element.indexed_keyword_field
           facet = Facet.new
           facet.name = element.label
           facet.field = element.indexed_keyword_field
