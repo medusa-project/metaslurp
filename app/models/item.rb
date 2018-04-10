@@ -145,7 +145,9 @@ class Item
     jobj = jobj.stringify_keys
     item = Item.new
     item.access_image_uri = jobj['access_image_uri']
-    jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
+    if jobj['elements'].respond_to?(:each)
+      jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
+    end
     item.id = jobj['id']
     item.service_key = jobj['service_key']
     item.source_id = jobj['source_id']
