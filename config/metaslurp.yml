@@ -5,4 +5,4 @@ test:
   :elasticsearch_endpoint: <%= ENV['METASLURP_TEST_ELASTICSEARCH_ENDPOINT'] %>
 
 production:
-  <<: *development
+  :elasticsearch_endpoint: <%= ENV['METASLURP_PROD_ELASTICSEARCH_ENDPOINT'] %>
