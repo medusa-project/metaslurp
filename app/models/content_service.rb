@@ -29,7 +29,11 @@ class ContentService < ApplicationRecord
   #                   is cached.
   #
   def num_items
-    @num_items = ItemFinder.new.content_service(self).count if @num_items < 0
+    if @num_items < 0
+      @num_items = ItemFinder.new.
+          content_service(self).
+          aggregations(false).count
+    end
     @num_items
   end
 
