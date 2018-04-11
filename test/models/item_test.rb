@@ -4,6 +4,7 @@ class ItemTest < ActiveSupport::TestCase
 
   setup do
     @instance = Item.new(id: 'cats',
+                         media_type: 'image/jpeg',
                          service_key: content_services(:one).key,
                          source_id: 'cats',
                          source_uri: 'http://example.org/cats',
@@ -21,6 +22,7 @@ class ItemTest < ActiveSupport::TestCase
             '_source' => {
                 Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
                 Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
+                Item::IndexFields::MEDIA_TYPE => 'image/jpeg',
                 Item::IndexFields::SERVICE_KEY => content_services(:one).key,
                 Item::IndexFields::SOURCE_ID => 'cats',
                 Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
@@ -32,6 +34,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
     assert_equal 'cats', item.id
+    assert_equal 'image/jpeg', item.media_type
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
@@ -48,6 +51,7 @@ class ItemTest < ActiveSupport::TestCase
         {
             'class': Item::Variants::ITEM,
             'id': 'cats',
+            'media_type': 'image/jpeg',
             'service_key': content_services(:one).key,
             'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
@@ -59,6 +63,7 @@ class ItemTest < ActiveSupport::TestCase
         })
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.id
+    assert_equal 'image/jpeg', item.media_type
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
@@ -102,6 +107,8 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal @instance.access_image_uri,
                  struct[Item::IndexFields::ACCESS_IMAGE_URI]
     assert_not_empty struct[Item::IndexFields::LAST_INDEXED]
+    assert_equal @instance.media_type,
+                 struct[Item::IndexFields::MEDIA_TYPE]
     assert_equal @instance.service_key,
                  struct[Item::IndexFields::SERVICE_KEY]
     assert_equal @instance.source_id,
@@ -118,6 +125,7 @@ class ItemTest < ActiveSupport::TestCase
     struct = @instance.as_json
     assert_equal Item::Variants::ITEM, struct['class']
     assert_equal 'cats', struct['id']
+    assert_equal 'image/jpeg', struct['media_type']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'cats', struct['source_id']
     assert_equal 'http://example.org/cats', struct['source_uri']
@@ -180,6 +188,13 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'validate() raises error for missing id' do
     @instance.id = ''
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for invalid media type' do
+    @instance.media_type = 'dogs'
     assert_raises ArgumentError do
       @instance.validate
     end

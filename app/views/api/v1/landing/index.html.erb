@@ -12,7 +12,7 @@
 
 <section id="table-of-contents">
   <ul>
-    <li><a href="#basic-info">Basic information</a></li>
+    <li><a href="#basic-info">Basic Information</a></li>
     <li>
       Items
       <ul>
@@ -29,7 +29,7 @@
 </section>
 
 <section id="basic-info">
-  <h2>Basic information</h2>
+  <h2>Basic Information</h2>
   <ul>
     <li>All request and response entities should be in JSON format and
       accompanied by a <code>Content-Type: application/json</code> header.</li>
@@ -59,6 +59,7 @@
     <td><code class="code-block">{
     "class": "Item",
     "id": "local-item-id",
+    "media_type": "image/jp2",
     "service_key": "service-key",
     "source_id": "some-item",
     "source_uri": "http://example.org/some-item",
@@ -76,6 +77,11 @@
     ]
 }</code>
 
+      <p class="text-info">
+        <i class="fa fa-info-circle"></i>
+        Unrecognized keys will be silently discarded.
+      </p>
+
       <table class="table table-condensed">
         <tr>
           <th></th>
@@ -83,15 +89,37 @@
           <th>Description</th>
         </tr>
         <tr>
+          <td><code>access_image_uri</code></td>
+          <td>No</td>
+          <td>URI of a high-quality image representing the item.</td>
+        </tr>
+        <tr>
           <td><code>class</code></td>
           <td>Yes</td>
           <td><code>Item</code> or <code>Collection</code></td>
+        </tr>
+        <tr>
+          <td><code>elements</code></td>
+          <td>No</td>
+          <td>Element names are arbitrary and can be mapped to local names via
+            the <%= link_to 'Control Panel', admin_root_path %>. At a minimum,
+            <code>title</code> should be provided, if possible.</td>
         </tr>
         <tr>
           <td><code>id</code></td>
           <td>Yes</td>
           <td>Must be unique across all items in the harvesting application,
             and should be stable from harvest to harvest.</td>
+        </tr>
+        <tr>
+          <td><code>media_type</code></td>
+          <td>No</td>
+          <td>A recognized media a.k.a. MIME type. Should be a specific type and
+            not something generic like <code>application/octet-stream</code>
+            (unless the represented data really is an unspecified binary format).
+            May or may not be the type of <code>access_image_uri</code>.
+            May be omitted if unknown or not applicable.
+          </td>
         </tr>
         <tr>
           <td><code>service_key</code></td>
@@ -111,19 +139,6 @@
           <td>URI of the item's main public human-consumable representation.
             If it has an <code>example.org</code> domain, the item will be
             silently discarded.</td>
-        </tr>
-        <tr>
-          <td><code>access_image_uri</code></td>
-          <td>No</td>
-          <td>URI of a high-quality image that depicts or represents the
-            item.</td>
-        </tr>
-        <tr>
-          <td><code>elements</code></td>
-          <td>No</td>
-          <td>Element names are arbitrary and can be mapped to local names via
-            the <%= link_to 'Control Panel', admin_root_path %>. At a minimum,
-            <code>title</code> should be provided, if possible.</td>
         </tr>
       </table>
     </td>

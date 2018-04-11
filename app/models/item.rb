@@ -54,19 +54,21 @@
 # 7. Update tests for all of the above
 # 8. Update the ItemsController API test
 # 9. Add it to the API documentation
+# 10. Update the harvester and reindex everything
 #
 class Item
 
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :elements, :id, :last_indexed,
+  attr_accessor :access_image_uri, :elements, :id, :last_indexed, :media_type,
                 :service_key, :source_id, :source_uri, :variant
 
   class IndexFields
     ACCESS_IMAGE_URI = 'access_image_uri'
     ID = '_id'
     LAST_INDEXED = 'date_last_indexed'
+    MEDIA_TYPE = 'media_type'
     SERVICE_KEY = 'service_key'
     SOURCE_ID = 'source_id'
     SOURCE_URI = 'source_uri'
@@ -123,6 +125,7 @@ class Item
     jobj = jobj['_source']
     item.access_image_uri = jobj[IndexFields::ACCESS_IMAGE_URI]
     item.last_indexed = Time.iso8601(jobj[IndexFields::LAST_INDEXED]) rescue nil
+    item.media_type = jobj[IndexFields::MEDIA_TYPE]
     item.service_key = jobj[IndexFields::SERVICE_KEY]
     item.source_id = jobj[IndexFields::SOURCE_ID]
     item.source_uri = jobj[IndexFields::SOURCE_URI]
@@ -149,6 +152,7 @@ class Item
       jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     end
     item.id = jobj['id']
+    item.media_type = jobj['media_type']
     item.service_key = jobj['service_key']
     item.source_id = jobj['source_id']
     item.source_uri = jobj['source_uri']
@@ -183,6 +187,7 @@ class Item
     doc = {}
     doc[IndexFields::ACCESS_IMAGE_URI] = self.access_image_uri
     doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
+    doc[IndexFields::MEDIA_TYPE] = self.media_type
     doc[IndexFields::SERVICE_KEY] = self.service_key
     doc[IndexFields::SOURCE_ID] = self.source_id
     doc[IndexFields::SOURCE_URI] = self.source_uri
@@ -212,6 +217,7 @@ class Item
     struct['class'] = self.variant
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
     struct['id'] = self.id
+    struct['media_type'] = self.media_type
     struct['service_key'] = self.service_key
     struct['source_id'] = self.source_id
     struct['source_uri'] = self.source_uri
@@ -275,6 +281,8 @@ class Item
     raise ArgumentError, 'Missing ID' if self.id.blank?
     raise ArgumentError, 'Invalid service key' unless
         ContentService.pluck(:key).include?(self.service_key)
+    raise ArgumentError, 'Invalid media type' if
+        self.media_type.present? and (self.media_type =~ /[a-z]\/[a-z0-9]/).nil?
     raise ArgumentError, 'Missing source ID' if self.source_id.blank?
     raise ArgumentError, 'Missing source URI' if self.source_uri.blank?
     raise ArgumentError, 'Invalid variant' unless

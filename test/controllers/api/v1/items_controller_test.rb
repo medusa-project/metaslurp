@@ -8,6 +8,7 @@ module Api
     setup do
       @valid_item = Item.new(id: 'cats',
                              variant: Item::Variants::ITEM,
+                             media_type: 'image/jpeg',
                              service_key: content_services(:one).key,
                              source_id: 'source-id',
                              source_uri: 'http://example.net/cats')
