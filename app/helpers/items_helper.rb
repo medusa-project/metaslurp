@@ -26,16 +26,17 @@ module ItemsHelper
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
       html +=       link_to(truncate(item.title, length: title_length), item.source_uri)
-      html +=       ' ' + remove_from_favorites_button(item)
-      html +=       ' ' + add_to_favorites_button(item)
       html +=     '</h5>'
-
-      html +=     link_to(item.content_service.name, item.content_service)
+      html +=     '<span class="dl-info-line">'
+      html +=       link_to(item.content_service.name, item.content_service)
+      html +=         ' ' + remove_from_favorites_button(item)
+      html +=         ' ' + add_to_favorites_button(item)
       if options[:link_to_admin]
         html += link_to(admin_item_path(item), class: 'btn btn-light btn-sm', target: '_blank') do
               raw('<i class="fa fa-lock"></i> Admin View')
             end
       end
+      html +=     '</span>'
       html +=     '<br>'
       html +=     desc if desc.present?
       html +=   '</div>'
@@ -77,7 +78,7 @@ module ItemsHelper
   # @return [String] HTML <button> element
   #
   def add_to_favorites_button(item)
-    html = '<button class="btn btn-default btn-sm ' +
+    html = '<button class="btn btn-light btn-sm ' +
         'dl-add-to-favorites" data-item-id="' + item.id + '">'
     html += '  <i class="fa fa-heart-o"></i>'
     html += '</button>'
@@ -89,7 +90,7 @@ module ItemsHelper
   # @return [String] HTML <button> element
   #
   def remove_from_favorites_button(item)
-    html = '<button class="btn btn-sm btn-danger ' +
+    html = '<button class="btn btn-sm btn-outline-danger ' +
         'dl-remove-from-favorites" data-item-id="' + item.id + '">'
     html += '  <i class="fa fa-heart"></i> Remove'
     html += '</button>'

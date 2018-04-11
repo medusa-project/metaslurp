@@ -5,3 +5,16 @@
 #dl-facets {
   padding-right: 0px;
 }
+
+.media-body {
+  .mt-0 {
+    margin-bottom: 0.25em;
+  }
+
+  .dl-info-line {
+    a {
+      color: gray;
+      text-decoration: none;
+    }
+  }
+}
