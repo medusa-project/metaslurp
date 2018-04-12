@@ -1,3 +1,19 @@
-<h1><%= Option.string(Option::Keys::WEBSITE_NAME) %></h1>
+<% provide(:body_id, 'landing') %>
+
+<div id="dl-search-area" class="row justify-content-sm-center">
+  <div class="col-sm-6">
+    <%= form_tag(items_path, method: :get) do %>
+      <div class="input-group mb-4">
+        <%= search_field_tag(:q, '',
+                             placeholder: raw('Search&hellip;'),
+                             'aria-label': 'Search',
+                             class: 'form-control form-control-lg') %>
+        <div class="input-group-append">
+          <input type="submit" value="Go" class="btn btn-primary">
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
 
 <%= content_services_as_cards(@services) %>

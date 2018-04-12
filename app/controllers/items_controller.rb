@@ -9,6 +9,7 @@ class ItemsController < ApplicationController
     @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
 
     finder = ItemFinder.new.
+        query_all(params[:q]).
         facet_filters(params[:fq]).
         include_variants(Item::Variants::ITEM).
         start(@start).
