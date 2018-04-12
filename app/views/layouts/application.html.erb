@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= yield :title %> |
+    <title><%= yield(:title).present? ? "#{yield(:title)} | " : '' %>
       <%= Option.string(Option::Keys::WEBSITE_NAME) %></title>
 
     <meta charset="utf-8"/>
