@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
 
+  resources :collections, only: :index
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
   resources :favorites, only: :index
   resources :items, only: :index

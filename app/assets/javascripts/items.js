@@ -69,7 +69,7 @@ var DLItemsView = function() {
 };
 
 var ready = function() {
-    if ($('body#items_index').length) {
+    if ($('body#items_index, body#collections_index').length) {
         Application.view = new DLItemsView();
         Application.view.init();
     }

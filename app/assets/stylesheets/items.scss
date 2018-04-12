@@ -1,23 +1,25 @@
-#dl-search-status {
-  margin-bottom: 1em;
-}
-
-#dl-facets {
-  padding-right: 0px;
-}
-
-.media-body {
-  .mt-0 {
-    margin-bottom: 0.25em;
+#items_index, #collections_index {
+  #dl-search-status {
+    margin-bottom: 1em;
   }
 
-  .dl-info-line {
-    a {
-      color: gray;
-      text-decoration: none;
+  #dl-facets {
+    padding-right: 0px;
+  }
+
+  .media-body {
+    .mt-0 {
+      margin-bottom: 0.25em;
     }
-    a:hover {
-      text-decoration: underline;
+
+    .dl-info-line {
+      a {
+        color: gray;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

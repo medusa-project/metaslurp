@@ -1,6 +1,6 @@
-class ItemsController < ApplicationController
+class CollectionsController < ApplicationController
 
-  PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start, :utf8]
+  PERMITTED_PARAMS = []
 
   before_action :set_sanitized_params
 
@@ -11,11 +11,11 @@ class ItemsController < ApplicationController
     finder = ItemFinder.new.
         query_all(params[:q]).
         facet_filters(params[:fq]).
-        exclude_variants(Item::Variants::COLLECTION).
+        include_variants(Item::Variants::COLLECTION).
+        order(Element.new(name: 'title').indexed_sort_field). # TODO: this is ugly
         start(@start).
         limit(@limit)
     @items = finder.to_a
-    @facets = finder.facets
     @count = finder.count
     @current_page = finder.page
     @num_results_shown = [@limit, @count].min

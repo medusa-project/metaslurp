@@ -1,5 +1,9 @@
 module ItemsHelper
 
+  MAX_MEDIA_TITLE_LENGTH = 100
+  MAX_MEDIA_DESCRIPTION_LENGTH = 200
+  MAX_MEDIA_THUMBNAIL_WIDTH = 120
+
   ##
   # Renders the given items as a series of
   # [Bootstrap media objects](https://getbootstrap.com/docs/4.0/layout/media-object/).
@@ -12,20 +16,18 @@ module ItemsHelper
   def items_as_media(items, options = {})
     html = '<ul class="list-unstyled">'
 
-    title_length = 100
-    description_length = 200
-    thumbnail_width = 120
-
     items.each do |item|
-      desc = truncate(item.description, length: description_length)
+      desc = truncate(item.description, length: MAX_MEDIA_DESCRIPTION_LENGTH)
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
-        image_tag('test-pattern.jpg', class: 'mr-3', width: thumbnail_width,
+        image_tag('test-pattern.jpg', class: 'mr-3',
+                  width: MAX_MEDIA_THUMBNAIL_WIDTH,
                   alt: "Thumbnail for #{item}")
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       link_to(truncate(item.title, length: title_length), item.source_uri)
+      html +=       link_to(truncate(item.title, length: MAX_MEDIA_TITLE_LENGTH),
+                            item.source_uri)
       html +=     '</h5>'
       html +=     '<span class="dl-info-line">'
       html +=       link_to(item.content_service.name, item.content_service)
@@ -64,11 +66,13 @@ module ItemsHelper
   # @param num_results_shown [Integer]
   # @return [String]
   #
-  def search_status(total_num_results, start, num_results_shown)
+  def search_status(total_num_results, start, num_results_shown, word)
     last = [total_num_results, start + num_results_shown].min
-    raw(sprintf("Showing %d&ndash;%d of %s items",
-                start + 1, last,
-                number_with_delimiter(total_num_results)))
+    raw(sprintf("Showing %d&ndash;%d of %s %s",
+                start + 1,
+                last,
+                number_with_delimiter(total_num_results),
+                word.pluralize(total_num_results)))
   end
 
   private
