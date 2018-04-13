@@ -14,9 +14,8 @@ class AbstractFinder
 
     @loaded = false
 
-    @result_count = 0
+    @result_json = {}
     @result_facets = []
-    @result_instances = []
   end
 
   ##
@@ -35,7 +34,7 @@ class AbstractFinder
   #
   def count
     load
-    @result_count
+    @result_json['hits']['total']
   end
 
   ##
@@ -174,7 +173,7 @@ class AbstractFinder
   #
   def to_a
     load
-    @result_instances
+    @result_json['hits']['hits'].map{ |r| Item.from_indexed_json(r) }
   end
 
   protected
@@ -193,13 +192,13 @@ class AbstractFinder
   def load
     return if @loaded
 
-    response = get_response
+    @result_json = get_response
 
-    raise IOError, response['error'] if response['error']
+    raise IOError, @result_json['error'] if @result_json['error']
 
     # Assemble the response aggregations into Facets.
     facetable_elements.each do |element|
-      response['aggregations']&.each do |key, agg|
+      @result_json['aggregations']&.each do |key, agg|
         if key == element.indexed_keyword_field
           facet = Facet.new
           facet.name = element.label
@@ -220,10 +219,6 @@ class AbstractFinder
         end
       end
     end
-
-    @result_instances = response['hits']['hits'].
-        map{ |r| Item.from_indexed_json(r) }
-    @result_count = response['hits']['total']
 
     @loaded = true
   end
