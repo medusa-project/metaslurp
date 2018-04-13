@@ -49,7 +49,7 @@ namespace :elasticsearch do
     end
 
     desc 'Print schema versions'
-    task :schema_versions => :environment do |task, args|
+    task :versions => :environment do |task, args|
       puts "Current: #{ElasticsearchIndex.current_version}"
       puts "Latest:  #{ElasticsearchIndex.latest_version}"
     end

@@ -10,8 +10,9 @@ class ElasticsearchClient
   # schema YAML.
   MAX_RESULT_WINDOW = 1000000000
 
-  @@http_client = HTTPClient.new
   @@logger = Rails.logger
+
+  @@http_client = Faraday.new(url: Configuration.instance.elasticsearch_endpoint)
 
   ##
   # @param index [ElasticsearchIndex]
@@ -20,14 +21,18 @@ class ElasticsearchClient
   #
   def create_index(index)
     @@logger.info("ElasticsearchClient.create_index(): creating #{index.name}...")
-    index_url = endpoint + '/' + index.name
-    response = @@http_client.put(index_url,
-                                 JSON.generate(index.schema),
-                                 'Content-Type': 'application/json')
+    index_path = '/' + index.name
+
+    response = @@http_client.put do |request|
+      request.path = index_path
+      request.body = JSON.generate(index.schema)
+      request.headers['Content-Type'] = 'application/json'
+    end
+
     if response.status == 200
       @@logger.info("ElasticsearchClient.create_index(): created #{index}")
     else
-      raise IOError, "Got #{response.status} for PUT #{index_url}\n"\
+      raise IOError, "Got #{response.status} for PUT #{index_path}\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
     end
   end
@@ -38,7 +43,7 @@ class ElasticsearchClient
   # @return [void]
   #
   def create_index_alias(index_name, alias_name)
-    url = endpoint + '/_aliases'
+    path = '/_aliases'
     body = {
         actions: [
             {
@@ -49,9 +54,12 @@ class ElasticsearchClient
             }
         ]
     }
-    response = @@http_client.post(url,
-                                  JSON.generate(body),
-                                  'Content-Type': 'application/json')
+    response = @@http_client.post do |request|
+      request.path = path
+      request.body = JSON.generate(body)
+      request.headers['Content-Type'] = 'application/json'
+    end
+
     if response.status == 200
       @@logger.info("ElasticsearchClient.create_index_alias(): "\
           "#{alias_name} -> #{index_name}")
@@ -70,16 +78,18 @@ class ElasticsearchClient
   def delete_all_documents(index_name, type)
     @@logger.info("ElasticsearchClient.delete_all_documents(): deleting all "\
         "documents in index #{index_name}/#{type}...")
-    uri = sprintf('%s/%s/%s/_delete_by_query?conflicts=proceed',
-                  endpoint, index_name, type)
+    path = sprintf('/%s/%s/_delete_by_query?conflicts=proceed',
+                   index_name, type)
     body = {
         query: {
             match_all: {}
         }
     }
-    response = @@http_client.post(uri,
-                                  JSON.generate(body),
-                                  'Content-Type': 'application/json')
+    response = @@http_client.post do |request|
+      request.path = path
+      request.body = JSON.generate(body)
+      request.headers['Content-Type'] = 'application/json'
+    end
     if response.status == 200
       @@logger.info("ElasticsearchClient.delete_all_documents(): all "\
           "documents deleted from #{index_name}")
@@ -95,7 +105,7 @@ class ElasticsearchClient
   #
   def delete_index(name)
     @@logger.info("ElasticsearchClient.delete_index(): deleting #{name}...")
-    response = @@http_client.delete(endpoint + '/' + name)
+    response = @@http_client.delete('/' + name)
     if response.status == 200
       @@logger.info("ElasticsearchClient.delete_index(): #{name} deleted")
     else
@@ -108,9 +118,8 @@ class ElasticsearchClient
   # @return [void]
   #
   def delete_index_alias(index_name, alias_name)
-    uri = sprintf('%s/%s/_alias/%s', endpoint, index_name, alias_name)
-    response = @@http_client.delete(uri, nil,
-                                    'Content-Type': 'application/json')
+    path = sprintf('/%s/_alias/%s', index_name, alias_name)
+    response = @@http_client.delete(path)
     if response.status == 200
       @@logger.info("ElasticsearchClient.delete_index_alias(): deleted "\
           "#{alias_name}")
@@ -135,9 +144,9 @@ class ElasticsearchClient
   # @return [Hash, nil]
   #
   def get_document(index_name, type, id)
-    uri = sprintf('%s/%s/%s/%s', endpoint, index_name, type, id)
+    path = sprintf('/%s/%s/%s', index_name, type, id)
     @@logger.debug("ElasticsearchClient.get_document(): #{index_name}/#{id}")
-    response = @@http_client.get(uri)
+    response = @@http_client.get(path)
     case response.status
       when 200
         JSON.parse(response.body)
@@ -157,11 +166,13 @@ class ElasticsearchClient
   # @raises [IOError]     If Elasticsearch returns an error response.
   #
   def index_document(index, type, id, doc)
-    url = sprintf('%s/%s/%s/%s', endpoint, index, type, id)
+    path = sprintf('/%s/%s/%s', index, type, id)
     @@logger.debug("ElasticsearchClient.index_document(): #{index}/#{id}")
-    response = @@http_client.put(url,
-                                 JSON.generate(doc),
-                                 'Content-Type': 'application/json')
+    response = @@http_client.put do |request|
+      request.path = path
+      request.body = JSON.generate(doc)
+      request.headers['Content-Type'] = 'application/json'
+    end
     if response.status >= 400
       raise IOError, response.body
     end
@@ -172,7 +183,7 @@ class ElasticsearchClient
   # @return [Boolean]
   #
   def index_exists?(name)
-    response = @@http_client.get(endpoint + '/' + name)
+    response = @@http_client.get('/' + name)
     response.status == 200
   end
 
@@ -180,7 +191,7 @@ class ElasticsearchClient
   # @return [String] Summary of all indexes in the node.
   #
   def indexes
-    response = @@http_client.get(endpoint + '/_aliases?pretty')
+    response = @@http_client.get('/_aliases?pretty')
     response.body
   end
 
@@ -190,9 +201,14 @@ class ElasticsearchClient
   # @return [String] Response body.
   #
   def query(index, query)
-    url = sprintf('%s/%s/_search?pretty', endpoint, index)
-    @@logger.debug("ElasticsearchClient.query(): #{url}\n    #{query}")
-    @@http_client.post(url, query, 'Content-Type': 'application/json').body
+    path = sprintf('/%s/_search?pretty', index)
+    @@logger.debug("ElasticsearchClient.query(): #{path}\n    #{query}")
+    response = @@http_client.post do |request|
+      request.path = path
+      request.body = query
+      request.headers['Content-Type'] = 'application/json'
+    end
+    response.body
   end
 
   private
