@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'bootstrap', '~> 4.0.0'
+gem 'bootstrap', '~> 4.1.0'
 gem 'faraday'
 gem 'font-awesome-sass', '~> 4.7.0'
 gem 'jbuilder', '~> 2.5'
