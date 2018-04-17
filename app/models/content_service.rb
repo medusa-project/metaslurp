@@ -32,7 +32,9 @@ class ContentService < ApplicationRecord
     if @num_items < 0
       @num_items = ItemFinder.new.
           content_service(self).
-          aggregations(false).count
+          aggregations(false).
+          limit(0).
+          count
     end
     @num_items
   end
