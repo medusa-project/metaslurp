@@ -149,6 +149,31 @@ module ApplicationHelper
   end
 
   ##
+  # Returns the most appropriate icon for the given object. If the object is
+  # unrecognized, a generic icon will be returned.
+  #
+  # @param entity [Object]
+  # @return [String] HTML <i> tag
+  #
+  def icon_for(entity)
+    if entity == Item
+      icon = 'fa-cube'
+    elsif entity.kind_of?(Item)
+      case entity.variant
+        when Item::Variants::COLLECTION
+          icon = 'fa-folder-open-o'
+        else
+          icon = 'fa-cube'
+      end
+    elsif entity == User or entity.kind_of?(User)
+      icon = 'fa-user'
+    else
+      icon = 'fa-cube'
+    end
+    raw("<i class=\"fa #{icon}\"></i>")
+  end
+
+  ##
   # @param total_entities [Integer]
   # @param per_page [Integer]
   # @param permitted_params [ActionController::Parameters]
