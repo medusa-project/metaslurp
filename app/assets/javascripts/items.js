@@ -34,6 +34,19 @@ var DLItemsView = function() {
     };
 
     this.attachEventListeners = function() {
+        // Submit the sort form on change.
+        $('select[name="sort"]').off().on('change', function () {
+            $.ajax({
+                url: $('[name=dl-current-path]').val(),
+                method: 'GET',
+                data: $(this).parents('form:first').serialize(),
+                dataType: 'script',
+                success: function (result) {
+                    eval(result);
+                }
+            });
+        });
+
         $('.pagination:eq(1) a').on('click', function() {
             $('#dl-search-status')[0].scrollIntoView({behavior: "smooth"});
         });

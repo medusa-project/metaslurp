@@ -1,6 +1,13 @@
 #items_index, #collections_index {
   #dl-search-status {
     margin-bottom: 1em;
+    .card-body {
+      padding: 0.5em 1em;
+      .dl-results-position {
+        display: flex;
+        align-items: center;
+      }
+    }
   }
 
   #dl-facets {

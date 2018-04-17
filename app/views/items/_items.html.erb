@@ -2,7 +2,14 @@
 
 <div class="card" id="dl-search-status">
   <div class="card-body">
-    <%= search_status(@count, @start, @num_results_shown, 'item') %>
+    <div class="row">
+      <div class="col-sm-8 dl-results-position">
+        <%= search_status(@count, @start, @num_results_shown, 'item') %>
+      </div>
+      <div class="col-sm-4">
+        <%= sort_menu %>
+      </div>
+    </div>
   </div>
 </div>
 
