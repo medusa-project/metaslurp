@@ -1,5 +1,5 @@
 <% if @num_results_shown > 0 %>
-  <% @pagination_links = paginate(@count, @limit, @current_page, @permitted_params, true) %>
+  <% @pagination_links = paginate(@count, @limit, @current_page, @permitted_params) %>
 
   <div class="text-center">
     <%= @pagination_links %>
