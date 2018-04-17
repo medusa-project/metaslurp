@@ -30,11 +30,15 @@ module ItemsHelper
                             item.source_uri)
       html +=     '</h5>'
       html +=     '<span class="dl-info-line">'
+      html +=       icon_for(item) + ' '
+      html +=       item.variant + ' | '
       html +=       link_to(item.content_service.name, item.content_service)
       html +=         ' ' + remove_from_favorites_button(item)
       html +=         ' ' + add_to_favorites_button(item)
       if options[:link_to_admin]
-        html += link_to(admin_item_path(item), class: 'btn btn-light btn-sm', target: '_blank') do
+        html += link_to(admin_item_path(item),
+                        class: 'btn btn-light btn-sm',
+                        target: '_blank') do
               raw('<i class="fa fa-lock"></i> Admin View')
             end
       end
