@@ -133,8 +133,16 @@ class Item
 
     prefix = SourceElement::INDEX_FIELD_PREFIX
     jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
-      item.elements << SourceElement.new(name: key[prefix.length..key.length],
-                                         value: jobj[key])
+      name = key[prefix.length..key.length]
+      # This should always be true, but just in case there is a string value
+      # instead of an array for some reason...
+      if jobj[key].respond_to?(:each)
+        jobj[key].each do |value|
+          item.elements << SourceElement.new(name: name, value: value)
+        end
+      else
+        item.elements << SourceElement.new(name: name, value: jobj[key])
+      end
     end
     item
   end
@@ -194,15 +202,22 @@ class Item
     doc[IndexFields::VARIANT] = self.variant
 
     self.elements.each do |src_elem|
-      # Add the source element.
-      doc[src_elem.indexed_field] =
-          src_elem.value[0..ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH]
+      value = src_elem.value[0..ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH]
+
+      # Add the source element value to an array, as there may be more than
+      # one element with the same name.
+      unless doc.keys.include?(src_elem.indexed_field)
+        doc[src_elem.indexed_field] = []
+      end
+      doc[src_elem.indexed_field] << value
 
       # Add the mapped local element, if one exists.
       local_elem = self.content_service&.element_for_source_element(src_elem)
       if local_elem
-        doc[local_elem.indexed_field] =
-            src_elem.value[0..ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH]
+        unless doc.keys.include?(local_elem.indexed_field)
+          doc[local_elem.indexed_field] = []
+        end
+        doc[local_elem.indexed_field] << value
       end
     end
     doc

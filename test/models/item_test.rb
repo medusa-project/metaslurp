@@ -27,8 +27,14 @@ class ItemTest < ActiveSupport::TestCase
                 Item::IndexFields::SOURCE_ID => 'cats',
                 Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
                 Item::IndexFields::VARIANT => Item::Variants::ITEM,
-                SourceElement::INDEX_FIELD_PREFIX + 'title' => 'the title',
-                Element::INDEX_FIELD_PREFIX + 'title' => 'the title'
+                (SourceElement::INDEX_FIELD_PREFIX + 'title') => [
+                    'title 1',
+                    'title 2'
+                ],
+                (Element::INDEX_FIELD_PREFIX + 'title') => [
+                    'title 1',
+                    'title 2'
+                ]
             }
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
@@ -39,9 +45,11 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
     assert_equal Item::Variants::ITEM, item.variant
-    assert_equal 1, item.elements.length
+    assert_equal 2, item.elements.length
     assert_equal 'title', item.elements.to_a[0].name
-    assert_equal 'the title', item.elements.to_a[0].value
+    assert_equal 'title 1', item.elements.to_a[0].value
+    assert_equal 'title', item.elements.to_a[1].name
+    assert_equal 'title 2', item.elements.to_a[1].value
   end
 
   # from_json()
