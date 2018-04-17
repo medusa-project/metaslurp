@@ -12,6 +12,7 @@ class ItemsController < ApplicationController
         query_all(params[:q]).
         facet_filters(params[:fq]).
         exclude_variants(Item::Variants::COLLECTION).
+        order(params[:sort]).
         start(@start).
         limit(@limit)
     @items = finder.to_a

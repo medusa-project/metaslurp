@@ -75,6 +75,33 @@ module ItemsHelper
                 word.pluralize(total_num_results)))
   end
 
+  ##
+  # Returns a pulldown menu for choosing an element to sort on. If there are
+  # no sortable elements, a zero-length string is returned.
+  #
+  # @return [String] HTML select element
+  #
+  def sort_menu
+    sortable_elements = Element.where(sortable: true).order(:index)
+    html = ''
+    if sortable_elements.any?
+      html += '<select name="sort" class="custom-select my-1 mr-sm-2">
+          <optgroup label="Sort by&hellip;">
+            <option value="">Relevance</option>'
+
+      # If there is an element in the ?sort= query, select it.
+      selected_element = sortable_elements.
+          select{ |e| e.indexed_sort_field == params[:sort] }.first
+      sortable_elements.each do |e|
+        selected = (e == selected_element) ? 'selected' : ''
+        html += "<option value=\"#{e.indexed_sort_field}\" #{selected}>#{e.label}</option>"
+      end
+      html += '</optgroup>
+          </select>'
+    end
+    raw(html)
+  end
+
   private
 
   ##
