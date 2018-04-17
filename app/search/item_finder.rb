@@ -99,6 +99,18 @@ class ItemFinder < AbstractFinder
               end
             end
           end
+
+          if @exclude_variants.any?
+            j.must_not do
+              if @exclude_variants.any?
+                j.child! do
+                  j.terms do
+                    j.set! Item::IndexFields::VARIANT, @exclude_variants
+                  end
+                end
+              end
+            end
+          end
         end
       end
 
