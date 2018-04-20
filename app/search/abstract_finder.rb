@@ -207,7 +207,8 @@ class AbstractFinder
             bucket = Bucket.new
             bucket.name = es_bucket['key'].to_s
             if element.name == Item::IndexFields::SERVICE_KEY
-              bucket.label = ContentService.find_by_key(es_bucket['key']).name
+              service = ContentService.find_by_key(es_bucket['key'])
+              bucket.label = service&.name || 'Unknown Service'
             else
               bucket.label = es_bucket['key'].to_s
             end
