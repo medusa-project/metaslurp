@@ -65,7 +65,7 @@ class ItemFinder < AbstractFinder
             end
           end
 
-          if @filters.any? or @content_service
+          if @filters.any? or @content_service or @include_variants.any?
             j.filter do
               @filters.each do |field, value|
                 j.child! do
@@ -87,14 +87,11 @@ class ItemFinder < AbstractFinder
                   end
                 end
               end
-            end
-          end
-
-          if @include_variants.any?
-            j.should do
-              j.child! do
-                j.terms do
-                  j.set! Item::IndexFields::VARIANT, @include_variants
+              if @include_variants.any?
+                j.child! do
+                  j.terms do
+                    j.set! Item::IndexFields::VARIANT, @include_variants
+                  end
                 end
               end
             end
