@@ -24,7 +24,7 @@
        # doesn't send an X-Forwarded-Proto header. %>
     <%= hidden_field_tag('dl-root-url', root_url(protocol: Rails.env.production? ? :https : :http)) %>
     <%= hidden_field_tag('dl-root-path', root_path) %>
-    <%= hidden_field_tag('dl-current-path', request.fullpath) %>
+    <%= hidden_field_tag('dl-current-path', request.path) %>
 
     <div class="container-fluid">
       <div id="dl-page-content">
