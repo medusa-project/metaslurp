@@ -260,10 +260,11 @@ module ApplicationHelper
       panel += "<li class=\"dl-term\">"\
                "  <div class=\"checkbox\">"\
                "    <label>"\
-               "      <input type=\"checkbox\" name=\"dl-facet-term\" #{checked} "\
+               "      <input type=\"checkbox\" name=\"fq[]\" #{checked} "\
                "          data-query=\"#{bucket.query.gsub('"', '&quot;')}\" "\
                "          data-checked-href=\"#{url_for(unchecked_params)}\" "\
-               "          data-unchecked-href=\"#{url_for(checked_params)}\">"\
+               "          data-unchecked-href=\"#{url_for(checked_params)}\" "\
+               "          value=\"#{bucket.query}\"> "\
                "      #{term_label} "\
                "      <span class=\"dl-count\">#{bucket.count}</span>"\
                "    </label>"\

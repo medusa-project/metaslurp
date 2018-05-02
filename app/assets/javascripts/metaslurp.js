@@ -7,22 +7,11 @@ var Application = {
 
     /**
      * Enables the facets returned by one of the facets_as_x() helpers.
-     *
-     * @constructor
      */
     initFacets: function() {
         var addFacetEventListeners = function() {
-            $('[name="dl-facet-term"]').off().on('change', function() {
-                // Create hidden input counterparts of each checked checkbox, as
-                // checkboxes' values can't change.
+            $('[name="fq[]"]').off('change').on('change', function() {
                 var form = $(this).parents('form:first');
-                form.find('[name="fq"]').remove();
-                form.find('[name="fq[]"]').remove();
-                form.find('[name=dl-facet-term]:checked').each(function() {
-                    var input = $('<input type="hidden" name="fq[]">');
-                    input.val($(this).data('query'));
-                    form.append(input);
-                });
 
                 $.ajax({
                     url: $('[name=dl-current-path]').val(),
