@@ -41,11 +41,11 @@ class ContentService < ApplicationRecord
 
   ##
   # @param src_element [SourceElement]
-  # @return [Element]
+  # @return [ElementDef]
   #
-  def element_for_source_element(src_element)
+  def element_def_for_source_element(src_element)
     self.element_mappings.
-        select{ |m| m.source_name == src_element.name}.first&.element
+        select{ |m| m.source_name == src_element.name}.first&.element_def
   end
 
   ##

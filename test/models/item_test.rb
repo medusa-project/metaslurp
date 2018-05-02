@@ -11,6 +11,7 @@ class ItemTest < ActiveSupport::TestCase
                          access_image_uri: 'http://example.org/cats/image.jpg',
                          variant: Item::Variants::ITEM)
     @instance.elements << SourceElement.new(name: 'name', value: 'value')
+    @instance.local_elements << SourceElement.new(name: 'name', value: 'value')
   end
 
   # from_indexed_json()
@@ -31,7 +32,7 @@ class ItemTest < ActiveSupport::TestCase
                     'title 1',
                     'title 2'
                 ],
-                (Element::INDEX_FIELD_PREFIX + 'title') => [
+                (ElementDef::INDEX_FIELD_PREFIX + 'title') => [
                     'title 1',
                     'title 2'
                 ]

@@ -150,7 +150,7 @@ class Item
     end
 
     # Read local elements.
-    prefix = Element::INDEX_FIELD_PREFIX
+    prefix = ElementDef::INDEX_FIELD_PREFIX
     jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
       # TODO: it's a little awkward that we are assigning a SourceElement to local_elements
@@ -233,7 +233,7 @@ class Item
       doc[src_elem.indexed_field] << value
 
       # Add the mapped local element, if one exists.
-      local_elem = self.content_service&.element_for_source_element(src_elem)
+      local_elem = self.content_service&.element_def_for_source_element(src_elem)
       if local_elem
         unless doc.keys.include?(local_elem.indexed_field)
           doc[local_elem.indexed_field] = []

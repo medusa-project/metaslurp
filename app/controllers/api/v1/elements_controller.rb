@@ -13,7 +13,7 @@ module Api
         @limit = DEFAULT_RESULTS_LIMIT if @limit < 1
         @limit = MAX_RESULTS_LIMIT if @limit > MAX_RESULTS_LIMIT
 
-        @elements = Element.all.order(:index).limit(@limit).offset(@start)
+        @elements = ElementDef.all.order(:index).limit(@limit).offset(@start)
 
         render json: {
             start: @start,

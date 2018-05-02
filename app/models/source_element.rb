@@ -1,6 +1,6 @@
 class SourceElement
 
-  # N.B.: This should harmonize with Element::INDEX_FIELD_PREFIX.
+  # N.B.: This should harmonize with ElementDef::INDEX_FIELD_PREFIX.
   INDEX_FIELD_PREFIX = 'source_element_'
 
   attr_accessor :name, :value

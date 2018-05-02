@@ -40,9 +40,9 @@
               <code><%= mapping.source_name %></code>
             </td>
             <td style="width:50%">
-              <%= select_tag "content_service[element_mappings][#{mapping.id}][element_id]",
-                             options_from_collection_for_select(Element.all.order(:name),
-                                                                'id', 'label', mapping.element_id),
+              <%= select_tag "content_service[element_mappings][#{mapping.id}][element_def_id]",
+                             options_from_collection_for_select(ElementDef.all.order(:name),
+                                                                'id', 'label', mapping.element_def_id),
                              include_blank: true,
                              class: 'form-control' %>
             </td>

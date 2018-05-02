@@ -1,7 +1,7 @@
 ##
-# Element archetype.
+# Element definition.
 #
-class Element < ApplicationRecord
+class ElementDef < ApplicationRecord
 
   # N.B.: This should harmonize with SourceElement::INDEX_FIELD_PREFIX.
   INDEX_FIELD_PREFIX = 'local_element_'
@@ -11,7 +11,7 @@ class Element < ApplicationRecord
 
   attr_accessor :indexed_keyword_field
 
-  has_many :element_mappings, inverse_of: :element
+  has_many :element_mappings, inverse_of: :element_def
 
   validates :index, numericality: { only_integer: true,
                                     greater_than_or_equal_to: 0 },
@@ -27,10 +27,10 @@ class Element < ApplicationRecord
 
   ##
   # @param struct [Hash] Deserialized hash from JSON.parse()
-  # @return [Element] New non-persisted AvailableElement
+  # @return [ElementDef] New non-persisted instance.
   #
   def self.from_json_struct(struct)
-    e = Element.new
+    e = ElementDef.new
     e.update_from_json_struct(struct)
     e
   end
@@ -83,7 +83,7 @@ class Element < ApplicationRecord
   #
   def adjust_element_indexes_after_create
     ActiveRecord::Base.transaction do
-      Element.all.where('id != ? AND index >= ?', self.id, self.index).each do |e|
+      ElementDef.all.where('id != ? AND index >= ?', self.id, self.index).each do |e|
         # update_column skips callbacks, which would cause this method to
         # be called recursively.
         e.update_column(:index, e.index + 1)
@@ -98,7 +98,7 @@ class Element < ApplicationRecord
   def adjust_element_indexes_after_destroy
     if self.destroyed?
       ActiveRecord::Base.transaction do
-        Element.all.order(:index).each_with_index do |element, index|
+        ElementDef.all.order(:index).each_with_index do |element, index|
           # update_column skips callbacks, which would cause this method to be
           # called recursively.
           element.update_column(:index, index) if element.index != index
@@ -118,7 +118,7 @@ class Element < ApplicationRecord
       increased = (self.index_was < self.index)
 
       ActiveRecord::Base.transaction do
-        Element.all.where('id != ? AND index >= ? AND index <= ?', self.id, min, max).each do |e|
+        ElementDef.all.where('id != ? AND index >= ? AND index <= ?', self.id, min, max).each do |e|
           if increased # shift the range down
             # update_column skips callbacks, which would cause this method to
             # be called recursively.

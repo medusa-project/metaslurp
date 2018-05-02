@@ -161,10 +161,10 @@ class ItemFinder < AbstractFinder
   #
   def facetable_elements
     elements = [
-        Element.new(name: Item::IndexFields::SERVICE_KEY,
-                    indexed_keyword_field: Item::IndexFields::SERVICE_KEY + Element::KEYWORD_FIELD_SUFFIX,
-                    label: 'Service',
-                    facetable: true)
+        ElementDef.new(name: Item::IndexFields::SERVICE_KEY,
+                       indexed_keyword_field: Item::IndexFields::SERVICE_KEY + ElementDef::KEYWORD_FIELD_SUFFIX,
+                       label: 'Service',
+                       facetable: true)
     ]
     elements + super.to_a
   end

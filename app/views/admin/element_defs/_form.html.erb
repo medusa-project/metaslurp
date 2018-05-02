@@ -1,18 +1,18 @@
 <%
-  # @param element [Element]
+  # @param element_def [ElementDef]
   # @param context [Symbol] :new or :edit
 
   position_options_for_select = [['Nothing (First)', 0]]
-  elements = Element.order(:index)
-  if element.id.present?
-    elements = elements.where('id != ?', element.id)
+  elements = ElementDef.order(:index)
+  if element_def.id.present?
+    elements = elements.where('id != ?', element_def.id)
   end
   elements.each_with_index do |e, i|
     position_options_for_select << [e.label, i + 1]
   end
 %>
 
-<%= form_for([:admin, element], remote: true) do |f| %>
+<%= form_for([:admin, element_def], remote: true) do |f| %>
   <div class="dl-error-messages">
     <% # populated via ajax by shared/_validation_messages.js.erb
     %>
@@ -24,7 +24,7 @@
       <%= f.text_field :name, class: 'form-control' %>
     <% else %>
       <br>
-      <%= element.name %>
+      <%= element_def.name %>
     <% end %>
   </div>
 
@@ -41,7 +41,7 @@
   <div class="form-group">
     <%= f.label :index, 'Position After' %>
     <%= f.select :index, position_options_for_select,
-                 { selected: element.index },
+                 { selected: element_def.index },
                  class: 'form-control' %>
   </div>
 
