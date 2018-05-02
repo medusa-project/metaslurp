@@ -16,6 +16,30 @@ class ContentService < ApplicationRecord
   end
 
   ##
+  # Deletes all items associated with the service from the index.
+  #
+  # @return [void]
+  #
+  def delete_all_items
+    index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
+    query = sprintf('{
+        "query": {
+          "bool": {
+            "filter": [
+              {
+                "term": {
+                  "%s":"%s"
+                }
+              }
+            ]
+          }
+        }
+      }', Item::IndexFields::SERVICE_KEY + '.keyword', self.key)
+
+    ElasticsearchClient.instance.delete_by_query(index, query)
+  end
+
+  ##
   # @param src_element [SourceElement]
   # @return [Element]
   #
