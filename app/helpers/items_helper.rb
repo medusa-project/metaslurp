@@ -28,7 +28,20 @@ module ItemsHelper
       html +=     '<h5 class="mt-0">'
       html +=       link_to(truncate(item.title, length: MAX_MEDIA_TITLE_LENGTH),
                             item.source_uri)
+      if item.element(:date)
+        html +=       " <small>#{item.element(:date)}</small>"
+      end
       html +=     '</h5>'
+      # Display the currently sorted element value, if not date or title (which
+      # are already visible), on its own line:
+      # https://bugs.library.illinois.edu/browse/DLDS-45
+      sorted_element = Element.all.find{ |e| e.indexed_sort_field == params[:sort] }
+      if sorted_element
+        e = item.elements
+                .reject{ |e| %w(date title).include?(e.name) }
+                .find{ |e| e.name == sorted_element.name }
+        html +=   "#{sorted_element.label}: #{e.value}<br>" if e
+      end
       html +=     '<span class="dl-info-line">'
       html +=       icon_for(item) + ' '
       html +=       item.variant + ' | '
@@ -42,8 +55,7 @@ module ItemsHelper
               raw('<i class="fa fa-lock"></i> Admin View')
             end
       end
-      html +=     '</span>'
-      html +=     '<br>'
+      html +=     '</span><br>'
       html +=     desc if desc.present?
       html +=   '</div>'
       html += '</li>'
