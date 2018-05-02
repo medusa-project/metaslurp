@@ -24,7 +24,7 @@ mappings:
               strength: quaternary
               alternate: shifted
     - local_metadata_elements:
-        # must be kept in sync with Element::INDEX_FIELD_PREFIX
+        # must be kept in sync with ElementDef::INDEX_FIELD_PREFIX
         match: local_element_*
         mapping:
           type: text

@@ -40,8 +40,8 @@ Rails.application.routes.draw do
             via: :delete, as: 'element_mappings'
       match '/reindex', to: 'content_services#reindex', via: :post, as: 'reindex'
     end
-    resources :elements, param: :name, except: :show
-    match '/elements/import', to: 'elements#import', via: :post, as: 'elements_import'
+    resources :element_defs, path: 'elements', param: :name, except: :show
+    match '/elements/import', to: 'elements#import', via: :post, as: 'element_defs_import'
     resources :items, only: :show
     resources :roles, param: :key
     resources :users, param: :username do

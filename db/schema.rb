@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180322174158) do
+ActiveRecord::Schema.define(version: 2018_05_02_200724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,16 +26,7 @@ ActiveRecord::Schema.define(version: 20180322174158) do
     t.index ["name"], name: "index_content_services_on_name", unique: true
   end
 
-  create_table "element_mappings", force: :cascade do |t|
-    t.bigint "content_service_id"
-    t.string "source_name"
-    t.bigint "element_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["content_service_id", "source_name"], name: "index_element_mappings_on_content_service_id_and_source_name", unique: true
-  end
-
-  create_table "elements", force: :cascade do |t|
+  create_table "element_defs", force: :cascade do |t|
     t.string "name"
     t.string "label"
     t.string "description"
@@ -45,11 +36,20 @@ ActiveRecord::Schema.define(version: 20180322174158) do
     t.boolean "facetable", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["facetable"], name: "index_elements_on_facetable"
-    t.index ["index"], name: "index_elements_on_index"
-    t.index ["name"], name: "index_elements_on_name"
-    t.index ["searchable"], name: "index_elements_on_searchable"
-    t.index ["sortable"], name: "index_elements_on_sortable"
+    t.index ["facetable"], name: "index_element_defs_on_facetable"
+    t.index ["index"], name: "index_element_defs_on_index"
+    t.index ["name"], name: "index_element_defs_on_name"
+    t.index ["searchable"], name: "index_element_defs_on_searchable"
+    t.index ["sortable"], name: "index_element_defs_on_sortable"
+  end
+
+  create_table "element_mappings", force: :cascade do |t|
+    t.bigint "content_service_id"
+    t.string "source_name"
+    t.bigint "element_def_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["content_service_id", "source_name"], name: "index_element_mappings_on_content_service_id_and_source_name", unique: true
   end
 
   create_table "options", force: :cascade do |t|
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(version: 20180322174158) do
   end
 
   add_foreign_key "element_mappings", "content_services", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "element_mappings", "elements", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "element_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "roles", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "users", on_update: :cascade, on_delete: :cascade
 end

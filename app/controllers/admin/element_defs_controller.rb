@@ -1,6 +1,6 @@
 module Admin
 
-  class ElementsController < ControlPanelController
+  class ElementDefsController < ControlPanelController
 
     class ImportMode
       MERGE = 'merge'
@@ -17,7 +17,7 @@ module Admin
     # XHR only
     #
     def create
-      @element = Element.new(sanitized_params)
+      @element = ElementDef.new(sanitized_params)
       begin
         @element.save!
       rescue ActiveRecord::RecordInvalid
@@ -37,7 +37,7 @@ module Admin
     end
 
     def destroy
-      element = Element.find_by_name(params[:name])
+      element = ElementDef.find_by_name(params[:name])
       raise ActiveRecord::RecordNotFound unless element
       begin
         element.destroy!
@@ -46,7 +46,7 @@ module Admin
       else
         flash['success'] = "Element \"#{element.name}\" deleted."
       ensure
-        redirect_back fallback_location: admin_elements_path
+        redirect_back fallback_location: admin_element_defs_path
       end
     end
 
@@ -54,11 +54,11 @@ module Admin
     # XHR only
     #
     def edit
-      element = Element.find_by_name(params[:name])
-      raise ActiveRecord::RecordNotFound unless element
+      element_def = ElementDef.find_by_name(params[:name])
+      raise ActiveRecord::RecordNotFound unless element_def
 
-      render partial: 'admin/elements/form',
-             locals: { element: element, context: :edit }
+      render partial: 'admin/element_defs/form',
+             locals: { element_def: element_def, context: :edit }
     end
 
     ##
@@ -72,23 +72,23 @@ module Admin
         struct = JSON.parse(json)
         ActiveRecord::Base.transaction do
           if params[:import_mode] == ImportMode::REPLACE
-            Element.delete_all # skip callbacks & validation
+            ElementDef.delete_all # skip callbacks & validation
           end
           struct.each do |hash|
-            e = Element.find_by_name(hash['name'])
+            e = ElementDef.find_by_name(hash['name'])
             if e
               e.update_from_json_struct(hash)
             else
-              Element.from_json_struct(hash).save!
+              ElementDef.from_json_struct(hash).save!
             end
           end
         end
       rescue => e
         handle_error(e)
-        redirect_to admin_elements_path
+        redirect_to admin_element_defs_path
       else
         flash['success'] = "#{struct.length} elements created or updated."
-        redirect_to admin_elements_path
+        redirect_to admin_element_defs_path
       end
     end
 
@@ -98,11 +98,11 @@ module Admin
     def index
       respond_to do |format|
         format.html do
-          @elements = Element.all.order(:index)
-          @new_element = Element.new
+          @elements = ElementDef.all.order(:index)
+          @new_element_def = ElementDef.new
         end
         format.json do
-          @elements = Element.all.order(:name)
+          @elements = ElementDef.all.order(:name)
           headers['Content-Disposition'] = 'attachment; filename=elements.json'
           render plain: JSON.pretty_generate(@elements.as_json)
         end
@@ -113,7 +113,7 @@ module Admin
     # XHR only
     #
     def update
-      element = Element.find_by_name(params[:name])
+      element = ElementDef.find_by_name(params[:name])
       raise ActiveRecord::RecordNotFound unless element
 
       begin
@@ -135,7 +135,7 @@ module Admin
     private
 
     def sanitized_params
-      params.require(:element).permit(PERMITTED_PARAMS)
+      params.require(:element_def).permit(PERMITTED_PARAMS)
     end
 
     def set_permitted_params

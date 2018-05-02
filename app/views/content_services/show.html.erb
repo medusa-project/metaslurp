@@ -34,7 +34,7 @@
     <% if @num_items > 0 %>
       <div class="row justify-content-md-center">
         <div class="col-md-auto" style="margin: 1em 0em">
-          <%= link_to items_path('fq[]': Item::IndexFields::SERVICE_KEY + Element::KEYWORD_FIELD_SUFFIX + ':' + @service.key),
+          <%= link_to items_path('fq[]': Item::IndexFields::SERVICE_KEY + ElementDef::KEYWORD_FIELD_SUFFIX + ':' + @service.key),
                       role: 'button',
                       class: 'btn btn-lg btn-primary' do %>
             <i class="fa fa-cube"></i>

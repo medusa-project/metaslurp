@@ -98,7 +98,7 @@ module ItemsHelper
   # @return [String] HTML select element
   #
   def sort_menu
-    sortable_elements = Element.where(sortable: true).order(:index)
+    sortable_elements = ElementDef.where(sortable: true).order(:index)
     html = ''
     if sortable_elements.any?
       html += '<select name="sort" class="custom-select my-1 mr-sm-2">

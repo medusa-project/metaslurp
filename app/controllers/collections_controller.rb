@@ -12,7 +12,7 @@ class CollectionsController < ApplicationController
         query_all(params[:q]).
         facet_filters(params[:fq]).
         include_variants(Item::Variants::COLLECTION).
-        order(Element.new(name: 'title').indexed_sort_field). # TODO: this is ugly
+        order(ElementDef.new(name: 'title').indexed_sort_field). # TODO: this is ugly
         start(@start).
         limit(@limit)
     @items = finder.to_a

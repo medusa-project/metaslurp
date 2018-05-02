@@ -3,7 +3,7 @@
      aria-labelledby="dl-import-modal-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <%= form_tag(admin_elements_import_path(format: :json),
+      <%= form_tag(admin_element_defs_import_path(format: :json),
                    { multipart: true }) do %>
           <div class="modal-header">
             <h5 class="modal-title" id="dl-import-modal-label">Import Elements</h5>
@@ -18,7 +18,7 @@
             <div class="radio">
               <label>
                 <%= radio_button_tag('import_mode',
-                                     Admin::ElementsController::ImportMode::MERGE, true,
+                                     Admin::ElementDefsController::ImportMode::MERGE, true,
                                      'aria-described-by' => 'dl-merge-help') %>
                 Merge
               </label>
@@ -31,7 +31,7 @@
             <div class="radio">
               <label>
                 <%= radio_button_tag('import_mode',
-                                     Admin::ElementsController::ImportMode::REPLACE, false,
+                                     Admin::ElementDefsController::ImportMode::REPLACE, false,
                                      'aria-described-by' => 'dl-only-create-help') %>
                 Replace
               </label>

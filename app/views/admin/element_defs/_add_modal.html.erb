@@ -1,5 +1,5 @@
 <%
-# @param element [Element]
+# @param element_def [ElementDef]
 # @param context [Symbol] :new or :edit
 %>
 
@@ -15,7 +15,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <%= render partial: 'form', locals: { element: element,
+        <%= render partial: 'form', locals: { element_def: element_def,
                                               context: context } %>
       </div>
     </div>

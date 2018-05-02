@@ -100,8 +100,7 @@ module Admin
         @content_service.update_attributes!(sanitized_params)
 
         params[:content_service][:element_mappings].each do |k, v|
-          element_id = v.values[0]
-          ElementMapping.find(k).update!(element_id: element_id)
+          ElementMapping.find(k).update!(element_def_id: v.values[0])
         end
       rescue => e
         handle_error(e)

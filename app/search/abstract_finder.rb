@@ -188,7 +188,7 @@ class AbstractFinder
   end
 
   def facetable_elements
-    Element.where(facetable: true)
+    ElementDef.where(facetable: true)
   end
 
   def load
