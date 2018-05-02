@@ -182,6 +182,8 @@ class AbstractFinder
     parts = str.split(':')
     if parts.length == 2
       @filters[parts[0]] = parts[1]
+    else
+      raise ArgumentError, 'Facet filter string is not a key:value pair'
     end
   end
 
