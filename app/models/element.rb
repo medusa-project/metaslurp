@@ -26,14 +26,6 @@ class Element < ApplicationRecord
   before_update :restrict_name_changes
 
   ##
-  # @return [Element]
-  #
-  def self.default_sortable_element
-    # TODO: make this customizable
-    Element.new(name: 'title')
-  end
-
-  ##
   # @param struct [Hash] Deserialized hash from JSON.parse()
   # @return [Element] New non-persisted AvailableElement
   #
