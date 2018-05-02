@@ -15,11 +15,12 @@
 #
 # # Description
 #
-# Items have a number of hard-coded attributes (see below) as well as a
-# collection of SourceElements, which represent metadata elements of the
-# instance within the content service. The former are used by the system, and
-# SourceElements contain free-form strings and can be mapped to Elements (local
-# application elements) to control how they work with regard to searching,
+# Items have a number of hard-coded attributes (see below) as well as
+# collections of SourceElements, which represent metadata elements of the
+# instance within the content service, and Elements, which represent local
+# metadata elements to which SourceElements get mapped. Hard-coded attributes
+# are used by the system. SourceElements contain free-form strings and can be
+# mapped to Elements to control how they work with regard to searching,
 # faceting, etc. on a per-ContentService basis.
 #
 # # Indexing
@@ -37,6 +38,7 @@
 # * access_image_uri URI of a high-quality access image.
 # * elements:        Enumerable of SourceElements.
 # * id:              Identifier within the application.
+# * local_elements:  Enumerable of Elements.
 # * service_key:     Key of the ContentService from which the instance was
 #                    obtained.
 # * source_id:       Identifier of the instance within its ContentService.
@@ -61,8 +63,9 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :elements, :id, :last_indexed, :media_type,
-                :service_key, :source_id, :source_uri, :variant
+  attr_accessor :access_image_uri, :elements, :id, :last_indexed,
+                :local_elements, :media_type, :service_key, :source_id,
+                :source_uri, :variant
 
   class IndexFields
     ACCESS_IMAGE_URI = 'access_image_uri'
@@ -131,6 +134,7 @@ class Item
     item.source_uri = jobj[IndexFields::SOURCE_URI]
     item.variant = jobj[IndexFields::VARIANT]
 
+    # Read source elements.
     prefix = SourceElement::INDEX_FIELD_PREFIX
     jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
@@ -144,6 +148,22 @@ class Item
         item.elements << SourceElement.new(name: name, value: jobj[key])
       end
     end
+
+    # Read local elements.
+    prefix = Element::INDEX_FIELD_PREFIX
+    jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
+      name = key[prefix.length..key.length]
+      # TODO: it's a little awkward that we are assigning a SourceElement to local_elements
+      # consider renaming SourceElement to DescriptiveElement or something
+      if jobj[key].respond_to?(:each)
+        jobj[key].each do |value|
+          item.local_elements << SourceElement.new(name: name, value: value)
+        end
+      else
+        item.local_elements << SourceElement.new(name: name, value: jobj[key])
+      end
+    end
+
     item
   end
 
@@ -172,6 +192,7 @@ class Item
 
   def initialize(args = {})
     @elements = Set.new
+    @local_elements = Set.new
     args.each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
@@ -253,8 +274,12 @@ class Item
     self.element('description')&.value
   end
 
+  ##
+  # @param name [String]
+  # @return [SourceElement] Local element with the given name.
+  #
   def element(name)
-    self.elements.find{ |e| e.name == name.to_s }
+    self.local_elements.find{ |e| e.name == name.to_s }
   end
 
   def eql?(obj)
