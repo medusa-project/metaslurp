@@ -50,6 +50,13 @@ class SourceElement
   end
 
   ##
+  # @return [String] The value.
+  #
+  def to_s
+    "#{self.value}"
+  end
+
+  ##
   # @return [void]
   # @raises [ArgumentError] if the instance is invalid.
   #
