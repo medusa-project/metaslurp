@@ -35,7 +35,7 @@ module ItemsHelper
       # Display the currently sorted element value, if not date or title (which
       # are already visible), on its own line:
       # https://bugs.library.illinois.edu/browse/DLDS-45
-      sorted_element = Element.all.find{ |e| e.indexed_sort_field == params[:sort] }
+      sorted_element = ElementDef.all.find{ |e| e.indexed_sort_field == params[:sort] }
       if sorted_element
         e = item.elements
                 .reject{ |e| %w(date title).include?(e.name) }
