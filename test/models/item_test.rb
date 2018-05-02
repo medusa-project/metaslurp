@@ -161,6 +161,16 @@ class ItemTest < ActiveSupport::TestCase
     assert_nil @instance.content_service
   end
 
+  # element()
+
+  test 'element() returns an element if available' do
+    assert_equal 'value', @instance.element(:name).value
+  end
+
+  test 'element() returns nil for an unavailable element' do
+    assert_nil @instance.element(:bogus)
+  end
+
   # save()
 
   test 'save() works' do

@@ -250,7 +250,11 @@ class Item
   # @return [String]
   #
   def description
-    self.elements.select{ |e| e.name == 'description' }.first&.value
+    self.element('description')&.value
+  end
+
+  def element(name)
+    self.elements.find{ |e| e.name == name.to_s }
   end
 
   def eql?(obj)
@@ -281,7 +285,7 @@ class Item
   # @return [String]
   #
   def title
-    self.elements.select{ |e| e.name == 'title' }.first&.value
+    self.element('title')&.value
   end
 
   def to_s
