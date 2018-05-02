@@ -99,6 +99,22 @@ class ElasticsearchClient
   end
 
   ##
+  # @param index [String]
+  # @param query [String] JSON query string.
+  # @return [String] Response body.
+  #
+  def delete_by_query(index, query)
+    path = sprintf('/%s/_delete_by_query?pretty', index)
+    @@logger.debug("ElasticsearchClient.delete_by_query(): #{path}\n    #{query}")
+    response = @@http_client.post do |request|
+      request.path = path
+      request.body = query
+      request.headers['Content-Type'] = 'application/json'
+    end
+    response.body
+  end
+
+  ##
   # @param name [String] Index name.
   # @return [void]
   # @raises [IOError]
