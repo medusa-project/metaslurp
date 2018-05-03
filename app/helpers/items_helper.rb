@@ -90,8 +90,8 @@ module ItemsHelper
     html = ''
     if sortable_elements.any?
       html += '<select name="sort" class="custom-select my-1 mr-sm-2">
-          <optgroup label="Sort by&hellip;">
-            <option value="">Relevance</option>'
+          <optgroup label="Sort by&hellip;">'
+      html += "<option value=\"\">#{params[:q].present? ? 'Relevance' : 'Default Order'}</option>"
 
       # If there is an element in the ?sort= query, select it.
       selected_element = sortable_elements.
