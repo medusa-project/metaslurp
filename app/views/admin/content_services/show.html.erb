@@ -6,19 +6,36 @@
     { label: @content_service.name }) %>
 
 <% if current_user.admin? %>
-  <%= button_bar({ label: 'Reindex',
-                   icon: 'fa-refresh',
-                   method: 'post',
-                   url: admin_content_service_reindex_path(@content_service) },
-                 { label: 'Edit',
-                   icon: 'fa-pencil',
-                   url: edit_admin_content_service_path(@content_service) },
-                 { label: 'Delete',
-                   icon: 'fa-trash',
-                   url: admin_content_service_path(@content_service),
-                   method: 'delete',
-                   class: 'btn-danger',
-                   confirm: 'Are you sure you want to delete this content service?' }) %>
+  <div class="btn-group pull-right" role="group">
+    <div class="btn-group" role="group">
+      <button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Items
+      </button>
+      <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+        <%= link_to admin_content_service_reindex_path(@content_service),
+                    class: 'dropdown-item', method: 'post' do %>
+          <i class="fa fa-refresh"></i> Reindex
+        <% end %>
+        <%= link_to admin_content_service_purge_path(@content_service),
+                    class: 'dropdown-item', method: 'post',
+                    data: { confirm: 'Are you sure you want to purge all items '\
+                    'from this content service? This cannot be undone.' } do %>
+          <i class="fa fa-trash"></i> Purge
+        <% end %>
+      </div>
+    </div>
+    <%= link_to edit_admin_content_service_path(@content_service),
+                type: 'button', class: 'btn btn-light' do %>
+      <i class="fa fa-pencil"></i> Edit
+    <% end %>
+    <%= link_to admin_content_service_path(@content_service),
+                type: 'button', class: 'btn btn-danger', method: 'delete',
+                data: { confirm: 'Are you sure you want to delete this content '\
+                'service? This cannot be undone.' } do %>
+      <i class="fa fa-trash"></i> Delete
+    <% end %>
+  </div>
 <% end %>
 
 <h1><%= @content_service.name %></h1>
