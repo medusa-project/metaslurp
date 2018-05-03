@@ -212,6 +212,13 @@ class ItemTest < ActiveSupport::TestCase
     end
   end
 
+  test 'validate() raises error for invalid id' do
+    @instance.id = 'cats/dogs'
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
   test 'validate() raises error for invalid media type' do
     @instance.media_type = 'dogs'
     assert_raises ArgumentError do

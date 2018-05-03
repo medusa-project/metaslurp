@@ -323,6 +323,7 @@ class Item
   #
   def validate
     raise ArgumentError, 'Missing ID' if self.id.blank?
+    raise ArgumentError, 'ID may not contain slashes' if self.id.include?('/')
     raise ArgumentError, 'Invalid service key' unless
         ContentService.pluck(:key).include?(self.service_key)
     raise ArgumentError, 'Invalid media type' if
