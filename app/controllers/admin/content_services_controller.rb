@@ -76,6 +76,23 @@ module Admin
     end
 
     ##
+    # Responds to POST /admin/content-services/:key/purge
+    #
+    def purge
+      @content_service = ContentService.find_by_key(params[:content_service_key])
+      raise ActiveRecord::RecordNotFound unless @content_service
+      begin
+        @content_service.delete_all_items
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Successfully purged all items from #{@content_service.name}."
+      ensure
+        redirect_back fallback_location: admin_content_service_path(@content_service)
+      end
+    end
+
+    ##
     # Responds to POST /admin/content-services/:key/reindex
     #
     def reindex

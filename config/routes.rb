@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     resources :content_services, param: :key, path: 'content-services' do
       match '/element-mappings', to: 'content_services#clear_element_mappings',
             via: :delete, as: 'element_mappings'
+      match '/purge', to: 'content_services#purge', via: :post, as: 'purge'
       match '/reindex', to: 'content_services#reindex', via: :post, as: 'reindex'
     end
     resources :element_defs, path: 'elements', param: :name, except: :show
