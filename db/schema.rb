@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_02_200724) do
+ActiveRecord::Schema.define(version: 2018_05_04_141733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,14 +30,12 @@ ActiveRecord::Schema.define(version: 2018_05_02_200724) do
     t.string "name"
     t.string "label"
     t.string "description"
-    t.integer "index"
     t.boolean "searchable", default: true
     t.boolean "sortable", default: true
     t.boolean "facetable", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["facetable"], name: "index_element_defs_on_facetable"
-    t.index ["index"], name: "index_element_defs_on_index"
     t.index ["name"], name: "index_element_defs_on_name"
     t.index ["searchable"], name: "index_element_defs_on_searchable"
     t.index ["sortable"], name: "index_element_defs_on_sortable"

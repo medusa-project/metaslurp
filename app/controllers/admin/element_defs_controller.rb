@@ -7,8 +7,8 @@ module Admin
       REPLACE = 'replace'
     end
 
-    PERMITTED_PARAMS = [:description, :facetable, :index, :label, :name,
-                        :searchable, :sortable]
+    PERMITTED_PARAMS = [:description, :facetable, :label, :name, :searchable,
+                        :sortable]
 
     before_action :set_permitted_params
     before_action :require_admin, except: :index
@@ -96,13 +96,13 @@ module Admin
     # Responds to GET /elements
     #
     def index
+      @elements = ElementDef.all.order(:name)
+
       respond_to do |format|
         format.html do
-          @elements = ElementDef.all.order(:index)
           @new_element_def = ElementDef.new
         end
         format.json do
-          @elements = ElementDef.all.order(:name)
           headers['Content-Disposition'] = 'attachment; filename=elements.json'
           render plain: JSON.pretty_generate(@elements.as_json)
         end

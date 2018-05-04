@@ -1,15 +1,6 @@
 <%
   # @param element_def [ElementDef]
   # @param context [Symbol] :new or :edit
-
-  position_options_for_select = [['Nothing (First)', 0]]
-  elements = ElementDef.order(:index)
-  if element_def.id.present?
-    elements = elements.where('id != ?', element_def.id)
-  end
-  elements.each_with_index do |e, i|
-    position_options_for_select << [e.label, i + 1]
-  end
 %>
 
 <%= form_for([:admin, element_def], remote: true) do |f| %>
@@ -36,13 +27,6 @@
   <div class="form-group">
     <%= f.label :description %>
     <%= f.text_area :description, class: 'form-control' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :index, 'Position After' %>
-    <%= f.select :index, position_options_for_select,
-                 { selected: element_def.index },
-                 class: 'form-control' %>
   </div>
 
   <div class="checkbox">
