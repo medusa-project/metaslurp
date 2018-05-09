@@ -140,7 +140,7 @@ class ElasticsearchClient
       @@logger.info("ElasticsearchClient.delete_index_alias(): deleted "\
           "#{alias_name}")
     else
-      raise IOError, "Got #{response.status} for DELETE #{uri}\n"\
+      raise IOError, "Got #{response.status} for DELETE #{path}\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
     end
   end
