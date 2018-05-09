@@ -63,6 +63,7 @@
     "service_key": "service-key",
     "source_id": "some-item",
     "source_uri": "http://example.org/some-item",
+    "full_text": "The quick brown fox jumped over the lazy dog."
     "access_image_uri": "http://example.org/some-item/image.jp2",
     "elements" : [
         {
@@ -107,6 +108,11 @@
           <td>Element names are arbitrary and can be mapped to local names via
             the <%= link_to 'Control Panel', admin_root_path %>. At a minimum,
             <code>title</code> should be provided, if possible.</td>
+        </tr>
+        <tr>
+          <td><code>full_text</code></td>
+          <td>No</td>
+          <td>Free-form string of unlimited length.</td>
         </tr>
         <tr>
           <td><code>id</code></td>

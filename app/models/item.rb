@@ -37,6 +37,7 @@
 #
 # * access_image_uri URI of a high-quality access image.
 # * elements:        Enumerable of SourceElements.
+# * full_text:       Full text.
 # * id:              Identifier within the application.
 # * local_elements:  Enumerable of Elements.
 # * service_key:     Key of the ContentService from which the instance was
@@ -63,12 +64,13 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :elements, :id, :last_indexed,
+  attr_accessor :access_image_uri, :elements, :full_text, :id, :last_indexed,
                 :local_elements, :media_type, :service_key, :source_id,
                 :source_uri, :variant
 
   class IndexFields
     ACCESS_IMAGE_URI = 'access_image_uri'
+    FULL_TEXT = 'full_text'
     ID = '_id'
     LAST_INDEXED = 'date_last_indexed'
     MEDIA_TYPE = 'media_type'
@@ -134,6 +136,7 @@ class Item
 
     jobj = jobj['_source']
     item.access_image_uri = jobj[IndexFields::ACCESS_IMAGE_URI]
+    item.full_text = jobj[IndexFields::FULL_TEXT]
     item.last_indexed = Time.iso8601(jobj[IndexFields::LAST_INDEXED]) rescue nil
     item.media_type = jobj[IndexFields::MEDIA_TYPE]
     item.service_key = jobj[IndexFields::SERVICE_KEY]
@@ -186,6 +189,7 @@ class Item
     if jobj['elements'].respond_to?(:each)
       jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     end
+    item.full_text = jobj['full_text']
     item.id = jobj['id']
     item.media_type = jobj['media_type']
     item.service_key = jobj['service_key']
@@ -222,6 +226,7 @@ class Item
   def as_indexed_json
     doc = {}
     doc[IndexFields::ACCESS_IMAGE_URI] = self.access_image_uri
+    doc[IndexFields::FULL_TEXT] = self.full_text
     doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
     doc[IndexFields::MEDIA_TYPE] = self.media_type
     doc[IndexFields::SERVICE_KEY] = self.service_key
@@ -259,6 +264,7 @@ class Item
     struct['access_image_uri'] = self.access_image_uri
     struct['class'] = self.variant
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
+    struct['full_text'] = self.full_text
     struct['id'] = self.id
     struct['media_type'] = self.media_type
     struct['service_key'] = self.service_key
