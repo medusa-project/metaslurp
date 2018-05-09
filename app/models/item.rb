@@ -33,6 +33,10 @@
 # to ES documents via `as_indexed_json()`, send to ES, retrieved, and
 # deserialized back into instances via `from_indexed_json()`.
 #
+# The index schema should use dynamic templates for as many fields as possible.
+# An index may require weeks to repopulate, so having to create a new index
+# just to support a new field is a major inconvenience.
+#
 # # Attributes
 #
 # * access_image_uri URI of a high-quality access image.
@@ -68,16 +72,19 @@ class Item
                 :local_elements, :media_type, :service_key, :source_id,
                 :source_uri, :variant
 
+  ##
+  # These should all be dynamic fields if at all possible (see class doc).
+  #
   class IndexFields
-    ACCESS_IMAGE_URI = 'access_image_uri'
-    FULL_TEXT = 'full_text'
+    ACCESS_IMAGE_URI = 'k_access_image_uri'
+    FULL_TEXT = 't_full_text'
     ID = '_id'
-    LAST_INDEXED = 'date_last_indexed'
-    MEDIA_TYPE = 'media_type'
-    SERVICE_KEY = 'service_key'
-    SOURCE_ID = 'source_id'
-    SOURCE_URI = 'source_uri'
-    VARIANT = 'variant'
+    LAST_INDEXED = 'd_last_indexed'
+    MEDIA_TYPE = 'k_media_type'
+    SERVICE_KEY = 'k_service_key'
+    SOURCE_ID = 'k_source_id'
+    SOURCE_URI = 'k_source_uri'
+    VARIANT = 'k_variant'
   end
 
   ##

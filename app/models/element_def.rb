@@ -3,8 +3,9 @@
 #
 class ElementDef < ApplicationRecord
 
-  # N.B.: This should harmonize with SourceElement::INDEX_FIELD_PREFIX.
-  INDEX_FIELD_PREFIX = 'local_element_'
+  # N.B.: This should harmonize with SourceElement::INDEX_FIELD_PREFIX and must
+  # match a dynamic template in the index schema.
+  INDEX_FIELD_PREFIX = 'e_'
 
   KEYWORD_FIELD_SUFFIX = '.keyword'
   SORT_FIELD_SUFFIX = '.sort'
