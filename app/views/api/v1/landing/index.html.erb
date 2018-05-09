@@ -96,7 +96,10 @@
         <tr>
           <td><code>class</code></td>
           <td>Yes</td>
-          <td><code>Item</code> or <code>Collection</code></td>
+          <td>
+            One of the following:
+            <%=raw Item::Variants::all.sort.map{ |v| "<code>#{v}</code>" }.join(', ') %>
+          </td>
         </tr>
         <tr>
           <td><code>elements</code></td>

@@ -78,9 +78,16 @@ class Item
     VARIANT = 'variant'
   end
 
+  ##
+  # To add a variant:
+  #
+  # 1. Add it here
+  #
   class Variants
+    BOOK = 'Book'
     COLLECTION = 'Collection'
     ITEM = 'Item'
+    NEWSPAPER_PAGE = 'NewspaperPage'
 
     ##
     # @return [Enumerable<String>] String values of all variants.
