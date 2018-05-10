@@ -57,10 +57,6 @@ class ItemFinder < AbstractFinder
                 j.default_field @query[:field]
                 j.default_operator 'AND'
                 j.lenient true
-                if @include_children_in_results
-                  j.fields [@query[:field],
-                            ItemElement.new(name: EntityElement.element_name_for_indexed_field(@query[:field])).parent_indexed_field]
-                end
               end
             end
           end
@@ -108,6 +104,18 @@ class ItemFinder < AbstractFinder
               end
             end
           end
+        end
+      end
+
+      # Highlighting
+      if @highlight
+        j.highlight do
+          j.fields do
+            j.set! ElementDef::INDEX_FIELD_PREFIX + '*', {}
+          end
+          j.require_field_match false
+          j.pre_tags [ '<span class="dl-highlight">' ]
+          j.post_tags [ '</span>' ]
         end
       end
 

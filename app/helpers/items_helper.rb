@@ -17,16 +17,19 @@ module ItemsHelper
     html = '<ul class="list-unstyled">'
 
     items.each do |item|
-      desc = truncate(item.description, length: MAX_MEDIA_DESCRIPTION_LENGTH)
+      desc = truncate(raw(item.highlighted_description),
+                      length: MAX_MEDIA_DESCRIPTION_LENGTH)
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
-        image_tag('test-pattern.jpg', class: 'mr-3',
+        image_tag('test-pattern.jpg',
+                  class: 'mr-3',
                   width: MAX_MEDIA_THUMBNAIL_WIDTH,
                   alt: "Thumbnail for #{item}")
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       link_to(truncate(item.title, length: MAX_MEDIA_TITLE_LENGTH),
+      html +=       link_to(truncate(raw(item.highlighted_title),
+                                     length: MAX_MEDIA_TITLE_LENGTH),
                             item.source_uri)
       html +=     '</h5>'
       html +=     '<span class="dl-info-line">'
