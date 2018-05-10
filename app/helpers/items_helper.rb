@@ -94,7 +94,7 @@ module ItemsHelper
   #
   def search_status(total_num_results, start, num_results_shown, word)
     last = [total_num_results, start + num_results_shown].min
-    raw(sprintf("Showing %d&ndash;%d of %s %s",
+    raw(sprintf("Showing %s&ndash;%s of %s %s",
                 number_with_delimiter(start + 1),
                 number_with_delimiter(last),
                 number_with_delimiter(total_num_results),
