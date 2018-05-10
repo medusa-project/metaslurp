@@ -52,6 +52,7 @@ class ItemFinder < AbstractFinder
           if @query.present?
             j.must do
               # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
+              # N.B.: this must be kept in sync with the highlight_query
               j.query_string do
                 j.query @query[:query]
                 j.default_field @query[:field]
@@ -108,7 +109,7 @@ class ItemFinder < AbstractFinder
       end
 
       # Highlighting
-      if @highlight
+      if @highlight and @query
         j.highlight do
           j.fields do
             j.set! ElementDef::INDEX_FIELD_PREFIX + '*', {}
@@ -116,6 +117,20 @@ class ItemFinder < AbstractFinder
           j.require_field_match false
           j.pre_tags [ '<span class="dl-highlight">' ]
           j.post_tags [ '</span>' ]
+          # We need to duplicate the query_string part of the query here, or
+          # else filters will be highlighted too.
+          j.highlight_query do
+            j.bool do
+              j.must do
+                j.query_string do
+                  j.query @query[:query]
+                  j.default_field @query[:field]
+                  j.default_operator 'AND'
+                  j.lenient true
+                end
+              end
+            end
+          end
         end
       end
 

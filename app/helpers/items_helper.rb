@@ -40,10 +40,17 @@ module ItemsHelper
       # https://bugs.library.illinois.edu/browse/DLDS-45
       sorted_element = ElementDef.all.find{ |e| e.indexed_sort_field == params[:sort] }
       if sorted_element
-        e = item.elements
-                .reject{ |e| %w(date title).include?(e.name) }
-                .find{ |e| e.name == sorted_element.name }
-        html +=   "#{sorted_element.label}: #{e.value}<br>" if e
+        # Try to get a highlighted one.
+        exclude_elements = %w(date title)
+        el = item.highlighted_elements
+                 .reject{ |e| exclude_elements.include?(e.name) }
+                 .find{ |e| e.name == sorted_element.name }
+        unless el # fall back to the non-highlighted one
+          el = item.elements
+                   .reject{ |e| exclude_elements.include?(e.name) }
+                   .find{ |e| e.name == sorted_element.name }
+        end
+        html +=   "#{sorted_element.label}: #{el.value}<br>" if el
       end
       html +=     '<span class="dl-info-line">'
       html +=       icon_for(item) + ' '
