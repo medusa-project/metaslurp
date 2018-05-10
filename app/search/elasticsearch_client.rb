@@ -218,12 +218,15 @@ class ElasticsearchClient
   #
   def query(index, query)
     path = sprintf('/%s/_search?pretty', index)
-    @@logger.debug("ElasticsearchClient.query(): #{path}\n    #{query}")
     response = @@http_client.post do |request|
       request.path = path
       request.body = query
       request.headers['Content-Type'] = 'application/json'
     end
+
+    @@logger.debug("ElasticsearchClient.query(): #{path}\n"\
+        "    Request: #{query}\n"\
+        "    Response: #{response.body}")
     response.body
   end
 
