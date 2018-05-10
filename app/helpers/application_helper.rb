@@ -1,6 +1,6 @@
 module ApplicationHelper
 
-  MAX_PAGINATION_LINKS = 9
+  MAX_PAGINATION_LINKS = 7
 
   ##
   # Formats a boolean for display.
