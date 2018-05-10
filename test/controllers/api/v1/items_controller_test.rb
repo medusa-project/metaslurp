@@ -7,6 +7,7 @@ module Api
 
     setup do
       @valid_item = Item.new(id: 'cats',
+                             full_text: 'Lorem ipsum',
                              variant: Item::Variants::ITEM,
                              media_type: 'image/jpeg',
                              service_key: content_services(:one).key,

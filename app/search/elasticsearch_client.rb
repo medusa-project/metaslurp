@@ -140,7 +140,7 @@ class ElasticsearchClient
       @@logger.info("ElasticsearchClient.delete_index_alias(): deleted "\
           "#{alias_name}")
     else
-      raise IOError, "Got #{response.status} for DELETE #{uri}\n"\
+      raise IOError, "Got #{response.status} for DELETE #{path}\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
     end
   end
@@ -218,12 +218,15 @@ class ElasticsearchClient
   #
   def query(index, query)
     path = sprintf('/%s/_search?pretty', index)
-    @@logger.debug("ElasticsearchClient.query(): #{path}\n    #{query}")
     response = @@http_client.post do |request|
       request.path = path
       request.body = query
       request.headers['Content-Type'] = 'application/json'
     end
+
+    @@logger.debug("ElasticsearchClient.query(): #{path}\n"\
+        "    Request: #{query}\n"\
+        "    Response: #{response.body}")
     response.body
   end
 

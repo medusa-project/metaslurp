@@ -33,17 +33,26 @@
 # to ES documents via `as_indexed_json()`, send to ES, retrieved, and
 # deserialized back into instances via `from_indexed_json()`.
 #
+# The index schema should use dynamic templates for as many fields as possible.
+# An index may require weeks to repopulate, so having to create a new index
+# just to support a new field is a major inconvenience.
+#
 # # Attributes
 #
-# * access_image_uri URI of a high-quality access image.
-# * elements:        Enumerable of SourceElements.
-# * id:              Identifier within the application.
-# * local_elements:  Enumerable of Elements.
-# * service_key:     Key of the ContentService from which the instance was
-#                    obtained.
-# * source_id:       Identifier of the instance within its ContentService.
-# * variant:         Like a subclass. Used to differentiate types of instances
-#                    that all have more-or-less the same properties.
+# * access_image_uri      URI of a high-quality access image.
+# * elements:             Enumerable of SourceElements.
+# * full_text:            Full text.
+# * highlighted_elements: Enumerable of SourceElements that match a query,
+#                         whose values contain HTML tags representing the
+#                         matches.
+# * id:                   Identifier within the application.
+# * local_elements:       Enumerable of Elements.
+# * service_key:          Key of the ContentService from which the instance was
+#                         obtained.
+# * source_id:            Identifier of the instance within its ContentService.
+# * variant:              Like a subclass. Used to differentiate types of
+#                         instances that all have more-or-less the same
+#                         properties.
 #
 # ## Adding an attribute
 #
@@ -63,24 +72,35 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :elements, :id, :last_indexed,
-                :local_elements, :media_type, :service_key, :source_id,
-                :source_uri, :variant
+  attr_accessor :access_image_uri, :full_text, :id, :last_indexed,
+                :media_type, :service_key, :source_id, :source_uri, :variant
+  attr_reader :elements, :highlighted_elements, :local_elements
 
+  ##
+  # These should all be dynamic fields if at all possible (see class doc).
+  #
   class IndexFields
-    ACCESS_IMAGE_URI = 'access_image_uri'
+    ACCESS_IMAGE_URI = 'k_access_image_uri'
+    FULL_TEXT = 't_full_text'
     ID = '_id'
-    LAST_INDEXED = 'date_last_indexed'
-    MEDIA_TYPE = 'media_type'
-    SERVICE_KEY = 'service_key'
-    SOURCE_ID = 'source_id'
-    SOURCE_URI = 'source_uri'
-    VARIANT = 'variant'
+    LAST_INDEXED = 'd_last_indexed'
+    MEDIA_TYPE = 'k_media_type'
+    SERVICE_KEY = 'k_service_key'
+    SOURCE_ID = 'k_source_id'
+    SOURCE_URI = 'k_source_uri'
+    VARIANT = 'k_variant'
   end
 
+  ##
+  # To add a variant:
+  #
+  # 1. Add it here
+  #
   class Variants
+    BOOK = 'Book'
     COLLECTION = 'Collection'
     ITEM = 'Item'
+    NEWSPAPER_PAGE = 'NewspaperPage'
 
     ##
     # @return [Enumerable<String>] String values of all variants.
@@ -125,42 +145,58 @@ class Item
     item = Item.new
     item.id = jobj[IndexFields::ID]
 
-    jobj = jobj['_source']
-    item.access_image_uri = jobj[IndexFields::ACCESS_IMAGE_URI]
-    item.last_indexed = Time.iso8601(jobj[IndexFields::LAST_INDEXED]) rescue nil
-    item.media_type = jobj[IndexFields::MEDIA_TYPE]
-    item.service_key = jobj[IndexFields::SERVICE_KEY]
-    item.source_id = jobj[IndexFields::SOURCE_ID]
-    item.source_uri = jobj[IndexFields::SOURCE_URI]
-    item.variant = jobj[IndexFields::VARIANT]
+    jsrc = jobj['_source']
+    item.access_image_uri = jsrc[IndexFields::ACCESS_IMAGE_URI]
+    item.full_text = jsrc[IndexFields::FULL_TEXT]
+    item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
+    item.media_type = jsrc[IndexFields::MEDIA_TYPE]
+    item.service_key = jsrc[IndexFields::SERVICE_KEY]
+    item.source_id = jsrc[IndexFields::SOURCE_ID]
+    item.source_uri = jsrc[IndexFields::SOURCE_URI]
+    item.variant = jsrc[IndexFields::VARIANT]
 
     # Read source elements.
     prefix = SourceElement::INDEX_FIELD_PREFIX
-    jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
+    jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
       # This should always be true, but just in case there is a string value
       # instead of an array for some reason...
-      if jobj[key].respond_to?(:each)
-        jobj[key].each do |value|
+      if jsrc[key].respond_to?(:each)
+        jsrc[key].each do |value|
           item.elements << SourceElement.new(name: name, value: value)
         end
       else
-        item.elements << SourceElement.new(name: name, value: jobj[key])
+        item.elements << SourceElement.new(name: name, value: jsrc[key])
       end
     end
 
     # Read local elements.
     prefix = ElementDef::INDEX_FIELD_PREFIX
-    jobj.keys.select{ |k| k.start_with?(prefix) }.each do |key|
+    jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
       # TODO: it's a little awkward that we are assigning a SourceElement to local_elements
       # consider renaming SourceElement to DescriptiveElement or something
-      if jobj[key].respond_to?(:each)
-        jobj[key].each do |value|
+      if jsrc[key].respond_to?(:each)
+        jsrc[key].each do |value|
           item.local_elements << SourceElement.new(name: name, value: value)
         end
       else
-        item.local_elements << SourceElement.new(name: name, value: jobj[key])
+        item.local_elements << SourceElement.new(name: name, value: jsrc[key])
+      end
+    end
+
+    # Read highlighted elements.
+    jhl = jobj['highlight']
+
+    if jhl # will be nil if highlighting is disabled
+      prefix = ElementDef::INDEX_FIELD_PREFIX
+      jhl.keys.select{ |k| k.start_with?(prefix) }.each do |key|
+        name = key[prefix.length..key.length]
+        # TODO: it's a little awkward that we are assigning a SourceElement to local elements
+        # consider renaming SourceElement to DescriptiveElement or something
+        jhl[key].each do |value|
+          item.highlighted_elements << SourceElement.new(name: name, value: value)
+        end
       end
     end
 
@@ -179,6 +215,7 @@ class Item
     if jobj['elements'].respond_to?(:each)
       jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     end
+    item.full_text = jobj['full_text']
     item.id = jobj['id']
     item.media_type = jobj['media_type']
     item.service_key = jobj['service_key']
@@ -191,8 +228,9 @@ class Item
   end
 
   def initialize(args = {})
-    @elements = Set.new
-    @local_elements = Set.new
+    @elements             = Set.new
+    @highlighted_elements = Set.new
+    @local_elements       = Set.new
     args.each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
@@ -215,6 +253,7 @@ class Item
   def as_indexed_json
     doc = {}
     doc[IndexFields::ACCESS_IMAGE_URI] = self.access_image_uri
+    doc[IndexFields::FULL_TEXT] = self.full_text
     doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
     doc[IndexFields::MEDIA_TYPE] = self.media_type
     doc[IndexFields::SERVICE_KEY] = self.service_key
@@ -252,6 +291,7 @@ class Item
     struct['access_image_uri'] = self.access_image_uri
     struct['class'] = self.variant
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
+    struct['full_text'] = self.full_text
     struct['id'] = self.id
     struct['media_type'] = self.media_type
     struct['service_key'] = self.service_key
@@ -291,6 +331,21 @@ class Item
   end
 
   ##
+  # @return [String] Highlighted title value, or the result of `title`.
+  #
+  def highlighted_description
+    self.highlighted_elements.find{ |e| e.name == 'description' }&.value ||
+        self.description
+  end
+
+  ##
+  # @return [String] Highlighted title value, or the result of `title`.
+  #
+  def highlighted_title
+    self.highlighted_elements.find{ |e| e.name == 'title' }&.value || self.title
+  end
+
+  ##
   # (Re)indexes the instance into the latest index.
   #
   # @return [void]
@@ -323,6 +378,7 @@ class Item
   #
   def validate
     raise ArgumentError, 'Missing ID' if self.id.blank?
+    raise ArgumentError, 'ID may not contain slashes' if self.id.include?('/')
     raise ArgumentError, 'Invalid service key' unless
         ContentService.pluck(:key).include?(self.service_key)
     raise ArgumentError, 'Invalid media type' if

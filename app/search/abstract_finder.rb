@@ -6,6 +6,7 @@ class AbstractFinder
     @aggregations = true
     @bucket_limit = Option::integer(Option::Keys::FACET_TERM_LIMIT) || 10
     @filters = {} # Hash<String,Object>
+    @highlight = false
     @limit = ElasticsearchClient::MAX_RESULT_WINDOW
     @orders = [] # Array<Hash<Symbol,String>> with :field and :direction keys
     @query = nil # Hash<Symbol,String> Hash with :field and :query keys
@@ -99,6 +100,17 @@ class AbstractFinder
   #
   def get_start
     @start
+  end
+
+  ##
+  # Whether to enable search result highlighting.
+  #
+  # @param highlight [Boolean]
+  # @return [self]
+  #
+  def highlight(highlight)
+    @highlight = highlight
+    self
   end
 
   ##

@@ -4,7 +4,6 @@ title:
   name: title
   label: Title
   description: Some title
-  index: 0
   searchable: true
   sortable: true
   facetable: false
@@ -13,7 +12,6 @@ description:
   name: description
   label: Description
   description: Some description
-  index: 1
   searchable: true
   sortable: true
   facetable: false
@@ -22,7 +20,6 @@ subject:
   name: subject
   label: Subject
   description: Some subject
-  index: 2
   searchable: true
   sortable: false
   facetable: true

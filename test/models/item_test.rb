@@ -8,6 +8,7 @@ class ItemTest < ActiveSupport::TestCase
                          service_key: content_services(:one).key,
                          source_id: 'cats',
                          source_uri: 'http://example.org/cats',
+                         full_text: 'Lorem ipsum',
                          access_image_uri: 'http://example.org/cats/image.jpg',
                          variant: Item::Variants::ITEM)
     @instance.elements << SourceElement.new(name: 'name', value: 'value')
@@ -22,6 +23,7 @@ class ItemTest < ActiveSupport::TestCase
             Item::IndexFields::ID => 'cats',
             '_source' => {
                 Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
+                Item::IndexFields::FULL_TEXT => 'Lorem ipsum',
                 Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
                 Item::IndexFields::MEDIA_TYPE => 'image/jpeg',
                 Item::IndexFields::SERVICE_KEY => content_services(:one).key,
@@ -39,6 +41,7 @@ class ItemTest < ActiveSupport::TestCase
             }
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
+    assert_equal 'Lorem ipsum', item.full_text
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
     assert_equal 'cats', item.id
     assert_equal 'image/jpeg', item.media_type
@@ -64,6 +67,7 @@ class ItemTest < ActiveSupport::TestCase
             'service_key': content_services(:one).key,
             'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
+            'full_text': 'Lorem ipsum',
             'access_image_uri': 'http://example.org/cats/image.jpg',
             'elements': [
                 'name': 'name',
@@ -72,6 +76,7 @@ class ItemTest < ActiveSupport::TestCase
         })
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.id
+    assert_equal 'Lorem ipsum', item.full_text
     assert_equal 'image/jpeg', item.media_type
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
@@ -115,6 +120,8 @@ class ItemTest < ActiveSupport::TestCase
     struct = @instance.as_indexed_json
     assert_equal @instance.access_image_uri,
                  struct[Item::IndexFields::ACCESS_IMAGE_URI]
+    assert_equal @instance.full_text,
+                 struct[Item::IndexFields::FULL_TEXT]
     assert_not_empty struct[Item::IndexFields::LAST_INDEXED]
     assert_equal @instance.media_type,
                  struct[Item::IndexFields::MEDIA_TYPE]
@@ -134,6 +141,7 @@ class ItemTest < ActiveSupport::TestCase
     struct = @instance.as_json
     assert_equal Item::Variants::ITEM, struct['class']
     assert_equal 'cats', struct['id']
+    assert_equal 'Lorem ipsum', struct['full_text']
     assert_equal 'image/jpeg', struct['media_type']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'cats', struct['source_id']
@@ -207,6 +215,13 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'validate() raises error for missing id' do
     @instance.id = ''
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for invalid id' do
+    @instance.id = 'cats/dogs'
     assert_raises ArgumentError do
       @instance.validate
     end

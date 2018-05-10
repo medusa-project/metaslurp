@@ -17,16 +17,19 @@ module ItemsHelper
     html = '<ul class="list-unstyled">'
 
     items.each do |item|
-      desc = truncate(item.description, length: MAX_MEDIA_DESCRIPTION_LENGTH)
+      desc = truncate(raw(item.highlighted_description),
+                      length: MAX_MEDIA_DESCRIPTION_LENGTH)
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
-        image_tag('test-pattern.jpg', class: 'mr-3',
+        image_tag('test-pattern.jpg',
+                  class: 'mr-3',
                   width: MAX_MEDIA_THUMBNAIL_WIDTH,
                   alt: "Thumbnail for #{item}")
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       link_to(truncate(item.title, length: MAX_MEDIA_TITLE_LENGTH),
+      html +=       link_to(truncate(raw(item.highlighted_title),
+                                     length: MAX_MEDIA_TITLE_LENGTH),
                             item.source_uri)
       if item.element(:date)
         html +=       " <small>#{item.element(:date)}</small>"
@@ -85,8 +88,8 @@ module ItemsHelper
   def search_status(total_num_results, start, num_results_shown, word)
     last = [total_num_results, start + num_results_shown].min
     raw(sprintf("Showing %d&ndash;%d of %s %s",
-                start + 1,
-                last,
+                number_with_delimiter(start + 1),
+                number_with_delimiter(last),
                 number_with_delimiter(total_num_results),
                 word.pluralize(total_num_results)))
   end
@@ -98,12 +101,12 @@ module ItemsHelper
   # @return [String] HTML select element
   #
   def sort_menu
-    sortable_elements = ElementDef.where(sortable: true).order(:index)
+    sortable_elements = ElementDef.where(sortable: true).order(:name)
     html = ''
     if sortable_elements.any?
       html += '<select name="sort" class="custom-select my-1 mr-sm-2">
-          <optgroup label="Sort by&hellip;">
-            <option value="">Relevance</option>'
+          <optgroup label="Sort by&hellip;">'
+      html += "<option value=\"\">#{params[:q].present? ? 'Relevance' : 'Default Order'}</option>"
 
       # If there is an element in the ?sort= query, select it.
       selected_element = sortable_elements.
