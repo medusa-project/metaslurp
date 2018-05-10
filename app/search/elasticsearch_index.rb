@@ -77,22 +77,13 @@ class ElasticsearchIndex
     current_ver = current_version
     latest_ver = latest_version
 
-    if current_ver < latest_ver
-      @@logger.debug("ElasticsearchIndex.migrate_to_latest(): "\
-        "current version: #{current_ver}; "\
-        "latest version: #{latest_ver}")
-    else
-      @@logger.info("ElasticsearchIndex.migrate_to_latest(): "\
-        "already on the latest version. Nothing to do.")
-    end
+    @@logger.info("ElasticsearchIndex.migrate_to_latest(): "\
+      "current version: #{current_ver}; "\
+      "latest version: #{latest_ver}")
+
+    client = ElasticsearchClient.instance
 
     ActiveRecord::Base.transaction do
-      Option.set(Option::Keys::ELASTICSEARCH_INDEX_VERSION, latest_ver)
-      client = ElasticsearchClient.instance
-
-      @@logger.info("ElasticsearchIndex.migrate_to_latest(): "\
-          "now using version #{latest_ver}")
-
       ALL_INDEX_TYPES.each do |type|
         current_index = current(type)
         latest_index = latest(type)
@@ -102,8 +93,16 @@ class ElasticsearchIndex
         rescue IOError => e
           raise e unless e.message.include?('aliases_not_found_exception')
         end
+
+        puts latest_index.name
+        puts latest_index.current_alias_name
         client.create_index_alias(latest_index.name,
                                   latest_index.current_alias_name)
+
+        Option.set(Option::Keys::ELASTICSEARCH_INDEX_VERSION, latest_ver)
+
+        @@logger.info("ElasticsearchIndex.migrate_to_latest(): "\
+        "now using version #{latest_ver}")
       end
     end
   end
