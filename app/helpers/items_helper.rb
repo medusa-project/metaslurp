@@ -1,6 +1,6 @@
 module ItemsHelper
 
-  MAX_MEDIA_TITLE_LENGTH = 100
+  MAX_MEDIA_TITLE_LENGTH = 120
   MAX_MEDIA_DESCRIPTION_LENGTH = 200
   MAX_MEDIA_THUMBNAIL_WIDTH = 120
 
@@ -17,8 +17,15 @@ module ItemsHelper
     html = '<ul class="list-unstyled">'
 
     items.each do |item|
-      desc = truncate(raw(item.highlighted_description),
-                      length: MAX_MEDIA_DESCRIPTION_LENGTH)
+      hl_title = item.highlighted_title
+      hl_title_no_tags = strip_tags(hl_title)
+      title_tag_length = hl_title.length - hl_title_no_tags.length
+      hl_desc = item.highlighted_description
+      hl_desc_no_tags = strip_tags(hl_desc)
+      desc_tag_length = hl_desc.length - hl_desc_no_tags.length
+
+      desc = truncate(raw(hl_desc),
+                      length: MAX_MEDIA_DESCRIPTION_LENGTH + desc_tag_length)
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
         image_tag('test-pattern.jpg',
@@ -28,8 +35,8 @@ module ItemsHelper
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       link_to(truncate(raw(item.highlighted_title),
-                                     length: MAX_MEDIA_TITLE_LENGTH),
+      html +=       link_to(truncate(raw(hl_title),
+                                     length: MAX_MEDIA_TITLE_LENGTH + title_tag_length),
                             item.source_uri)
       if item.element(:date)
         html +=       " <small>#{item.element(:date)}</small>"
