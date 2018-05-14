@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
 
-  PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start, :utf8]
+  PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start]
 
   before_action :set_sanitized_params
 
