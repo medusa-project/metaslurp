@@ -11,7 +11,7 @@ class ItemsController < ApplicationController
     finder = ItemFinder.new.
         query_all(params[:q]).
         facet_filters(params[:fq]).
-        highlight(true).
+        highlight(false).
         exclude_variants(Item::Variants::COLLECTION).
         order(params[:sort]).
         start(@start).
