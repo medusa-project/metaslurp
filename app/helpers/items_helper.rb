@@ -17,11 +17,11 @@ module ItemsHelper
     html = '<ul class="list-unstyled">'
 
     items.each do |item|
-      hl_title = item.highlighted_title
-      hl_title_no_tags = strip_tags(hl_title)
+      hl_title = item.highlighted_title || ''
+      hl_title_no_tags = strip_tags(hl_title) || ''
       title_tag_length = hl_title.length - hl_title_no_tags.length
-      hl_desc = item.highlighted_description
-      hl_desc_no_tags = strip_tags(hl_desc)
+      hl_desc = item.highlighted_description || ''
+      hl_desc_no_tags = strip_tags(hl_desc) || ''
       desc_tag_length = hl_desc.length - hl_desc_no_tags.length
 
       desc = truncate(raw(hl_desc),
