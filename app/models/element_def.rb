@@ -3,7 +3,7 @@
 #
 class ElementDef < ApplicationRecord
 
-  # N.B.: This should harmonize with SourceElement::INDEX_FIELD_PREFIX and must
+  # N.B.: This should harmonize with Element::INDEX_FIELD_PREFIX and must
   # match a dynamic template in the index schema.
   INDEX_FIELD_PREFIX = 'e_'
 

@@ -1,9 +1,9 @@
 require 'test_helper'
 
-class SourceElementTest < ActiveSupport::TestCase
+class ElementTest < ActiveSupport::TestCase
 
   setup do
-    @instance = SourceElement.new(name: 'name', value: 'value')
+    @instance = Element.new(name: 'name', value: 'value')
   end
 
   # from_json()
@@ -11,7 +11,7 @@ class SourceElementTest < ActiveSupport::TestCase
   test 'from_json() with valid data returns an instance' do
     name = 'name'
     value = 'value'
-    e = SourceElement.from_json({ 'name': name, 'value': value })
+    e = Element.from_json({ 'name': name, 'value': value })
 
     assert_equal name, e.name
     assert_equal value, e.value
@@ -19,14 +19,14 @@ class SourceElementTest < ActiveSupport::TestCase
 
   test 'from_json() with invalid data raises an error' do
     assert_raises ArgumentError do
-      SourceElement.from_json({ 'cats': 'cats', 'dogs': 'dogs' })
+      Element.from_json({ 'cats': 'cats', 'dogs': 'dogs' })
     end
   end
 
   # initialize()
 
   test 'initialize() works' do
-    e = SourceElement.new(name: 'name', value: 'value')
+    e = Element.new(name: 'name', value: 'value')
     assert_equal 'name', e.name
     assert_equal 'value', e.value
   end
@@ -34,17 +34,17 @@ class SourceElementTest < ActiveSupport::TestCase
   # ==()
 
   test '==() with equal instance' do
-    e = SourceElement.new(name: 'name', value: 'value')
+    e = Element.new(name: 'name', value: 'value')
     assert_equal e, @instance
   end
 
   test '==() with different name' do
-    e = SourceElement.new(name: 'name2', value: 'value')
+    e = Element.new(name: 'name2', value: 'value')
     assert_not_equal e, @instance
   end
 
   test '==() with different value' do
-    e = SourceElement.new(name: 'name', value: 'value2')
+    e = Element.new(name: 'name', value: 'value2')
     assert_not_equal e, @instance
   end
 

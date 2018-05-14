@@ -1,4 +1,4 @@
-class SourceElement
+class Element
 
   # N.B.: This should harmonize with ElementDef::INDEX_FIELD_PREFIX and must
   # match a dynamic template in the index schema.
@@ -8,12 +8,12 @@ class SourceElement
 
   ##
   # @param obj [Hash] Deserialized JSON.
-  # @return [SourceElement]
+  # @return [Element]
   # @raises [ArgumentError] If the JSON structure is invalid.
   #
   def self.from_json(jobj)
     jobj = jobj.stringify_keys
-    e = SourceElement.new(name: jobj['name'], value: jobj['value'])
+    e = Element.new(name: jobj['name'], value: jobj['value'])
     e.validate
     e
   end
@@ -25,7 +25,7 @@ class SourceElement
   end
 
   def ==(obj)
-    obj.object_id == self.object_id || (obj.kind_of?(SourceElement) and
+    obj.object_id == self.object_id || (obj.kind_of?(Element) and
         obj.name == self.name and obj.value == self.value)
   end
 

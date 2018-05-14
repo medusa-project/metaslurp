@@ -40,12 +40,12 @@ class ContentService < ApplicationRecord
   end
 
   ##
-  # @param src_element [SourceElement]
+  # @param element [Element]
   # @return [ElementDef]
   #
-  def element_def_for_source_element(src_element)
+  def element_def_for_element(element)
     self.element_mappings.
-        select{ |m| m.source_name == src_element.name}.first&.element_def
+        select{ |m| m.source_name == element.name}.first&.element_def
   end
 
   ##
@@ -78,7 +78,7 @@ class ContentService < ApplicationRecord
   # instance already has mappings for `a` and `b`, then a `c` mapping will be
   # added.
   #
-  # @param source_elements [Enumerable<SourceElement>]
+  # @param elements [Enumerable<Element>]
   # @return [void]
   #
   def update_element_mappings(source_elements)

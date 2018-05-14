@@ -16,12 +16,12 @@
 # # Description
 #
 # Items have a number of hard-coded attributes (see below) as well as
-# collections of SourceElements, which represent metadata elements of the
-# instance within the content service, and Elements, which represent local
-# metadata elements to which SourceElements get mapped. Hard-coded attributes
-# are used by the system. SourceElements contain free-form strings and can be
-# mapped to Elements to control how they work with regard to searching,
-# faceting, etc. on a per-ContentService basis.
+# collections of Elements, which represent metadata elements of the instance
+# within the content service, and Elements, which represent local metadata
+# elements to which Elements get mapped. Hard-coded attributes are used by the
+# system. Elements contain free-form strings and can be mapped to Elements to
+# control how they work with regard to searching, faceting, etc. on a
+# per-ContentService basis.
 #
 # # Indexing
 #
@@ -40,11 +40,10 @@
 # # Attributes
 #
 # * access_image_uri      URI of a high-quality access image.
-# * elements:             Enumerable of SourceElements.
+# * elements:             Enumerable of Elements.
 # * full_text:            Full text.
-# * highlighted_elements: Enumerable of SourceElements that match a query,
-#                         whose values contain HTML tags representing the
-#                         matches.
+# * highlighted_elements: Enumerable of Elements that match a query, whose
+#                         values contain HTML tags representing the matches.
 # * id:                   Identifier within the application.
 # * local_elements:       Enumerable of Elements.
 # * service_key:          Key of the ContentService from which the instance was
@@ -156,17 +155,17 @@ class Item
     item.variant = jsrc[IndexFields::VARIANT]
 
     # Read source elements.
-    prefix = SourceElement::INDEX_FIELD_PREFIX
+    prefix = Element::INDEX_FIELD_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
       # This should always be true, but just in case there is a string value
       # instead of an array for some reason...
       if jsrc[key].respond_to?(:each)
         jsrc[key].each do |value|
-          item.elements << SourceElement.new(name: name, value: value)
+          item.elements << Element.new(name: name, value: value)
         end
       else
-        item.elements << SourceElement.new(name: name, value: jsrc[key])
+        item.elements << Element.new(name: name, value: jsrc[key])
       end
     end
 
@@ -174,14 +173,12 @@ class Item
     prefix = ElementDef::INDEX_FIELD_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
-      # TODO: it's a little awkward that we are assigning a SourceElement to local_elements
-      # consider renaming SourceElement to DescriptiveElement or something
       if jsrc[key].respond_to?(:each)
         jsrc[key].each do |value|
-          item.local_elements << SourceElement.new(name: name, value: value)
+          item.local_elements << Element.new(name: name, value: value)
         end
       else
-        item.local_elements << SourceElement.new(name: name, value: jsrc[key])
+        item.local_elements << Element.new(name: name, value: jsrc[key])
       end
     end
 
@@ -192,10 +189,8 @@ class Item
       prefix = ElementDef::INDEX_FIELD_PREFIX
       jhl.keys.select{ |k| k.start_with?(prefix) }.each do |key|
         name = key[prefix.length..key.length]
-        # TODO: it's a little awkward that we are assigning a SourceElement to local elements
-        # consider renaming SourceElement to DescriptiveElement or something
         jhl[key].each do |value|
-          item.highlighted_elements << SourceElement.new(name: name, value: value)
+          item.highlighted_elements << Element.new(name: name, value: value)
         end
       end
     end
@@ -213,7 +208,7 @@ class Item
     item = Item.new
     item.access_image_uri = jobj['access_image_uri']
     if jobj['elements'].respond_to?(:each)
-      jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
+      jobj['elements'].each { |je| item.elements << Element.from_json(je) }
     end
     item.full_text = jobj['full_text']
     item.id = jobj['id']
@@ -272,7 +267,7 @@ class Item
       doc[src_elem.indexed_field] << value
 
       # Add the mapped local element, if one exists.
-      local_elem = self.content_service&.element_def_for_source_element(src_elem)
+      local_elem = self.content_service&.element_def_for_element(src_elem)
       if local_elem
         unless doc.keys.include?(local_elem.indexed_field)
           doc[local_elem.indexed_field] = []
@@ -316,7 +311,7 @@ class Item
 
   ##
   # @param name [String]
-  # @return [SourceElement] Local element with the given name.
+  # @return [Element] Local element with the given name.
   #
   def element(name)
     self.local_elements.find{ |e| e.name == name.to_s }
