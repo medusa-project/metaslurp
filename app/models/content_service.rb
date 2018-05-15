@@ -78,20 +78,20 @@ class ContentService < ApplicationRecord
   # instance already has mappings for `a` and `b`, then a `c` mapping will be
   # added.
   #
-  # @param elements [Enumerable<Element>]
+  # @param item_elements [Enumerable<Element>]
   # @return [void]
   #
-  def update_element_mappings(source_elements)
-    return if source_elements.empty?
+  def update_element_mappings(item_elements)
+    return if item_elements.empty?
 
     mappings = self.element_mappings
 
-    source_elements.each do |element|
-      if mappings.select { |m| m.source_name == element.name }.empty?
-        mappings.build(source_name: element.name)
+    item_elements.each do |item_element|
+      unless mappings.find{ |m| m.source_name == item_element.name }
+        mappings.build(source_name: item_element.name)
       end
     end
-    self.save!
+    self.save! rescue PG::UniqueViolation # this is OK as this method is not thread-safe
   end
 
 end
