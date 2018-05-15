@@ -9,6 +9,8 @@ module Api
     before_action :authorize_user
     skip_before_action :verify_authenticity_token
 
+    rescue_from Exception, with: :error_response
+
     DEFAULT_RESULTS_LIMIT = 100
     MAX_RESULTS_LIMIT = 1000
 
@@ -33,6 +35,11 @@ module Api
         return false
       end
       true
+    end
+
+    def error_response(ex)
+      render plain: "#{ex.message}\n\n#{ex.backtrace.join("\n\t")}",
+             status: :internal_server_error
     end
 
   end
