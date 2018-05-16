@@ -20,6 +20,13 @@ class ContentServiceTest < ActiveSupport::TestCase
     assert_nil @instance.element_def_for_element(src_elem)
   end
 
+  # send_delete_all_items_sns()
+
+  test 'send_delete_all_items_sns works' do
+    @instance.send_delete_all_items_sns
+    # TODO: improve this
+  end
+
   # update_element_mappings()
 
   test 'update_element_mappings() works' do
