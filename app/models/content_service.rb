@@ -19,6 +19,7 @@ class ContentService < ApplicationRecord
   # Deletes all items associated with the service from the index.
   #
   # @return [void]
+  # @see send_delete_all_items_sns()
   #
   def delete_all_items
     index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
@@ -62,6 +63,36 @@ class ContentService < ApplicationRecord
           count
     end
     @num_items
+  end
+
+  ##
+  # Sends an SNS message to delete all items, which will be picked up by an
+  # AWS Lambda function.
+  #
+  # @return [void]
+  # @see delete_all_items()
+  #
+  def send_delete_all_items_sns
+    sns = Aws::SNS::Resource.new(region: 'us-east-2') # TODO: don't hard-code this
+    topic = sns.topic('arn:aws:sns:us-east-2:974537181275:metaslurp-dev') # TODO: don't hard-code this
+    attrs = {
+        'Message': 'purgeDocuments',
+        'MessageAttributes': {
+            'IndexName': {
+                'Type': 'String',
+                'Value': ElasticsearchIndex::current(Item::ELASTICSEARCH_INDEX)
+            },
+            'FieldName': {
+                'Type': 'String',
+                'Value': Item::IndexFields::SERVICE_KEY
+            },
+            'FieldValue': {
+                'Type': 'String',
+                'Value': @content_service.key
+            }
+        }
+    }
+    topic.publish(attrs)
   end
 
   def to_param

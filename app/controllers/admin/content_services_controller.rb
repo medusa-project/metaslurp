@@ -82,11 +82,12 @@ module Admin
       @content_service = ContentService.find_by_key(params[:content_service_key])
       raise ActiveRecord::RecordNotFound unless @content_service
       begin
-        @content_service.delete_all_items
+        @content_service.send_delete_all_items_sns
       rescue => e
         flash['error'] = "#{e}"
       else
-        flash['success'] = "Successfully purged all items from #{@content_service.name}."
+        flash['success'] = "Purging all items from #{@content_service.name} "\
+            "in the background. This may take a few minutes."
       ensure
         redirect_back fallback_location: admin_content_service_path(@content_service)
       end
