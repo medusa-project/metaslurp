@@ -88,7 +88,7 @@ class ContentService < ApplicationRecord
             },
             'FieldValue': {
                 'Type': 'String',
-                'Value': @content_service.key
+                'Value': self.key
             }
         }
     }
