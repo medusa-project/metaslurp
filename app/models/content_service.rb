@@ -74,21 +74,22 @@ class ContentService < ApplicationRecord
   #
   def send_delete_all_items_sns
     sns = Aws::SNS::Resource.new(region: 'us-east-2') # TODO: don't hard-code this
+    # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
     topic = sns.topic('arn:aws:sns:us-east-2:974537181275:metaslurp-dev') # TODO: don't hard-code this
     attrs = {
-        'Message': 'purgeDocuments',
-        'MessageAttributes': {
-            'IndexName': {
-                'Type': 'String',
-                'Value': ElasticsearchIndex::current(Item::ELASTICSEARCH_INDEX)
+        message: 'purgeDocuments',
+        message_attributes: {
+            'IndexName' => {
+                data_type: 'String',
+                string_value: ElasticsearchIndex::current(Item::ELASTICSEARCH_INDEX).name
             },
-            'FieldName': {
-                'Type': 'String',
-                'Value': Item::IndexFields::SERVICE_KEY
+            'FieldName' => {
+                data_type: 'String',
+                string_value: Item::IndexFields::SERVICE_KEY
             },
-            'FieldValue': {
-                'Type': 'String',
-                'Value': self.key
+            'FieldValue' => {
+                data_type: 'String',
+                string_value: self.key
             }
         }
     }
