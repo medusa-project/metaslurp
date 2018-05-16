@@ -75,7 +75,7 @@ class ContentService < ApplicationRecord
   def send_delete_all_items_sns
     sns = Aws::SNS::Resource.new(region: 'us-east-2') # TODO: don't hard-code this
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
-    topic = sns.topic('arn:aws:sns:us-east-2:974537181275:metaslurp-dev') # TODO: don't hard-code this
+    topic = sns.topic(ENV['SNS_TOPIC_ARN'])
     attrs = {
         message: 'purgeDocuments',
         message_attributes: {
