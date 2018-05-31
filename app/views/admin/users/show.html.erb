@@ -5,7 +5,7 @@
     { label: 'Users', url: admin_users_path },
     { label: @user.username }) %>
 
-<div class="btn-group pull-right" role="group">
+<div class="btn-group float-right" role="group">
   <div class="btn-group" role="group">
     <!-- Actions menu -->
     <% if current_user.admin? or @user == current_user %>

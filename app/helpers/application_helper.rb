@@ -64,7 +64,7 @@ module ApplicationHelper
   # @param items [Enumerable<Hash>]
   #
   def button_bar(*items)
-    html = '<div class="btn-group pull-right" role="group">'
+    html = '<div class="btn-group float-right" role="group">'
 
     items.select{ |item| !item[:if] or item[:if].call }.each do |item|
       options = {}
