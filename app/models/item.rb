@@ -94,6 +94,7 @@ class Item
   # To add a variant:
   #
   # 1. Add it here
+  # 2. Make ApplicationHelper.icon_for() aware of it
   #
   class Variants
     BOOK = 'Book'

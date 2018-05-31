@@ -160,8 +160,12 @@ module ApplicationHelper
       icon = 'fa-cube'
     elsif entity.kind_of?(Item)
       case entity.variant
+        when Item::Variants::BOOK
+          icon = 'fa-book'
         when Item::Variants::COLLECTION
           icon = 'fa-folder-open-o'
+        when Item::Variants::NEWSPAPER_PAGE
+          icon = 'fa-newspaper'
         else
           icon = 'fa-cube'
       end
