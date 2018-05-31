@@ -6,7 +6,7 @@
     { label: @role.name }) %>
 
 <%= button_bar({ label: 'Edit',
-                 icon: 'fa-pencil',
+                 icon: 'fa-edit',
                  if: lambda { current_user.admin? },
                  url: edit_admin_role_path(@role) },
                { label: 'Delete',

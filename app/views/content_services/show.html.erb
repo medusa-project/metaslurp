@@ -12,7 +12,7 @@
       <div class="dropdown-menu dropdown-menu-right" role="menu">
         <%= link_to admin_content_service_path(@service), class: 'dropdown-item',
                     target: '_blank' do %>
-          <i class="fa fa-eye"></i> Admin View
+          <i class="fas fa-eye"></i> Admin View
         <% end %>
       </div>
     </div>
@@ -23,7 +23,7 @@
   <%= @service %>
   <%= link_to @service.uri, role: 'button', class: 'btn btn-light',
               target: '_blank' do %>
-    <i class="fa fa-globe"></i> Website
+    <i class="fas fa-globe"></i> Website
   <% end %>
 </h1>
 
@@ -37,14 +37,14 @@
           <%= link_to items_path('fq[]': Item::IndexFields::SERVICE_KEY + ElementDef::KEYWORD_FIELD_SUFFIX + ':' + @service.key),
                       role: 'button',
                       class: 'btn btn-lg btn-primary' do %>
-            <i class="fa fa-cube"></i>
+            <i class="fas fa-cube"></i>
               <%= number_with_delimiter(@num_items) %> items
           <% end %>
         </div>
       </div>
     <% else %>
       <div class="alert alert-info">
-        <i class="fa fa-info-circle"></i>
+        <i class="fas fa-info-circle"></i>
         We haven't yet harvested any items from this service.
       </div>
     <% end %>

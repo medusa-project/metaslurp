@@ -81,11 +81,11 @@ module ApplicationHelper
 
       if item[:type] == 'button'
         html += "<button type=\"button\" class=\"#{options[:class]}\" #{item.map{ |k,v| "#{k}=\"#{v}\"" }.join(' ')}>" +
-            raw((item[:icon].present? ? "<i class=\"fa #{item[:icon]}\"></i> " : ' ')) +
+            raw((item[:icon].present? ? "<i class=\"fas #{item[:icon]}\"></i> " : ' ')) +
             item[:label] + '</button>'
       else
         html += link_to(item[:url], options) do
-          raw((item[:icon].present? ? "<i class=\"fa #{item[:icon]}\"></i> " : ' ')) +
+          raw((item[:icon].present? ? "<i class=\"fas #{item[:icon]}\"></i> " : ' ')) +
           item[:label]
         end
       end
@@ -163,7 +163,7 @@ module ApplicationHelper
         when Item::Variants::BOOK
           icon = 'fa-book'
         when Item::Variants::COLLECTION
-          icon = 'fa-folder-open-o'
+          icon = 'fa-folder-open'
         when Item::Variants::NEWSPAPER_PAGE
           icon = 'fa-newspaper'
         else
@@ -174,7 +174,7 @@ module ApplicationHelper
     else
       icon = 'fa-cube'
     end
-    raw("<i class=\"fa #{icon}\"></i>")
+    raw("<i class=\"fas #{icon}\"></i>")
   end
 
   ##

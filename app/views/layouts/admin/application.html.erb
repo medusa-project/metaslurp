@@ -10,6 +10,9 @@
 
   <%= stylesheet_link_tag 'admin', media: 'all' %>
   <%= javascript_include_tag 'admin/application' %>
+
+  <%= render partial: 'layouts/font_awesome' %>
+
   <!--[if lt IE 9]>
   <script src="https://raw.githubusercontent.com/aFarkas/html5shiv/master/src/html5shiv.js"></script>
   <![endif]-->
@@ -23,7 +26,7 @@
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <%= link_to admin_root_path, class: 'navbar-brand' do %>
-      <i class="fa fa-dashboard"></i>
+      <i class="fas fa-tachometer-alt"></i>
     <% end %>
 
     <button type="button" class="navbar-toggler" data-toggle="collapse"
@@ -72,7 +75,7 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="dl-user-menu-toggle"
              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-            <i class="fa fa-user" aria-hidden="true"></i>
+            <i class="fas fa-user" aria-hidden="true"></i>
             <%= current_user.username %>
           </a>
           <div class="dropdown-menu dropdown-menu-right"
