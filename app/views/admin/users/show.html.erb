@@ -5,7 +5,7 @@
     { label: 'Users', url: admin_users_path },
     { label: @user.username }) %>
 
-<div class="btn-group pull-right" role="group">
+<div class="btn-group float-right" role="group">
   <div class="btn-group" role="group">
     <!-- Actions menu -->
     <% if current_user.admin? or @user == current_user %>
@@ -15,21 +15,21 @@
       </button>
       <div class="dropdown-menu" role="menu">
         <%= link_to admin_user_reset_api_key_path(@user), method: :post, class: 'dropdown-item' do %>
-          <i class="fa fa-key"></i> Reset API Key
+          <i class="fas fa-key"></i> Reset API Key
         <% end %>
       </div>
     <% end %>
   </div>
   <% if current_user.admin? or current_user == @user %>
     <%= link_to edit_admin_user_path(@user), class: 'btn btn-light' do %>
-      <i class="fa fa-pencil"></i> Edit
+      <i class="fas fa-edit"></i> Edit
     <% end %>
   <% end %>
   <% if current_user.admin? %>
     <%= link_to admin_user_path(@user), method: :delete,
                 class: 'btn btn-danger',
                 data: { confirm: 'Are you sure you want to delete this user?' } do %>
-      <i class="fa fa-trash"></i> Delete
+      <i class="fas fa-trash"></i> Delete
     <% end %>
   <% end %>
 </div>

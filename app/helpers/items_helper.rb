@@ -69,7 +69,7 @@ module ItemsHelper
         html += link_to(admin_item_path(item),
                         class: 'btn btn-light btn-sm',
                         target: '_blank') do
-              raw('<i class="fa fa-lock"></i> Admin View')
+              raw('<i class="fas fa-lock"></i> Admin View')
             end
       end
       html +=     '</span><br>'
@@ -144,7 +144,7 @@ module ItemsHelper
   def add_to_favorites_button(item)
     html = '<button class="btn btn-light btn-sm ' +
         'dl-add-to-favorites" data-item-id="' + item.id + '">'
-    html += '  <i class="fa fa-heart-o"></i>'
+    html += '  <i class="fas fa-heart"></i>'
     html += '</button>'
     raw(html)
   end
@@ -156,7 +156,7 @@ module ItemsHelper
   def remove_from_favorites_button(item)
     html = '<button class="btn btn-sm btn-outline-danger ' +
         'dl-remove-from-favorites" data-item-id="' + item.id + '">'
-    html += '  <i class="fa fa-heart"></i> Remove'
+    html += '  <i class="fas fa-heart"></i> Remove'
     html += '</button>'
     raw(html)
   end

@@ -8,7 +8,6 @@ end
 gem 'aws-sdk-sns', '~> 1'
 gem 'bootstrap', '~> 4.1.0'
 gem 'faraday'
-gem 'font-awesome-sass', '~> 4.7.0'
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'js_cookie_rails'
