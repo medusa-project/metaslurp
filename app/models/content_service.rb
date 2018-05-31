@@ -58,7 +58,7 @@ class ContentService < ApplicationRecord
       @num_items = ItemFinder.new.
           content_service(self).
           aggregations(false).
-          include_variants(Item::Variants::ITEM).
+          exclude_variants(Item::Variants::COLLECTION).
           limit(0).
           count
     end
