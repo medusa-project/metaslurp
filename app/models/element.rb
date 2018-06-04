@@ -1,22 +1,9 @@
 class Element
 
-  # N.B.: This should harmonize with ElementDef::INDEX_FIELD_PREFIX and must
-  # match a dynamic template in the index schema.
-  INDEX_FIELD_PREFIX = 's_'
+  KEYWORD_FIELD_SUFFIX = '.keyword'
+  SORT_FIELD_SUFFIX = '.sort'
 
   attr_accessor :name, :value
-
-  ##
-  # @param obj [Hash] Deserialized JSON.
-  # @return [Element]
-  # @raises [ArgumentError] If the JSON structure is invalid.
-  #
-  def self.from_json(jobj)
-    jobj = jobj.stringify_keys
-    e = Element.new(name: jobj['name'], value: jobj['value'])
-    e.validate
-    e
-  end
 
   def initialize(args = {})
     args.each do |k,v|
@@ -41,13 +28,6 @@ class Element
 
   def hash
     [self.name, self.value].hash
-  end
-
-  ##
-  # @return [String] Name of the indexed field for the instance.
-  #
-  def indexed_field
-    [INDEX_FIELD_PREFIX, self.name].join
   end
 
   ##

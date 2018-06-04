@@ -1,3 +1,5 @@
+<% provide(:title, @item.title) %>
+
 <h1><%= @item.title %></h1>
 
 <nav style="margin-bottom: 1em">
@@ -61,13 +63,10 @@
   <div class="tab-pane fade" id="nav-document" role="tabpanel"
        aria-labelledby="nav-document-tab">
     <div class="alert alert-info">
-    <ul>
-      <li><code><%= Element::INDEX_FIELD_PREFIX %>*</code>: source element</li>
-      <li><code><%= ElementDef::INDEX_FIELD_PREFIX %>*</code>: local element</li>
-      <li><code>d_*</code>: date</li>
-      <li><code>k_*</code>: keyword</li>
-      <li><code>t_*</code>: text</li>
-    </ul>
+      <ul>
+        <li><code><%= SourceElement::INDEX_PREFIX %>*</code>: source element</li>
+        <li><code><%= LocalElement::STRING_INDEX_PREFIX %>*</code>: local element</li>
+      </ul>
     </div>
     <pre><%= JSON.pretty_unparse(@indexed_document) %></pre>
   </div>

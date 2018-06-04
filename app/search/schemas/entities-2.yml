@@ -31,7 +31,7 @@ mappings:
           type: text
           copy_to: search_all
     - source_metadata_elements:
-        # must be kept in sync with Element::INDEX_FIELD_PREFIX
+        # must be kept in sync with SourceElement::INDEX_PREFIX
         match: s_*
         mapping:
           type: text
@@ -47,7 +47,7 @@ mappings:
               strength: quaternary
               alternate: shifted
     - local_metadata_elements:
-        # must be kept in sync with ElementDef::INDEX_FIELD_PREFIX
+        # must be kept in sync with LocalElement::STRING_INDEX_PREFIX
         match: e_*
         mapping:
           type: text

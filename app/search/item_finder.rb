@@ -112,7 +112,7 @@ class ItemFinder < AbstractFinder
       if @highlight and @query
         j.highlight do
           j.fields do
-            j.set! ElementDef::INDEX_FIELD_PREFIX + '*', {}
+            j.set! LocalElement::STRING_INDEX_PREFIX + '*', {}
           end
           j.require_field_match false
           j.pre_tags [ '<span class="dl-highlight">' ]
@@ -185,7 +185,7 @@ class ItemFinder < AbstractFinder
   def facetable_elements
     elements = [
         ElementDef.new(name: Item::IndexFields::SERVICE_KEY,
-                       indexed_keyword_field: Item::IndexFields::SERVICE_KEY + ElementDef::KEYWORD_FIELD_SUFFIX,
+                       indexed_keyword_field: Item::IndexFields::SERVICE_KEY + Element::KEYWORD_FIELD_SUFFIX,
                        label: 'Service',
                        facetable: true)
     ]

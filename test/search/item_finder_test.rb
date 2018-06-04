@@ -22,7 +22,7 @@ class ItemFinderTest < ActiveSupport::TestCase
                     source_uri: 'http://example.org/cats',
                     access_image_uri: 'http://example.org/cats/image.jpg',
                     variant: Item::Variants::ITEM)
-    item.elements << Element.new(name: 'name', value: 'value')
+    item.elements << SourceElement.new(name: 'name', value: 'value')
     item.save!
   end
 

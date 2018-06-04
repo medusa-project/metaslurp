@@ -13,8 +13,8 @@ module Api
                              service_key: content_services(:one).key,
                              source_id: 'source-id',
                              source_uri: 'http://example.net/cats')
-      @valid_item.elements << Element.new(name: 'name1', value: 'value1')
-      @valid_item.elements << Element.new(name: 'name2', value: 'value2')
+      @valid_item.elements << SourceElement.new(name: 'name1', value: 'value1')
+      @valid_item.elements << SourceElement.new(name: 'name2', value: 'value2')
     end
 
     # update()

@@ -6,23 +6,6 @@ class ElementTest < ActiveSupport::TestCase
     @instance = Element.new(name: 'name', value: 'value')
   end
 
-  # from_json()
-
-  test 'from_json() with valid data returns an instance' do
-    name = 'name'
-    value = 'value'
-    e = Element.from_json({ 'name': name, 'value': value })
-
-    assert_equal name, e.name
-    assert_equal value, e.value
-  end
-
-  test 'from_json() with invalid data raises an error' do
-    assert_raises ArgumentError do
-      Element.from_json({ 'cats': 'cats', 'dogs': 'dogs' })
-    end
-  end
-
   # initialize()
 
   test 'initialize() works' do

@@ -30,7 +30,7 @@
 #
 # All instance attributes are indexed, as well as both source and local mapped
 # elements. This makes instances "round-trippable," so they can be transformed
-# to ES documents via `as_indexed_json()`, send to ES, retrieved, and
+# to ES documents via `as_indexed_json()`, sent to ES, retrieved, and
 # deserialized back into instances via `from_indexed_json()`.
 #
 # The index schema should use dynamic templates for as many fields as possible.
@@ -40,12 +40,12 @@
 # # Attributes
 #
 # * access_image_uri      URI of a high-quality access image.
-# * elements:             Enumerable of Elements.
+# * elements:             Enumerable of SourceElements.
 # * full_text:            Full text.
 # * highlighted_elements: Enumerable of Elements that match a query, whose
 #                         values contain HTML tags representing the matches.
 # * id:                   Identifier within the application.
-# * local_elements:       Enumerable of Elements.
+# * local_elements:       Enumerable of LocalElements.
 # * service_key:          Key of the ContentService from which the instance was
 #                         obtained.
 # * source_id:            Identifier of the instance within its ContentService.
@@ -97,9 +97,9 @@ class Item
   # 2. Make ApplicationHelper.icon_for() aware of it
   #
   class Variants
-    BOOK = 'Book'
-    COLLECTION = 'Collection'
-    ITEM = 'Item'
+    BOOK           = 'Book'
+    COLLECTION     = 'Collection'
+    ITEM           = 'Item'
     NEWSPAPER_PAGE = 'NewspaperPage'
 
     ##
@@ -111,7 +111,7 @@ class Item
   end
 
   ##
-  # @param id [String] Item ID.
+  # @param id [String]  Item ID.
   # @return [Hash, nil] The current indexed document for the item with the
   #                     given ID.
   # @raises [IOError]
@@ -156,30 +156,30 @@ class Item
     item.variant = jsrc[IndexFields::VARIANT]
 
     # Read source elements.
-    prefix = Element::INDEX_FIELD_PREFIX
+    prefix = SourceElement::INDEX_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
       # This should always be true, but just in case there is a string value
       # instead of an array for some reason...
       if jsrc[key].respond_to?(:each)
         jsrc[key].each do |value|
-          item.elements << Element.new(name: name, value: value)
+          item.elements << SourceElement.new(name: name, value: value)
         end
       else
-        item.elements << Element.new(name: name, value: jsrc[key])
+        item.elements << SourceElement.new(name: name, value: jsrc[key])
       end
     end
 
     # Read local elements.
-    prefix = ElementDef::INDEX_FIELD_PREFIX
+    prefix = LocalElement::STRING_INDEX_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
       if jsrc[key].respond_to?(:each)
         jsrc[key].each do |value|
-          item.local_elements << Element.new(name: name, value: value)
+          item.local_elements << LocalElement.new(name: name, value: value)
         end
       else
-        item.local_elements << Element.new(name: name, value: jsrc[key])
+        item.local_elements << LocalElement.new(name: name, value: jsrc[key])
       end
     end
 
@@ -187,11 +187,11 @@ class Item
     jhl = jobj['highlight']
 
     if jhl # will be nil if highlighting is disabled
-      prefix = ElementDef::INDEX_FIELD_PREFIX
+      prefix = LocalElement::STRING_INDEX_PREFIX
       jhl.keys.select{ |k| k.start_with?(prefix) }.each do |key|
         name = key[prefix.length..key.length]
         jhl[key].each do |value|
-          item.highlighted_elements << Element.new(name: name, value: value)
+          item.highlighted_elements << LocalElement.new(name: name, value: value)
         end
       end
     end
@@ -209,7 +209,7 @@ class Item
     item = Item.new
     item.access_image_uri = jobj['access_image_uri']
     if jobj['elements'].respond_to?(:each)
-      jobj['elements'].each { |je| item.elements << Element.from_json(je) }
+      jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     end
     item.full_text = jobj['full_text']
     item.id = jobj['id']

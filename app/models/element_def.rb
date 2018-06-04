@@ -3,12 +3,7 @@
 #
 class ElementDef < ApplicationRecord
 
-  # N.B.: This should harmonize with Element::INDEX_FIELD_PREFIX and must
-  # match a dynamic template in the index schema.
-  INDEX_FIELD_PREFIX = 'e_'
 
-  KEYWORD_FIELD_SUFFIX = '.keyword'
-  SORT_FIELD_SUFFIX = '.sort'
 
   attr_accessor :indexed_keyword_field
 
@@ -34,7 +29,7 @@ class ElementDef < ApplicationRecord
   # @return [String] Name of the indexed field for the instance.
   #
   def indexed_field
-    [INDEX_FIELD_PREFIX, self.name].join
+    LocalElement.new(name: self.name).indexed_field
   end
 
   ##
@@ -44,7 +39,7 @@ class ElementDef < ApplicationRecord
     if @indexed_keyword_field
       @indexed_keyword_field
     else
-      [INDEX_FIELD_PREFIX, self.name, KEYWORD_FIELD_SUFFIX].join
+      LocalElement.new(name: self.name).indexed_keyword_field
     end
   end
 
@@ -52,7 +47,7 @@ class ElementDef < ApplicationRecord
   # @return [String] Name of the indexed sort field for the instance.
   #
   def indexed_sort_field
-    [INDEX_FIELD_PREFIX, self.name, SORT_FIELD_SUFFIX].join
+    LocalElement.new(name: self.name).indexed_sort_field
   end
 
   def to_param
