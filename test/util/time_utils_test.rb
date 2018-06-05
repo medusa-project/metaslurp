@@ -119,6 +119,8 @@ class TimeUtilsTest < ActiveSupport::TestCase
   test 'string_date_to_time() works with ND' do
     assert_equal Time.parse('1920-01-01 00:00:00Z'),
                  TimeUtils.string_date_to_time('192-]')
+    assert_equal Time.parse('1920-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[192-]')
   end
 
   test 'string_date_to_time() works with NE' do

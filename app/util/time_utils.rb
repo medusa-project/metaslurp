@@ -98,7 +98,7 @@ class TimeUtils
       # NA, NB, NC, ND
       elsif date.match(/[0-9]{2,3}-/)
         parts = date.split('-')
-        year = parts[0].ljust(4, '0')
+        year = parts[0].gsub(/[^0-9]/, '').ljust(4, '0')
         iso8601 = sprintf('%s-01-01T00:00:00Z', year)
       # NF
       elsif date.match(/\[between [0-9]{4} and [0-9]{4}\]/)
