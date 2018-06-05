@@ -224,9 +224,9 @@ class ElasticsearchClient
       request.headers['Content-Type'] = 'application/json'
     end
 
-    @@logger.debug("ElasticsearchClient.query(): #{path}\n"\
-        "    Request: #{query}\n"\
-        "    Response: #{response.body}")
+    @@logger.debug("ElasticsearchClient.query(): #{path.force_encoding('UTF-8')}\n"\
+        "    Request: #{query.force_encoding('UTF-8')}\n"\
+        "    Response: #{response.body.force_encoding('UTF-8')}")
     response.body
   end
 
