@@ -2,9 +2,7 @@ class LocalElement < Element
 
   # N.B.: These must match dynamic templates in the index schema.
   DATE_INDEX_PREFIX    = 'd_'
-  KEYWORD_INDEX_PREFIX = 'k_'
   STRING_INDEX_PREFIX  = 'e_'
-  TEXT_INDEX_PREFIX    = 't_'
 
   ##
   # @return [String] Name of the indexed field for the instance.

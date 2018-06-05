@@ -4,3 +4,8 @@ title_to_title:
   content_service: one
   source_name: title
   element_def: title
+
+date_to_date:
+  content_service: one
+  source_name: date
+  element_def: date

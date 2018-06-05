@@ -107,7 +107,14 @@
           <td>No</td>
           <td>Element names are arbitrary and can be mapped to local names via
             the <%= link_to 'Control Panel', admin_root_path %>. At a minimum,
-            <code>title</code> should be provided, if possible.</td>
+            <code>title</code> should be provided, if possible.
+            <p class="text-info">
+              <i class="fas fa-info-circle"></i>
+              Elements that map to date-type local elements will be parsed and
+              stored as dates. If the parsing fails, they will be silently discarded.
+              For best compatibility, provide full ISO-8601 dates.
+            </p>
+          </td>
         </tr>
         <tr>
           <td><code>full_text</code></td>

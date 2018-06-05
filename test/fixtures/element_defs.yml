@@ -3,7 +3,17 @@
 title:
   name: title
   label: Title
+  data_type: <%= ElementDef::DataType::STRING %>
   description: Some title
+  searchable: true
+  sortable: true
+  facetable: false
+
+date:
+  name: date
+  label: Date
+  data_type: <%= ElementDef::DataType::DATE %>
+  description: Some date
   searchable: true
   sortable: true
   facetable: false
@@ -11,6 +21,7 @@ title:
 description:
   name: description
   label: Description
+  data_type: <%= ElementDef::DataType::STRING %>
   description: Some description
   searchable: true
   sortable: true
@@ -19,6 +30,7 @@ description:
 subject:
   name: subject
   label: Subject
+  data_type: <%= ElementDef::DataType::STRING %>
   description: Some subject
   searchable: true
   sortable: false

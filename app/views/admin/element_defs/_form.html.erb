@@ -1,6 +1,10 @@
 <%
   # @param element_def [ElementDef]
   # @param context [Symbol] :new or :edit
+
+  data_type_options_for_select = ElementDef::DataType::all.map do |c|
+    [ ElementDef::DataType::to_s(c), c ]
+  end
 %>
 
 <%= form_for([:admin, element_def], remote: true) do |f| %>
@@ -27,6 +31,13 @@
   <div class="form-group">
     <%= f.label :description %>
     <%= f.text_area :description, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :data_type %>
+    <%= f.select(:data_type, data_type_options_for_select,
+                 { selected: element_def.data_type },
+                 class: 'form-control') %>
   </div>
 
   <div class="checkbox">

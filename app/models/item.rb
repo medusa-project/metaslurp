@@ -23,6 +23,15 @@
 # control how they work with regard to searching, faceting, etc. on a
 # per-ContentService basis.
 #
+# # Dates
+#
+# Free-form date strings are allowed in any element, but they are indexed as
+# non-normalized strings, so aren't very useful. Instead, they can be indexed
+# as normalized dates by setting the data_type of the corresponding ElementDef
+# to ElementDef::DataType::DATE. When the element is indexed,
+# TimeUtils::string_date_to_time() will be used to obtain a normalized Time
+# object representing it, and that will be indexed in a date field.
+#
 # # Indexing
 #
 # Items are searchable via Elasticsearch. High-level search functionality is
@@ -170,7 +179,7 @@ class Item
       end
     end
 
-    # Read local elements.
+    # Read local string elements.
     prefix = LocalElement::STRING_INDEX_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
@@ -181,6 +190,13 @@ class Item
       else
         item.local_elements << LocalElement.new(name: name, value: jsrc[key])
       end
+    end
+
+    # Read local date elements.
+    prefix = LocalElement::DATE_INDEX_PREFIX
+    jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
+      name = key[prefix.length..key.length]
+      item.local_elements << LocalElement.new(name: name, value: jsrc[key])
     end
 
     # Read highlighted elements.
@@ -268,12 +284,22 @@ class Item
       doc[src_elem.indexed_field] << value
 
       # Add the mapped local element, if one exists.
-      local_elem = self.content_service&.element_def_for_element(src_elem)
-      if local_elem
-        unless doc.keys.include?(local_elem.indexed_field)
-          doc[local_elem.indexed_field] = []
+      e_def = self.content_service&.element_def_for_element(src_elem)
+      if e_def
+        unless doc.keys.include?(e_def.indexed_field)
+          doc[e_def.indexed_field] = []
         end
-        doc[local_elem.indexed_field] << value
+        case e_def.data_type
+          when ElementDef::DataType::DATE
+            begin
+              doc[e_def.indexed_field] =
+                  TimeUtils::string_date_to_time(value)&.iso8601
+            rescue ArgumentError => e
+              Rails.logger.warn("Item.as_indexed_json(): #{e}")
+            end
+          else
+            doc[e_def.indexed_field] << value
+        end
       end
     end
     doc
@@ -301,6 +327,17 @@ class Item
   #
   def content_service
     ContentService.find_by_key(self.service_key)
+  end
+
+  ##
+  # @return [Time, nil]
+  #
+  def date
+    value = self.element('date')&.value
+    if value
+      return Time.parse(value) rescue nil
+    end
+    nil
   end
 
   ##

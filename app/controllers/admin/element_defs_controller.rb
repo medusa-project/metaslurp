@@ -7,8 +7,8 @@ module Admin
       REPLACE = 'replace'
     end
 
-    PERMITTED_PARAMS = [:description, :facetable, :label, :name, :searchable,
-                        :sortable]
+    PERMITTED_PARAMS = [:data_type, :description, :facetable, :label, :name,
+                        :searchable, :sortable]
 
     before_action :set_permitted_params
     before_action :require_admin, except: :index

@@ -38,8 +38,8 @@ module ItemsHelper
       html +=       link_to(truncate(raw(hl_title),
                                      length: MAX_MEDIA_TITLE_LENGTH + title_tag_length),
                             item.source_uri)
-      if item.element(:date)
-        html +=       " <small>#{item.element(:date)}</small>"
+      if item.date
+        html +=       " <small>#{item.date.year}</small>"
       end
       html +=     '</h5>'
       # Display the currently sorted element value, if not date or title (which
@@ -101,7 +101,7 @@ module ItemsHelper
   #
   def search_status(total_num_results, start, num_results_shown, word)
     last = [total_num_results, start + num_results_shown].min
-    raw(sprintf("Showing %s&ndash;%s of %s %s",
+    raw(sprintf('Showing %s&ndash;%s of %s %s',
                 number_with_delimiter(start + 1),
                 number_with_delimiter(last),
                 number_with_delimiter(total_num_results),

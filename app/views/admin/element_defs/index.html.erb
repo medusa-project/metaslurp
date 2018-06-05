@@ -27,6 +27,7 @@
       <th style="width: 1px"></th>
       <th>Name</th>
       <th>Label</th>
+      <th>Data Type</th>
       <th>Description</th>
       <th>Searchable</th>
       <th>Sortable</th>
@@ -57,6 +58,7 @@
         </td>
         <td><code><%= element.name %></code></td>
         <td><%= element.label %></td>
+        <td><%= ElementDef::DataType::to_s(element.data_type) %></td>
         <td><%= element.description %></td>
         <td class="text-center <%= element.searchable ? 'bg-success' : 'bg-danger' %>">
           <%= boolean(element.searchable) %>

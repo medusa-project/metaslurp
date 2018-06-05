@@ -11,8 +11,12 @@ class ItemTest < ActiveSupport::TestCase
                          full_text: 'Lorem ipsum',
                          access_image_uri: 'http://example.org/cats/image.jpg',
                          variant: Item::Variants::ITEM)
-    @instance.elements << SourceElement.new(name: 'name', value: 'value')
-    @instance.local_elements << LocalElement.new(name: 'name', value: 'value')
+    @instance.elements << SourceElement.new(name: 'title', value: 'value')
+    @instance.elements << SourceElement.new(name: 'date',
+                                            value: '2018-05-01T22:16:06Z')
+    @instance.local_elements << LocalElement.new(name: 'title', value: 'value')
+    @instance.local_elements << LocalElement.new(name: 'date',
+                                                 value: '2018-05-01T22:16:06Z')
   end
 
   # from_indexed_json()
@@ -37,7 +41,8 @@ class ItemTest < ActiveSupport::TestCase
                 (LocalElement::STRING_INDEX_PREFIX + 'title') => [
                     'title 1',
                     'title 2'
-                ]
+                ],
+                (LocalElement::DATE_INDEX_PREFIX + 'date') => '1987-01-01T00:00:00Z'
             }
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
@@ -50,10 +55,17 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'http://example.org/cats', item.source_uri
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 2, item.elements.length
-    assert_equal 'title', item.elements.to_a[0].name
-    assert_equal 'title 1', item.elements.to_a[0].value
-    assert_equal 'title', item.elements.to_a[1].name
-    assert_equal 'title 2', item.elements.to_a[1].value
+
+    src_titles = item.elements.select{ |e| e.name == 'title' }
+    assert_equal 'title 1', src_titles[0].value
+    assert_equal 'title 2', src_titles[1].value
+
+    local_titles = item.local_elements.select{ |e| e.name == 'title' }
+    assert_equal 'title 1', local_titles[0].value
+    assert_equal 'title 2', local_titles[1].value
+
+    local_date = item.local_elements.find{ |e| e.name == 'date' }
+    assert_equal '1987-01-01T00:00:00Z', local_date.value
   end
 
   # from_json()
@@ -133,6 +145,15 @@ class ItemTest < ActiveSupport::TestCase
                  struct[Item::IndexFields::SOURCE_URI]
     assert_equal @instance.variant,
                  struct[Item::IndexFields::VARIANT]
+
+    assert_equal ['value'],
+                 struct[SourceElement::INDEX_PREFIX + 'title']
+    assert_equal ['2018-05-01T22:16:06Z'],
+                 struct[SourceElement::INDEX_PREFIX + 'date']
+    assert_equal ['value'],
+                 struct[LocalElement::STRING_INDEX_PREFIX + 'title']
+    assert_equal '2018-05-01T22:16:06Z',
+                 struct[LocalElement::DATE_INDEX_PREFIX + 'date']
   end
 
   # as_json()
@@ -147,8 +168,8 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'cats', struct['source_id']
     assert_equal 'http://example.org/cats', struct['source_uri']
     assert_equal 'http://example.org/cats/image.jpg', struct['access_image_uri']
-    assert_equal 1, struct['elements'].length
-    assert_equal 'name', struct['elements'][0]['name']
+    assert_equal 2, struct['elements'].length
+    assert_equal 'title', struct['elements'][0]['name']
     assert_equal 'value', struct['elements'][0]['value']
   end
 
@@ -170,10 +191,21 @@ class ItemTest < ActiveSupport::TestCase
     assert_nil @instance.content_service
   end
 
+  # date()
+
+  test 'date() works' do
+    assert_equal '2018-05-01T22:16:06Z', @instance.date.iso8601
+  end
+
+  test 'date() returns nil when there is no date element' do
+    @instance.local_elements.clear
+    assert_nil @instance.date
+  end
+
   # element()
 
   test 'element() returns an element if available' do
-    assert_equal 'value', @instance.element(:name).value
+    assert_equal 'value', @instance.element(:title).value
   end
 
   test 'element() returns nil for an unavailable element' do
