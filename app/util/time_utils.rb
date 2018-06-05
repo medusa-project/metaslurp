@@ -33,6 +33,8 @@ class TimeUtils
   # | AO | Month YYYY          |
   # | AP | Month, YYYY         |
   # | AQ | [YYYY or YYYY]      |
+  # | AR | MM-YYYY             |
+  # | AS | MM-DD-YYYY          |
   #
   # All formats may contain trailing periods.
   #
@@ -95,6 +97,14 @@ class TimeUtils
       elsif date.match(/[0-9]{4} or [0-9]{4}/)
         parts = date.split(' ')
         iso8601 = sprintf('%s-01-01T00:00:00Z', parts[0])
+      # AR
+      elsif date.match(/^[0-9]{2}-[0-9]{4}/)
+        parts = date.split('-')
+        iso8601 = sprintf('%s-%s-01T00:00:00Z', parts[1], parts[0])
+      # AS
+      elsif date.match(/^[0-9]{2}-[0-9]{2}-[0-9]{4}/)
+        parts = date.split('-')
+        iso8601 = sprintf('%s-%s-%sT00:00:00Z', parts[2], parts[0], parts[1])
       # NA, NB, NC, ND
       elsif date.match(/[0-9]{2,3}-/)
         parts = date.split('-')
