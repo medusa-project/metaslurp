@@ -361,7 +361,7 @@ class Item
   # @return [String]
   #
   def title
-    self.element('title')&.value
+    self.element('title')&.value || 'Untitled'
   end
 
   def to_s

@@ -201,6 +201,17 @@ class ItemTest < ActiveSupport::TestCase
     end
   end
 
+  # title()
+
+  test 'title() returns the title element value' do
+    assert_equal 'value', @instance.title
+  end
+
+  test 'title() returns a string signifier when there is no title element' do
+    @instance.local_elements.clear
+    assert_equal 'Untitled', @instance.title
+  end
+
   # to_s()
 
   test 'to_s() works' do
