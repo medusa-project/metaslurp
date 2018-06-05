@@ -1,6 +1,6 @@
 module Api
 
-  class ApiController < ActionController::Base
+  class ApiController < ApplicationController
 
     protect_from_forgery with: :null_session
 
@@ -20,6 +20,8 @@ module Api
     # Authenticates a user via HTTP Basic and authorizes by IP address.
     #
     def authorize_user
+      return true if signed_in?
+
       authenticate_or_request_with_http_basic('HTTP API') do |username, secret|
         user = User.find_by_username(username)
         if user

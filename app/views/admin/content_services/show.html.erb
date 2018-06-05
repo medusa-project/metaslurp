@@ -59,7 +59,7 @@
   <div class="col-sm-8">
     <% if current_user.admin? %>
       <%= button_bar({ label: 'Clear Element Mappings',
-                       icon: 'fa-close',
+                       icon: 'fa-times',
                        url: admin_content_service_element_mappings_path(@content_service),
                        method: 'delete',
                        class: 'btn-danger btn-sm',
