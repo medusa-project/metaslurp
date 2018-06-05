@@ -144,7 +144,7 @@ module ItemsHelper
   def add_to_favorites_button(item)
     html = '<button class="btn btn-light btn-sm ' +
         'dl-add-to-favorites" data-item-id="' + item.id + '">'
-    html += '  <i class="fas fa-heart"></i>'
+    html += '  <i class="far fa-heart"></i>'
     html += '</button>'
     raw(html)
   end
