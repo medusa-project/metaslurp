@@ -164,6 +164,10 @@ module ApplicationHelper
           icon = 'fa-book'
         when Item::Variants::COLLECTION
           icon = 'fa-folder-open'
+        when Item::Variants::DATA_SET
+          icon = 'fa-archive'
+        when Item::Variants::FILE
+          icon = 'fa-file'
         when Item::Variants::NEWSPAPER_PAGE
           icon = 'fa-newspaper'
         else

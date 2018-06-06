@@ -99,6 +99,8 @@ class Item
   class Variants
     BOOK = 'Book'
     COLLECTION = 'Collection'
+    DATA_SET = 'DataSet'
+    FILE = 'File'
     ITEM = 'Item'
     NEWSPAPER_PAGE = 'NewspaperPage'
 
