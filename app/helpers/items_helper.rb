@@ -61,7 +61,8 @@ module ItemsHelper
       end
       html +=     '<span class="dl-info-line">'
       html +=       icon_for(item) + ' '
-      html +=       item.variant + ' | '
+      html +=       item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
+      html +=       ' | '
       html +=       link_to(item.content_service.name, item.content_service)
       html +=         ' ' + remove_from_favorites_button(item)
       html +=         ' ' + add_to_favorites_button(item)
