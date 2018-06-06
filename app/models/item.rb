@@ -108,6 +108,8 @@ class Item
   class Variants
     BOOK           = 'Book'
     COLLECTION     = 'Collection'
+    DATA_SET       = 'DataSet'
+    FILE           = 'File'
     ITEM           = 'Item'
     NEWSPAPER_PAGE = 'NewspaperPage'
 
@@ -233,7 +235,7 @@ class Item
     item.service_key = jobj['service_key']
     item.source_id = jobj['source_id']
     item.source_uri = jobj['source_uri']
-    item.variant = jobj['class']
+    item.variant = jobj['variant']
 
     item.validate
     item
@@ -311,7 +313,7 @@ class Item
   def as_json(options = {})
     struct = super(options)
     struct['access_image_uri'] = self.access_image_uri
-    struct['class'] = self.variant
+    struct['variant'] = self.variant
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
     struct['full_text'] = self.full_text
     struct['id'] = self.id

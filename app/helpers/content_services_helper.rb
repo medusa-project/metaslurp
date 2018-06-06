@@ -7,7 +7,7 @@ module ContentServicesHelper
   # @return [String] HTML string
   #
   def content_services_as_cards(services, options = {})
-    html = '<div class="card-deck">'
+    html = '<div class="card-columns">'
     services.each do |service|
       html += '<div class="card">'
       html +=   link_to(service) do

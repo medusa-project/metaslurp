@@ -73,7 +73,7 @@ class ItemTest < ActiveSupport::TestCase
   test 'from_json() with valid data returns an instance' do
     item = Item.from_json(
         {
-            'class': Item::Variants::ITEM,
+            'variant': Item::Variants::ITEM,
             'id': 'cats',
             'media_type': 'image/jpeg',
             'service_key': content_services(:one).key,
@@ -160,7 +160,7 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'as_json() works' do
     struct = @instance.as_json
-    assert_equal Item::Variants::ITEM, struct['class']
+    assert_equal Item::Variants::ITEM, struct['variant']
     assert_equal 'cats', struct['id']
     assert_equal 'Lorem ipsum', struct['full_text']
     assert_equal 'image/jpeg', struct['media_type']
