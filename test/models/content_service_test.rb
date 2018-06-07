@@ -22,9 +22,14 @@ class ContentServiceTest < ActiveSupport::TestCase
 
   # send_delete_all_items_sns()
 
+  test 'send_delete_all_items_sns raises an error' do
+    assert_raises RuntimeError do
+      @instance.send_delete_all_items_sns
+    end
+  end
+
   test 'send_delete_all_items_sns works' do
-    @instance.send_delete_all_items_sns
-    # TODO: improve this
+    # TODO: write this
   end
 
   # update_element_mappings()

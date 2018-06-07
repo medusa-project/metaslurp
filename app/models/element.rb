@@ -43,6 +43,7 @@ class Element
   #
   def validate
     raise ArgumentError, 'Missing name' if self.name.blank?
+    raise ArgumentError, 'Invalid name' unless self.name.match?(/^[A-Za-z\d]*$/)
     raise ArgumentError, 'Missing value' if self.value.blank?
   end
 

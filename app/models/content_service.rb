@@ -71,8 +71,11 @@ class ContentService < ApplicationRecord
   #
   # @return [void]
   # @see delete_all_items()
+  # @raises [RuntimeError] if not called in the production environment.
   #
   def send_delete_all_items_sns
+    raise 'This method only works in production mode.' unless Rails.env.production?
+
     sns = Aws::SNS::Resource.new(region: 'us-east-2') # TODO: don't hard-code this
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
     topic = sns.topic(ENV['SNS_TOPIC_ARN'])

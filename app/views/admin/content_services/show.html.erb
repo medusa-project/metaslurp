@@ -79,7 +79,7 @@
     <table class="table table-striped">
       <tr>
         <th>Source Element</th>
-        <th><%= link_to 'Local Element', admin_element_defs_path %></th>
+        <th><%= link_to 'Local Element', admin_element_defs_path, target: '_blank' %></th>
         <th>Local Element Data Type</th>
       </tr>
       <% @content_service.element_mappings.order(:source_name).each do |mapping| %>
