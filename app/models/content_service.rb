@@ -15,6 +15,10 @@ class ContentService < ApplicationRecord
     @num_items = -1
   end
 
+  def ==(other)
+    other.kind_of?(ContentService) and other.key == self.key
+  end
+
   ##
   # Deletes all items associated with the service from the index.
   #
@@ -47,6 +51,10 @@ class ContentService < ApplicationRecord
   def element_def_for_element(element)
     self.element_mappings.
         select{ |m| m.source_name == element.name}.first&.element_def
+  end
+
+  def hash
+    self.key.hash
   end
 
   ##

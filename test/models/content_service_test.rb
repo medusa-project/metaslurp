@@ -6,6 +6,24 @@ class ContentServiceTest < ActiveSupport::TestCase
     @instance = content_services(:one)
   end
 
+  # ==()
+
+  test '==() returns true when given the same instance' do
+    assert_equal @instance, @instance
+  end
+
+  test '==() returns true when given an instance with the same key' do
+    assert_equal @instance, ContentService.new(key: @instance.key)
+  end
+
+  test '==() returns false when given an instance with a different key' do
+    assert_not_equal @instance, ContentService.new(key: 'some-new-key')
+  end
+
+  test '==() returns false when given an instance of a different class' do
+    assert_not_equal @instance, @instance.key
+  end
+
   # element_def_for_element()
 
   test 'element_def_for_element() with existing mapping' do
