@@ -173,12 +173,14 @@ module ApplicationHelper
         else
           icon = 'fa-cube'
       end
+    elsif entity == ContentService or entity.kind_of?(ContentService)
+      icon = 'fa fa-database'
     elsif entity == User or entity.kind_of?(User)
       icon = 'fa-user'
     else
       icon = 'fa-cube'
     end
-    raw("<i class=\"fas #{icon}\"></i>")
+    raw("<i class=\"fas #{icon}\" aria-hidden=\"true\"></i>")
   end
 
   ##
