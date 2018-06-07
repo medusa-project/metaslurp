@@ -51,6 +51,14 @@
     <td><code>PUT</code></td>
   </tr>
   <tr>
+    <td>URI Path</td>
+    <td><code>/api/<%= @version_path_component %>/items/:id</code></td>
+  </tr>
+  <tr>
+    <td>Query Arguments</td>
+    <td></td>
+  </tr>
+  <tr>
     <td>Request Content Type</td>
     <td><code>application/json</code></td>
   </tr>
@@ -105,9 +113,8 @@
         <tr>
           <td><code>elements</code></td>
           <td>No</td>
-          <td>Element names are arbitrary and can be mapped to local names via
-            the <%= link_to 'Control Panel', admin_root_path %>. At a minimum,
-            <code>title</code> should be provided, if possible.</td>
+          <td>Element names must be alphanumeric and can be mapped to local
+            names via the <%= link_to 'Control Panel', admin_root_path %>.</td>
         </tr>
         <tr>
           <td><code>full_text</code></td>
@@ -118,7 +125,8 @@
           <td><code>id</code></td>
           <td>Yes</td>
           <td>Must be unique across all items in the harvesting application,
-            and should be stable from harvest to harvest.</td>
+            and should be stable from harvest to harvest.
+            <strong>Must not contain slashes (/) or periods (.).</strong></td>
         </tr>
         <tr>
           <td><code>media_type</code></td>
@@ -153,14 +161,6 @@
     </td>
   </tr>
   <tr>
-    <td>URI Path</td>
-    <td><code>/api/<%= @version_path_component %>/items/:id</code></td>
-  </tr>
-  <tr>
-    <td>Query Arguments</td>
-    <td></td>
-  </tr>
-  <tr>
     <td>Response Status</td>
     <td>
       <ul>
@@ -183,14 +183,6 @@
   <tr>
     <td>Request Method</td>
     <td><code>GET</code></td>
-  </tr>
-  <tr>
-    <td>Request Content Type</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Request Entity</td>
-    <td></td>
   </tr>
   <tr>
     <td>URI Path</td>
@@ -217,6 +209,14 @@
         </tr>
       </table>
     </td>
+  </tr>
+  <tr>
+    <td>Request Content Type</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Request Entity</td>
+    <td></td>
   </tr>
   <tr>
     <td>Response Status</td>
