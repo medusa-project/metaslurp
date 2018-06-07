@@ -18,14 +18,17 @@ module ItemsHelper
 
     items.each do |item|
       hl_title = item.highlighted_title || ''
-      hl_title_no_tags = strip_tags(hl_title) || ''
+      hl_title_no_tags = item.title || ''
       title_tag_length = hl_title.length - hl_title_no_tags.length
       hl_desc = item.highlighted_description || ''
-      hl_desc_no_tags = strip_tags(hl_desc) || ''
+      hl_desc_no_tags = item.description || ''
       desc_tag_length = hl_desc.length - hl_desc_no_tags.length
 
-      desc = truncate(raw(hl_desc),
-                      length: MAX_MEDIA_DESCRIPTION_LENGTH + desc_tag_length)
+      title = raw(StringUtils.truncate(hl_title,
+                                       MAX_MEDIA_TITLE_LENGTH + title_tag_length))
+      desc = raw(StringUtils.truncate(hl_desc,
+                                      MAX_MEDIA_DESCRIPTION_LENGTH + desc_tag_length))
+
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
         image_tag('test-pattern.jpg',
@@ -35,9 +38,7 @@ module ItemsHelper
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       link_to(truncate(raw(hl_title),
-                                     length: MAX_MEDIA_TITLE_LENGTH + title_tag_length),
-                            item.source_uri)
+      html +=       link_to(title, item.source_uri)
       if item.date
         html +=       " <small>#{item.date.year}</small>"
       end
