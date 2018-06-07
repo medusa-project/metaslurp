@@ -1,0 +1,17 @@
+body#dl-admin-content-services {
+  td:first-child {
+    min-width: 15em;
+  }
+  td:nth-child(2) {
+    white-space: nowrap;
+  }
+}
+
+body#dl-admin-edit-content-service, body#dl-admin-new-content-service {
+  input#content_service_key {
+    font-family: $font-family-monospace;
+  }
+  textarea {
+    min-height: 10em;
+  }
+}
