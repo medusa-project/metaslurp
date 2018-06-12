@@ -68,17 +68,12 @@
 
     <h2>Element Mappings</h2>
 
-    <div class="alert alert-info">
-      <ul>
-        <li>To detect new source elements, reindex the service.</li>
-        <li>To remove obsolete source elements, clear the mappings and reindex.</li>
-        <li>After changing element mappings, the service must be reindexed.</li>
-      </ul>
-    </div>
-
     <table class="table table-striped">
       <tr>
-        <th>Source Element</th>
+        <th>Source Element
+          <br>
+          <span class="text-muted">(auto-detected during indexing)</span>
+        </th>
         <th><%= link_to 'Local Element', admin_element_defs_path, target: '_blank' %></th>
         <th>Local Element Data Type</th>
       </tr>

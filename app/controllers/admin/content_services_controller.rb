@@ -124,7 +124,9 @@ module Admin
         handle_error(e)
         render 'edit'
       else
-        flash['success'] = "Content service \"#{@content_service}\" updated."
+        flash['success'] = 'Content service updated. Note that if any '\
+            'element mappings were changed, the service will need to be '\
+            'reindexed.'
         redirect_to admin_content_service_path(@content_service)
       end
     end
