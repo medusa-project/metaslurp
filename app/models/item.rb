@@ -51,6 +51,8 @@
 # * access_image_uri      URI of a high-quality access image.
 # * elements:             Enumerable of SourceElements.
 # * full_text:            Full text.
+# * harvest_key:          Key of the harvest during which the item was last
+#                         updated.
 # * highlighted_elements: Enumerable of Elements that match a query, whose
 #                         values contain HTML tags representing the matches.
 # * id:                   Identifier within the application.
@@ -80,7 +82,7 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :full_text, :id, :last_indexed,
+  attr_accessor :access_image_uri, :full_text, :harvest_key, :id, :last_indexed,
                 :media_type, :service_key, :source_id, :source_uri, :variant
   attr_reader :elements, :highlighted_elements, :local_elements
 
@@ -90,6 +92,7 @@ class Item
   class IndexFields
     ACCESS_IMAGE_URI = 'k_access_image_uri'
     FULL_TEXT = 't_full_text'
+    HARVEST_KEY = 'k_harvest_key'
     ID = '_id'
     LAST_INDEXED = 'd_last_indexed'
     MEDIA_TYPE = 'k_media_type'
@@ -159,6 +162,7 @@ class Item
     jsrc = jobj['_source']
     item.access_image_uri = jsrc[IndexFields::ACCESS_IMAGE_URI]
     item.full_text = jsrc[IndexFields::FULL_TEXT]
+    item.harvest_key = jsrc[IndexFields::HARVEST_KEY]
     item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
     item.media_type = jsrc[IndexFields::MEDIA_TYPE]
     item.service_key = jsrc[IndexFields::SERVICE_KEY]
@@ -230,6 +234,7 @@ class Item
       jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     end
     item.full_text = jobj['full_text']
+    item.harvest_key = jobj['harvest_key']
     item.id = jobj['id']
     item.media_type = jobj['media_type']
     item.service_key = jobj['service_key']
@@ -268,6 +273,7 @@ class Item
     doc = {}
     doc[IndexFields::ACCESS_IMAGE_URI] = self.access_image_uri
     doc[IndexFields::FULL_TEXT] = self.full_text
+    doc[IndexFields::HARVEST_KEY] = self.harvest_key
     doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
     doc[IndexFields::MEDIA_TYPE] = self.media_type
     doc[IndexFields::SERVICE_KEY] = self.service_key
@@ -316,6 +322,7 @@ class Item
     struct['variant'] = self.variant
     struct['elements'] = self.elements.map { |e| e.as_json(options) }
     struct['full_text'] = self.full_text
+    struct['harvest_key'] = self.harvest_key
     struct['id'] = self.id
     struct['media_type'] = self.media_type
     struct['service_key'] = self.service_key
@@ -359,6 +366,13 @@ class Item
 
   def eql?(obj)
     self.==(obj)
+  end
+
+  ##
+  # @return [Harvest] Harvest corresponding to `harvest_key`.
+  #
+  def harvest
+    Harvest.find_by_key(self.harvest_key)
   end
 
   def hash
@@ -414,8 +428,10 @@ class Item
   def validate
     raise ArgumentError, 'Missing ID' if self.id.blank?
     raise ArgumentError, 'ID may not contain slashes' if self.id.include?('/')
+    raise ArgumentError, 'Invalid harvest key' unless
+        Harvest.find_by_key(self.harvest_key)
     raise ArgumentError, 'Invalid service key' unless
-        ContentService.pluck(:key).include?(self.service_key)
+        ContentService.find_by_key(self.service_key)
     raise ArgumentError, 'Invalid media type' if
         self.media_type.present? and (self.media_type =~ /[a-z]\/[a-z0-9]/).nil?
     raise ArgumentError, 'Missing source ID' if self.source_id.blank?

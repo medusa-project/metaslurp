@@ -21,20 +21,27 @@
        aria-labelledby="nav-system-info-tab">
     <dl>
       <dt>Content Service</dt>
-      <dd><%= link_to @item.content_service.name,
-                      admin_content_service_path(@item.content_service) %></dd>
+      <dd>
+        <%= link_to admin_content_service_path(@item.content_service) do %>
+          <%= icon_for @item.content_service %>
+          <%= @item.content_service.name %>
+        <% end %>
+      </dd>
       <dt>Local ID</dt>
-      <dd><%= @item.id %></dd>
+      <dd><code><%= @item.id %></code></dd>
       <dt>Source ID</dt>
-      <dd><%= @item.source_id %></dd>
+      <dd><code><%= @item.source_id %></code></dd>
       <dt>Source URI</dt>
       <dd><%= link_to @item.source_uri, @item.source_uri, target: '_blank' %></dd>
-      <dt>Media Type</dt>
-      <dd><%= @item.media_type %></dd>
       <dt>Variant</dt>
       <dd><%= @item.variant %></dd>
-      <dt>Last Indexed</dt>
-      <dd><%= local_time @item.last_indexed %></dd>
+      <dt>Media Type</dt>
+      <dd><%= @item.media_type.present? ? @item.media_type : 'None' %></dd>
+      <dt>Last Harvest</dt>
+      <dd>
+        <%= link_to harvest_title(@item.harvest),
+                    admin_harvest_path(@item.harvest) %>
+      </dd>
     </dl>
   </div>
 
@@ -43,7 +50,8 @@
     <table class="table">
       <tr>
         <th>Source Element</th>
-        <th>Local Element Mapping</th>
+        <th><%= link_to 'Local Element Mapping',
+                        admin_content_service_path(@item.content_service) %></th>
         <th>Value</th>
       </tr>
       <% @item.elements.sort_by{ |e| e.name }.each do |element| %>

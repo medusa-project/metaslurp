@@ -9,6 +9,7 @@ var DLAdminHarvestsView = function() {
 
     this.init = function() {
         new HarvestRefresher().start();
+        new Application.FilterField();
     };
 
     var HarvestRefresher = function() {
@@ -30,6 +31,7 @@ var DLAdminHarvestsView = function() {
 
             $.ajax({
                 url: url,
+                data: $('form.dl-filter').serialize(),
                 success: function (data) {
                     // this will be handled by index.js.erb
                 }

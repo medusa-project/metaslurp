@@ -2,10 +2,31 @@
 <% provide :body_id, 'dl-admin-harvests' %>
 <% provide :active_nav, 'entities' %>
 
+<%
+content_service_options = options_for_select(ContentService.all.order(:name).map{ |s| [s.name, s.id] })
+status_options = options_for_select(Harvest::Status::all.map{ |s| [Harvest::Status::to_s(s), s] })
+%>
+
 <h1>Harvests</h1>
 
 <%= hidden_field_tag('dl-harvests-url', admin_harvests_url) %>
 <%= hidden_field_tag('dl-limit', @limit) %>
+
+<div class="card">
+  <div class="card-body">
+    <%= form_tag admin_harvests_path, method: 'get', class: 'dl-filter' do %>
+      <div class="form-inline">
+        <label for="content_service_id" class="mr-sm-2">Content Service</label>
+        <%= select_tag('content_service_id', content_service_options,
+                       class: 'form-control mr-sm-3', include_blank: true) %>
+
+        <label for="status" class="mr-sm-2">Status</label>
+        <%= select_tag('status', status_options,
+                       class: 'form-control', include_blank: true) %>
+      </div>
+    <% end %>
+  </div>
+</div>
 
 <div id="dl-harvests">
   <%= render 'harvests' %>
