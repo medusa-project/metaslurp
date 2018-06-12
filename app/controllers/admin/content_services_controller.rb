@@ -2,6 +2,8 @@ module Admin
 
   class ContentServicesController < ControlPanelController
 
+    HARVEST_WINDOW_SIZE = 5
+
     before_action :load_model, only: [:destroy, :edit, :show, :update]
     before_action :require_admin, except: [:index, :show]
 
@@ -108,6 +110,9 @@ module Admin
     # Responds to GET /admin/content-services/:key
     #
     def show
+      @harvests = @content_service.harvests
+                      .order(created_at: :desc)
+                      .limit(HARVEST_WINDOW_SIZE)
     end
 
     ##

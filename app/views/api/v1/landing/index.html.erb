@@ -13,6 +13,14 @@
 <section id="table-of-contents">
   <ul>
     <li><a href="#basic-info">Basic Information</a></li>
+    <li><a href="#crash-course">Harvesting Crash Course</a></li>
+    <li>
+      Harvests
+      <ul>
+        <li><a href="#start-harvest">Start a harvest</a></li>
+        <li><a href="#update-harvest">Update a harvest</a></li>
+      </ul>
+    </li>
     <li>
       Items
       <ul>
@@ -33,13 +41,173 @@
   <ul>
     <li>All request and response entities should be in JSON format and
       accompanied by a <code>Content-Type: application/json</code> header.</li>
+    <li>Unrecognized keys in JSON request entities will be silently
+      discarded.</li>
     <li>All requests require HTTP Basic authentication. The username is that
       of the <%= link_to 'Control Panel user', admin_users_path %> and the
       secret is their API key.</li>
     <li>In addition to the documented response statuses, clients should be
-      prepared to handle 500-level errors in response to any request.</li>
+      prepared to handle 400- and 500-level errors in response to any request.</li>
   </ul>
 </section>
+
+<section id="crash-course">
+  <h2>Harvesting Crash Course</h2>
+  <ol>
+    <li><a href="#start-harvest">Start a new harvest</a> and note its key and
+      URI.</li>
+    <li><a href="#create-item">Ingest some items</a> using the harvest key
+      obtained above.</li>
+    <li>Regularly <a href="#update-harvest">update the harvest</a> with
+      current progress.</li>
+    <li>When the harvest is complete, successfully or not,
+      <a href="#update-harvest">close it out</a> with an appropriate status.
+      If there were any errors, communicate them in the message.</li>
+  </ol>
+</section>
+
+<h2>Harvests</h2>
+
+<h3 id="start-harvest">Start a harvest</h3>
+
+<table class="table">
+  <tr>
+    <td>Request Method</td>
+    <td><code>POST</code></td>
+  </tr>
+  <tr>
+    <td>URI Path</td>
+    <td><code>/api/<%= @version_path_component %>/harvests</code></td>
+  </tr>
+  <tr>
+    <td>Query Arguments</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Request Content Type</td>
+    <td><code>application/json</code></td>
+  </tr>
+  <tr>
+    <td>Request Entity</td>
+    <td><code class="code-block">{
+    "service_key": "service-key"
+}</code>
+
+      <table class="table table-condensed">
+        <tr>
+          <th></th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>service_key</code></td>
+          <td>Yes</td>
+          <td>Must be one of the available
+            <%= link_to 'content service', admin_content_services_path %> keys.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>Response Status</td>
+    <td><code>201 Created</code></td>
+  </tr>
+  <tr>
+    <td>Response Content Type</td>
+    <td><code>application/json</code></td>
+  </tr>
+  <tr>
+    <td>Response Entity</td>
+    <td><code class="code-block">{
+    "path": "/api/<%= @version_path_component %>/harvests/harvest-key",
+    "key": "harvest-key"
+}</code></td>
+  </tr>
+</table>
+
+<h3 id="update-harvest">Update a harvest</h3>
+
+<table class="table">
+  <tr>
+    <td>Request Method</td>
+    <td><code>PATCH</code></td>
+  </tr>
+  <tr>
+    <td>URI Path</td>
+    <td><code>/api/<%= @version_path_component %>/harvests/:key</code></td>
+  </tr>
+  <tr>
+    <td>Query Arguments</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Request Content Type</td>
+    <td><code>application/json</code></td>
+  </tr>
+  <tr>
+    <td>Request Entity</td>
+    <td><code class="code-block">{
+    "status": 1,
+    "message": "Hello world",
+    "num_items", 750,
+    "num_succeeded": 500,
+    "num_failed" 2
+}</code>
+
+      <table class="table table-condensed">
+        <tr>
+          <th></th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>num_items</code></td>
+          <td>Yes</td>
+          <td>Total number of items to be harvested.</td>
+        </tr>
+        <tr>
+          <td><code>num_succeeded</code></td>
+          <td>Yes</td>
+          <td>Number of items harvested successfully.</td>
+        </tr>
+        <tr>
+          <td><code>num_failed</code></td>
+          <td>Yes</td>
+          <td>Number of items that failed to harvest.</td>
+        </tr>
+        <tr>
+          <td><code>status</code></td>
+          <td>No</td>
+          <td>One of the following:
+            <ul>
+              <% Harvest::Status::all.sort.drop(1).each do |status| %>
+                <li><code><%= status %></code> (<%= Harvest::Status::to_s(status) %>)</li>
+              <% end %>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td><code>message</code></td>
+          <td>No</td>
+          <td>Arbitrary message to send back to the sink.</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>Response Status</td>
+    <td><code>204 No Content</code></td>
+  </tr>
+  <tr>
+    <td>Response Content Type</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Response Entity</td>
+    <td></td>
+  </tr>
+</table>
 
 <h2>Items</h2>
 
@@ -67,8 +235,8 @@
     <td><code class="code-block">{
     "variant": "Item",
     "id": "local-item-id",
+    "harvest_key": "harvest-key",
     "media_type": "image/jp2",
-    "service_key": "service-key",
     "source_id": "some-item",
     "source_uri": "http://example.org/some-item",
     "full_text": "The quick brown fox jumped over the lazy dog."
@@ -85,11 +253,6 @@
         ... more elements
     ]
 }</code>
-
-      <p class="text-info">
-        <i class="fas fa-info-circle"></i>
-        Unrecognized keys will be silently discarded.
-      </p>
 
       <table class="table table-condensed">
         <tr>
@@ -129,6 +292,11 @@
           <td>Free-form string of unlimited length.</td>
         </tr>
         <tr>
+          <td><code>harvest_key</code></td>
+          <td>Yes</td>
+          <td>Key of a <a href="#start-harvest">started harvest</a>.</td>
+        </tr>
+        <tr>
           <td><code>id</code></td>
           <td>Yes</td>
           <td>Must be unique across all items in the harvesting application,
@@ -143,13 +311,6 @@
             (unless the represented data really is an unspecified binary format).
             May or may not be the type of <code>access_image_uri</code>.
             May be omitted if unknown or not applicable.
-          </td>
-        </tr>
-        <tr>
-          <td><code>service_key</code></td>
-          <td>Yes</td>
-          <td>Must be one of the available
-            <%= link_to 'content service', admin_content_services_path %> keys.
           </td>
         </tr>
         <tr>
@@ -170,15 +331,25 @@
   <tr>
     <td>Response Status</td>
     <td>
-      <ul>
-        <li><code>204 No Content</code> upon success</li>
-        <li><code>400 Bad Request</code> upon illegal argument</li>
-      </ul>
+      <dl>
+        <dt><code>204 No Content</code></dt>
+        <dd>The request succeeded.</dd>
+        <dt><code>480 Harvest Ended</code></dt>
+        <dd>The harvest identified by the given key has ended and is no longer
+          available for use.</dd>
+        <dt><code>481 Harvest Aborted</code></dt>
+        <dd>The harvest identified by the given key has been aborted and is no
+          longer available for use.</dd>
+      </dl>
     </td>
   </tr>
   <tr>
+    <td>Response Content Type</td>
+    <td></td>
+  </tr>
+  <tr>
     <td>Response Entity</td>
-    <td>None</td>
+    <td></td>
   </tr>
 </table>
 
@@ -228,6 +399,10 @@
   <tr>
     <td>Response Status</td>
     <td><code>200 OK</code></td>
+  </tr>
+  <tr>
+    <td>Response Content Type</td>
+    <td><code>application/json</code></td>
   </tr>
   <tr>
     <td>Response Entity</td>

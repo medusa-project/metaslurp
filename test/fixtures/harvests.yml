@@ -1,0 +1,50 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+new:
+  key: new
+  content_service: one
+  status: <%= Harvest::Status::NEW %>
+  num_items: 0
+  num_succeeded: 0
+  num_failed: 0
+  message: MyString
+
+running:
+  key: running
+  content_service: one
+  status: <%= Harvest::Status::RUNNING %>
+  num_items: 0
+  num_succeeded: 0
+  num_failed: 0
+  ended_at:
+  message: MyString
+
+aborted:
+  key: aborted
+  content_service: one
+  status: <%= Harvest::Status::ABORTED %>
+  num_items: 0
+  num_succeeded: 0
+  num_failed: 0
+  ended_at:
+  message: MyString
+
+succeeded:
+  key: succeeded
+  content_service: one
+  status: <%= Harvest::Status::SUCCEEDED %>
+  num_items: 0
+  num_succeeded: 0
+  num_failed: 0
+  ended_at:
+  message: MyString
+
+failed:
+  key: failed
+  content_service: one
+  status: <%= Harvest::Status::FAILED %>
+  num_items: 0
+  num_succeeded: 0
+  num_failed: 0
+  ended_at:
+  message: MyString

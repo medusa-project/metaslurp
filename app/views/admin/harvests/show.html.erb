@@ -1,0 +1,23 @@
+<% provide :title, @harvest %>
+<% provide :body_id, 'dl-admin-harvest' %>
+<% provide :active_nav, 'entities' %>
+
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+               { label: 'Harvests', url: admin_harvests_path },
+               { label: harvest_title(@harvest) }) %>
+
+<% if @harvest.usable? %>
+  <div class="float-right">
+    <%= link_to admin_harvest_abort_path(@harvest),
+                class: 'btn btn-danger', method: 'patch',
+                data: { confirm: 'Are you sure you want to abort this harvest?' } do %>
+      <i class="far fa-stop-circle"></i> Abort
+    <% end %>
+  </div>
+<% end %>
+
+<h1><%= harvest_title(@harvest) %></h1>
+
+<div id="dl-harvest">
+  <%= render partial: 'show' %>
+</div>

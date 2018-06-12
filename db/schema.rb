@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_29_143838) do
+ActiveRecord::Schema.define(version: 2018_06_07_144937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,21 @@ ActiveRecord::Schema.define(version: 2018_05_29_143838) do
     t.index ["content_service_id", "source_name"], name: "index_element_mappings_on_content_service_id_and_source_name", unique: true
   end
 
+  create_table "harvests", force: :cascade do |t|
+    t.bigint "content_service_id", null: false
+    t.string "key", null: false
+    t.integer "status", default: 0, null: false
+    t.integer "num_items", default: 0, null: false
+    t.integer "num_succeeded", default: 0, null: false
+    t.integer "num_failed", default: 0, null: false
+    t.datetime "ended_at"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_harvests_on_key", unique: true
+    t.index ["status"], name: "index_harvests_on_status"
+  end
+
   create_table "options", force: :cascade do |t|
     t.string "key"
     t.string "value"
@@ -83,6 +98,7 @@ ActiveRecord::Schema.define(version: 2018_05_29_143838) do
 
   add_foreign_key "element_mappings", "content_services", on_update: :cascade, on_delete: :cascade
   add_foreign_key "element_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "harvests", "content_services", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "roles", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "users", on_update: :cascade, on_delete: :cascade
 end

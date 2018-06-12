@@ -1,0 +1,12 @@
+<% provide :title, 'Harvests' %>
+<% provide :body_id, 'dl-admin-harvests' %>
+<% provide :active_nav, 'entities' %>
+
+<h1>Harvests</h1>
+
+<%= hidden_field_tag('dl-harvests-url', admin_harvests_url) %>
+<%= hidden_field_tag('dl-limit', @limit) %>
+
+<div id="dl-harvests">
+  <%= render 'harvests' %>
+</div>

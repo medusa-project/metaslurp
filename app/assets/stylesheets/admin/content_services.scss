@@ -7,6 +7,18 @@ body#dl-admin-content-services {
   }
 }
 
+body#dl-admin-content-service {
+  dd {
+    ol {
+      margin-left: 1em;
+      padding-left: 0em;
+    }
+    .badge {
+      text-transform: uppercase;
+    }
+  }
+}
+
 body#dl-admin-edit-content-service, body#dl-admin-new-content-service {
   input#content_service_key {
     font-family: $font-family-monospace;

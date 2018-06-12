@@ -15,6 +15,9 @@ module Api
                              source_uri: 'http://example.net/cats')
       @valid_item.elements << SourceElement.new(name: 'name1', value: 'value1')
       @valid_item.elements << SourceElement.new(name: 'name2', value: 'value2')
+
+      @valid_json = @valid_item.as_json
+      @valid_json['harvest_key'] = harvests(:new).key
     end
 
     # update()
@@ -34,7 +37,7 @@ module Api
 
     test 'update() with valid credentials and valid entity returns 200' do
       put '/api/v1/items/' + @valid_item.id,
-          env: { 'rack.input': JSON.generate(@valid_item.as_json) },
+          env: { 'rack.input': JSON.generate(@valid_json) },
           headers: valid_headers
       assert_response :success
     end
@@ -47,7 +50,7 @@ module Api
           find_by_source_name('name2')
 
       put '/api/v1/items/' + @valid_item.id,
-          env: { 'rack.input': JSON.generate(@valid_item.as_json) },
+          env: { 'rack.input': JSON.generate(@valid_json) },
           headers: valid_headers
 
       assert_not_nil @valid_item.content_service.element_mappings.
@@ -66,6 +69,51 @@ module Api
           env: { 'rack.input': StringIO.new('malformed') },
           headers: valid_headers
       assert_response :bad_request
+    end
+
+    test 'update() with valid credentials and missing harvest key returns 400' do
+      @valid_json['harvest_key'] = nil
+
+      put '/api/v1/items/' + @valid_item.id,
+          env: { 'rack.input': JSON.generate(@valid_json) },
+          headers: valid_headers
+      assert_response :bad_request
+    end
+
+    test 'update() with valid credentials and invalid harvest key returns 400' do
+      @valid_json['harvest_key'] = 'bogus'
+
+      put '/api/v1/items/' + @valid_item.id,
+          env: { 'rack.input': JSON.generate(@valid_json) },
+          headers: valid_headers
+      assert_response :bad_request
+    end
+
+    test 'update() with valid credentials and key of aborted harvest returns 481' do
+      @valid_json['harvest_key'] = harvests(:aborted)
+
+      put '/api/v1/items/' + @valid_item.id,
+          env: { 'rack.input': JSON.generate(@valid_json) },
+          headers: valid_headers
+      assert_equal 481, response.response_code
+    end
+
+    test 'update() with valid credentials and key of succeeded harvest returns 480' do
+      @valid_json['harvest_key'] = harvests(:succeeded)
+
+      put '/api/v1/items/' + @valid_item.id,
+          env: { 'rack.input': JSON.generate(@valid_json) },
+          headers: valid_headers
+      assert_equal 480, response.response_code
+    end
+
+    test 'update() with valid credentials and key of failed harvest returns 480' do
+      @valid_json['harvest_key'] = harvests(:failed)
+
+      put '/api/v1/items/' + @valid_item.id,
+          env: { 'rack.input': JSON.generate(@valid_json) },
+          headers: valid_headers
+      assert_equal 480, response.response_code
     end
 
   end

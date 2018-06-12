@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       root 'landing#index'
       resources :elements, only: :index
+      resources :harvests, only: [:create, :update], param: :key
       resources :items, only: :update
     end
   end
@@ -43,6 +44,9 @@ Rails.application.routes.draw do
     end
     resources :element_defs, path: 'elements', param: :name, except: :show
     match '/elements/import', to: 'elements#import', via: :post, as: 'element_defs_import'
+    resources :harvests, param: :key, only: [:index, :show] do
+      match '/abort', to: 'harvests#abort', via: :patch, as: 'abort'
+    end
     resources :items, only: :show
     resources :roles, param: :key
     resources :users, param: :username do

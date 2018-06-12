@@ -1,0 +1,58 @@
+<% if @harvests.any? %>
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
+      <%= paginate(@count, @limit, @current_page, params.permit) %>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Content Service</th>
+        <th>Status</th>
+        <th>Progress</th>
+        <th>Run Time</th>
+        <th>Succeeded</th>
+        <th>Failed</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @harvests.each do |harvest| %>
+        <tr>
+          <td><%= link_to 'Details', admin_harvest_path(harvest) %></td>
+          <td>
+            <%= link_to(admin_content_service_path(harvest.content_service)) do %>
+              <%= icon_for(harvest.content_service) %>
+              <%= harvest.content_service.name %>
+            <% end %>
+          </td>
+          <td><%= harvest_status_badge harvest.status %></td>
+          <td><%= (harvest.progress * 100).round(1).to_s + '%' %></td>
+          <td><%= distance_of_time_in_words(harvest.created_at,
+                                            harvest.ended_at || Time.now) %></td>
+          <td><span class="badge badge-pill badge-success">
+            <%= number_with_delimiter(harvest.num_succeeded) %></span></td>
+          <td>
+            <% if harvest.num_failed > 0 %>
+              <span class="badge badge-pill badge-danger">
+                <%= number_with_delimiter(harvest.num_failed) %></span>
+            <% else %>
+              <span class="badge badge-pill badge-light">0</span>
+            <% end %>
+          </td>
+          <td><%= time_ago_in_words harvest.created_at %> ago</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
+      <%= paginate(@count, @limit, @current_page, params.permit) %>
+    </div>
+  </div>
+<% else %>
+  There haven't been any harvests yet.
+<% end %>

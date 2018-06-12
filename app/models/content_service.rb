@@ -1,6 +1,7 @@
 class ContentService < ApplicationRecord
 
   has_many :element_mappings, inverse_of: :content_service
+  has_many :harvests, inverse_of: :content_service
 
   validates :key, presence: true, length: { maximum: 20 },
             uniqueness: { case_sensitive: false }

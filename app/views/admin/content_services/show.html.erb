@@ -1,4 +1,5 @@
 <% provide :title, @content_service %>
+<% provide :body_id, 'dl-admin-content-service' %>
 <% provide :active_nav, 'entities' %>
 
 <%= breadcrumb({ label: 'Home', url: admin_root_path },
@@ -54,6 +55,17 @@
       <dt>Description</dt>
       <dd><%= @content_service.description.present? ?
                   @content_service.description : 'None' %></dd>
+      <% if @harvests.any? %>
+        <dt>Last <%= Admin::ContentServicesController::HARVEST_WINDOW_SIZE %> Harvests</dt>
+        <dd>
+          <ol>
+            <% @harvests.each do |harvest| %>
+              <li><%= link_to(local_time(harvest.updated_at), admin_harvest_path(harvest)) %>
+                <%= harvest_status_badge(harvest.status) %></li>
+            <% end %>
+          </ol>
+        </dd>
+      <% end %>
     </dl>
   </div>
   <div class="col-sm-8">
@@ -72,7 +84,7 @@
       <tr>
         <th>Source Element
           <br>
-          <span class="text-muted">(auto-detected during indexing)</span>
+          <span class="text-muted">(autodetected during indexing)</span>
         </th>
         <th><%= link_to 'Local Element', admin_element_defs_path, target: '_blank' %></th>
         <th>Local Element Data Type</th>

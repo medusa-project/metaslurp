@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-sm-4">
+    <dl>
+      <dt>Content Service</dt>
+      <dd>
+        <%= link_to(admin_content_service_path(@harvest.content_service)) do %>
+            <%= icon_for(@harvest.content_service) %>
+            <%= @harvest.content_service.name %>
+        <% end %>
+      </dd>
+      <dt>Key</dt>
+      <dd><%= @harvest.key %></dd>
+      <dt>Created</dt>
+      <dd><%= local_time @harvest.created_at %></dd>
+      <dt>Last Updated</dt>
+      <dd><%= local_time @harvest.updated_at %></dd>
+    </dl>
+  </div>
+  <div class="col-sm-4">
+    <dl>
+      <dt>Status</dt>
+      <dd><%= harvest_status_badge @harvest.status %></dd>
+      <dt>Progress</dt>
+      <dd><%= (@harvest.progress * 100).round(1).to_s + '%' %></dd>
+      <dt>Run Time</dt>
+      <dd><%= distance_of_time_in_words(@harvest.created_at,
+                                        @harvest.ended_at || Time.now) %></dd>
+      <% if @harvest.usable? %>
+        <dt>ETA</dt>
+        <dd><%= time_ago_in_words(@harvest.estimated_completion) %></dd>
+      <% end %>
+    </dl>
+  </div>
+  <div class="col-sm-4">
+    <dl>
+      <dt>Succeeded Items</dt>
+      <dd>
+        <span class="badge badge-pill badge-success">
+        <%= number_with_delimiter(@harvest.num_succeeded) %></span>
+      </dd>
+      <dt>Failed Items</dt>
+      <dd>
+        <% if @harvest.num_failed > 0 %>
+          <span class="badge badge-pill badge-danger">
+            <%= number_with_delimiter(@harvest.num_failed) %></span>
+        <% else %>
+          <span class="badge badge-pill badge-light">0</span>
+        <% end %>
+      </dd>
+      <dt>Total Items To Harvest</dt>
+      <dd><%= number_with_delimiter(@harvest.num_items) %></dd>
+    </dl>
+  </div>
+</div>
+
+<% if @harvest.message.present? %>
+  <pre><%= @harvest.message %></pre>
+<% end %>
