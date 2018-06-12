@@ -4,6 +4,7 @@ class ItemTest < ActiveSupport::TestCase
 
   setup do
     @instance = Item.new(id: 'cats',
+                         harvest_key: harvests(:new).key,
                          media_type: 'image/jpeg',
                          service_key: content_services(:one).key,
                          source_id: 'cats',
@@ -28,6 +29,7 @@ class ItemTest < ActiveSupport::TestCase
             '_source' => {
                 Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
                 Item::IndexFields::FULL_TEXT => 'Lorem ipsum',
+                Item::IndexFields::HARVEST_KEY => harvests(:new).key,
                 Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
                 Item::IndexFields::MEDIA_TYPE => 'image/jpeg',
                 Item::IndexFields::SERVICE_KEY => content_services(:one).key,
@@ -47,6 +49,7 @@ class ItemTest < ActiveSupport::TestCase
         })
     assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal 'Lorem ipsum', item.full_text
+    assert_equal harvests(:new).key, item.harvest_key
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
     assert_equal 'cats', item.id
     assert_equal 'image/jpeg', item.media_type
@@ -75,6 +78,7 @@ class ItemTest < ActiveSupport::TestCase
         {
             'variant': Item::Variants::ITEM,
             'id': 'cats',
+            'harvest_key': harvests(:new).key,
             'media_type': 'image/jpeg',
             'service_key': content_services(:one).key,
             'source_id': 'cats',
@@ -89,6 +93,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.id
     assert_equal 'Lorem ipsum', item.full_text
+    assert_equal harvests(:new).key, item.harvest_key
     assert_equal 'image/jpeg', item.media_type
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
@@ -134,6 +139,8 @@ class ItemTest < ActiveSupport::TestCase
                  struct[Item::IndexFields::ACCESS_IMAGE_URI]
     assert_equal @instance.full_text,
                  struct[Item::IndexFields::FULL_TEXT]
+    assert_equal @instance.harvest_key,
+                 struct[Item::IndexFields::HARVEST_KEY]
     assert_not_empty struct[Item::IndexFields::LAST_INDEXED]
     assert_equal @instance.media_type,
                  struct[Item::IndexFields::MEDIA_TYPE]
@@ -163,6 +170,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Item::Variants::ITEM, struct['variant']
     assert_equal 'cats', struct['id']
     assert_equal 'Lorem ipsum', struct['full_text']
+    assert_equal harvests(:new).key, struct['harvest_key']
     assert_equal 'image/jpeg', struct['media_type']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'cats', struct['source_id']
@@ -210,6 +218,23 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'element() returns nil for an unavailable element' do
     assert_nil @instance.element(:bogus)
+  end
+
+  # harvest()
+
+  test 'harvest() returns a Harvest when the harvest key is set to an '\
+  'existing harvest key' do
+    assert_kind_of Harvest, @instance.harvest
+  end
+
+  test 'harvest() returns nil when the harvest key is not set' do
+    @instance.harvest_key = nil
+    assert_nil @instance.harvest
+  end
+
+  test 'harvest() returns nil when the harvest key is set to an invalid value' do
+    @instance.harvest_key = 'bogus'
+    assert_nil @instance.harvest
   end
 
   # save()
@@ -265,6 +290,20 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'validate() raises error for invalid id' do
     @instance.id = 'cats/dogs'
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for missing harvest key' do
+    @instance.harvest_key = ''
+    assert_raises ArgumentError do
+      @instance.validate
+    end
+  end
+
+  test 'validate() raises error for invalid harvest key' do
+    @instance.harvest_key = 'dogs'
     assert_raises ArgumentError do
       @instance.validate
     end
