@@ -56,7 +56,57 @@ var Application = {
     /**
      * @return An object representing the current view.
      */
-    view: null
+    view: null,
+
+    /**
+     * Provides an ajax filter field. This will contain HTML like:
+     *
+     * <form class="dl-filter">
+     *     <input type="text">
+     *     <select> <!-- optional -->
+     * </form>
+     *
+     * @constructor
+     */
+    FilterField: function() {
+        var INPUT_DELAY_MSEC = 500;
+
+        $('form.dl-filter').submit(function () {
+            $.get(this.action, $(this).serialize(), null, 'script');
+            $(this).nextAll('input').addClass('active');
+            return false;
+        });
+
+        var submitForm = function () {
+            var forms = $('form.dl-filter');
+            $.ajax({
+                url: forms.attr('action'),
+                method: 'GET',
+                data: forms.serialize(),
+                dataType: 'script',
+                success: function(result) {}
+            });
+            return false;
+        };
+
+        var input_timer;
+        // When text is typed in the filter field...
+        $('form.dl-filter input').on('keyup', function () {
+            // Reset the typing-delay counter.
+            clearTimeout(input_timer);
+
+            // After the user has stopped typing, wait a bit and then submit
+            // the form via AJAX.
+            input_timer = setTimeout(submitForm, INPUT_DELAY_MSEC);
+            return false;
+        });
+        // When form controls accompanying the filter field are changed,
+        // resubmit the form via AJAX.
+        $('form.dl-filter select, ' +
+            'form.dl-filter input[type=radio]').on('change', function() {
+            submitForm();
+        });
+    }
 
 };
 

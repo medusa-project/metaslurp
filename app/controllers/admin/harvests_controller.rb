@@ -2,6 +2,8 @@ module Admin
 
   class HarvestsController < ControlPanelController
 
+    PERMITTED_PARAMS = [:content_service_id, :status]
+
     ##
     # Responds to PATCH /admin/harvests/:key/abort
     #
@@ -27,6 +29,13 @@ module Admin
       @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
       @start = params[:start] ? params[:start].to_i : 0
       @harvests = Harvest.all.order(created_at: :desc)
+
+      if params[:content_service_id].present?
+        @harvests = @harvests.where(content_service_id: params[:content_service_id])
+      end
+      if params[:status].present?
+        @harvests = @harvests.where(status: params[:status])
+      end
 
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @count = @harvests.count
