@@ -58,10 +58,13 @@ class ElementDef < ApplicationRecord
 
   validates :data_type, inclusion: { in: DataType.all }, allow_blank: false
   validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :name, presence: true, format: { with: /\A[-a-zA-Z0-9]+\Z/ },
+  validates :name, presence: true, format: { with: /\A[a-zA-Z0-9-_]+\Z/ },
             uniqueness: { case_sensitive: false }
 
-  before_update :restrict_name_changes
+  validate :restrict_name_changes, :restrict_required_element_changes
+  before_destroy :restrict_required_element_deletion
+
+  SYSTEM_REQUIRED_ELEMENTS = %w(title description date)
 
   ##
   # @param struct [Hash] Deserialized hash from JSON.parse()
@@ -113,6 +116,13 @@ class ElementDef < ApplicationRecord
     end
   end
 
+  ##
+  # @return [Boolean] Whether the element is required by the system.
+  #
+  def system_required?
+    SYSTEM_REQUIRED_ELEMENTS.include?(self.name)
+  end
+
   def to_param
     name
   end
@@ -128,11 +138,31 @@ class ElementDef < ApplicationRecord
     self.save!
   end
 
+  private
+
   ##
   # Disallows changes to the name.
   #
   def restrict_name_changes
-    self.name_was == self.name
+    if self.name_was != self.name
+      errors.add(:name, 'cannot be changed.')
+    end
+  end
+
+  ##
+  # Disallows changes to the data type of system-required elements.
+  #
+  def restrict_required_element_changes
+    if self.system_required? and self.data_type_was != self.data_type
+      errors.add(:data_type, 'cannot be changed')
+    end
+  end
+
+  ##
+  # Disallows deletion of system-required elements.
+  #
+  def restrict_required_element_deletion
+    throw(:abort) if self.system_required?
   end
 
 end

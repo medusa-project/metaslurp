@@ -7,6 +7,14 @@ class ElementDefTest < ActiveSupport::TestCase
     assert @instance.validate
   end
 
+  # destroy()
+
+  test 'destroy() does not allow system-required elements to be destroyed' do
+    assert_raises ActiveRecord::RecordNotDestroyed do
+      @instance.destroy!
+    end
+  end
+
   # indexed_field()
 
   test 'indexed_field() returns the correct value when the data type is DATE' do
@@ -47,6 +55,20 @@ class ElementDefTest < ActiveSupport::TestCase
   end
 
   # validate()
+
+  test 'validate() restricts name changes' do
+    @instance.name = 'cats'
+    assert_raises ActiveRecord::RecordInvalid do
+      @instance.save!
+    end
+  end
+
+  test 'validate() restricts changes to the data type of system-required elements' do
+    @instance.data_type = ElementDef::DataType::DATE
+    assert_raises ActiveRecord::RecordInvalid do
+      @instance.save!
+    end
+  end
 
   test 'validate() requires unique names' do
     ElementDef.all.each_with_index do |e, i|

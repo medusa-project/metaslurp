@@ -1,12 +1,11 @@
 <% if object.errors.any? %>
-  <div class="panel panel-danger submission-error">
-    <div class="panel-heading">
-      <h3 class="panel-title"><%= pluralize(object.errors.count, 'error') %>
+  <div class="card text-white bg-danger mb-3">
+    <div class="card-header">Validation Error</div>
+    <div class="card-body">
+      <h5 class="card-title"><%= pluralize(object.errors.count, 'error') %>
         prevented this <%= object.class.to_s.underscore.humanize.downcase %>
-        from being saved:</h3>
-    </div>
-    <div class="panel-body">
-      <ul>
+        from being saved:</h5>
+      <ul class="card-text">
         <% object.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>

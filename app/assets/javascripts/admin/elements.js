@@ -19,7 +19,7 @@ var DLAdminElementsView = function() {
 };
 
 var ready = function() {
-    if ($('body#admin_elements').length) {
+    if ($('body#dl-admin-elements').length) {
         new DLAdminElementsView().init();
     }
 };

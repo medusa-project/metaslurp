@@ -51,6 +51,37 @@ var Application = {
         $('.navbar-nav li').removeClass('active');
         $('.navbar-nav li#' + $('body').attr('data-nav') + '-nav')
             .addClass('active');
+
+        // These global AJAX success and error callbacks save the work of
+        // defining local ones in many $.ajax() calls.
+        //
+        // This one sets the flash if there are `X-DL-Message` and
+        // `X-DL-Message-Type` response headers. These would be set by
+        // an ApplicationController after_filter. `X-Kumquat-Result` is
+        // another header that, if set, can contain "success" or "error",
+        // indicating the result of a form submission.
+        $(document).ajaxSuccess(function(event, request) {
+            var result_type = request.getResponseHeader('X-DL-Message-Type');
+            var edit_panel = $('.pt-edit-panel.in');
+
+            if (result_type && edit_panel.length) {
+                if (result_type === 'success') {
+                    edit_panel.modal('hide');
+                } else if (result_type === 'error') {
+                    edit_panel.find('.modal-body').animate({ scrollTop: 0 }, 'fast');
+                }
+                var message = request.getResponseHeader('X-DL-Message');
+                if (message && result_type) {
+                    Application.Flash.set(message, result_type);
+                }
+            }
+        });
+
+        $(document).ajaxError(function(event, request, settings) {
+            console.error(event);
+            console.error(request);
+            console.error(settings);
+        });
     },
 
     /**

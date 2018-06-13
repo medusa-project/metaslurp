@@ -119,7 +119,8 @@ module Admin
       begin
         element.update!(sanitized_params)
       rescue ActiveRecord::RecordInvalid
-        render partial: 'shared/validation_messages',
+        response.headers['X-DL-Result'] = 'error'
+        render partial: 'admin/shared/validation_messages',
                locals: { entity: element }
       rescue => e
         handle_error(e)

@@ -47,7 +47,7 @@
           <% end %>
         </td>
         <td>
-          <% if current_user.admin? %>
+          <% if current_user.admin? and !element.system_required? %>
             <%= link_to admin_element_def_path(element),
                         class: 'btn btn-danger btn-sm', method: :delete,
                         data: { confirm: 'Are you sure you want to delete '\

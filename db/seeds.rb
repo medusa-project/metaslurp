@@ -26,6 +26,9 @@ admin.save!
 
 # Elements
 ElementDef.create!(index: 0, name: 'title', label: 'Title',
-                   facetable: false)
+                   searchable: true, sortable: true, facetable: false)
 ElementDef.create!(index: 1, name: 'description', label: 'Description',
-                   sortable: false, facetable: false)
+                   searchable: true, sortable: false, facetable: false)
+ElementDef.create!(index: 2, name: 'date', label: 'Date',
+                   data_type: ElementDef::DataType::DATE,
+                   searchable: false, sortable: true, facetable: false)
