@@ -12,7 +12,7 @@ module Admin
       raise ActiveRecord::RecordNotFound unless harvest
 
       begin
-        harvest.update!(status: Harvest::Status::ABORTED, ended_at: Time.now)
+        harvest.update!(status: Harvest::Status::ABORTED, ended_at: Time.zone.now)
       rescue => e
         flash['error'] = "#{e}"
       else

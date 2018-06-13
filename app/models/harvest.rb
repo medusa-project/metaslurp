@@ -82,7 +82,8 @@ class Harvest < ApplicationRecord
   # @return [Time]
   #
   def estimated_completion
-    Time.at(Time.now + ((Time.now - self.created_at) * (1 / self.progress)))
+    now = Time.zone.now
+    Time.zone.at(now + ((now - self.created_at) * (1 / self.progress)))
   end
 
   ##
@@ -138,7 +139,7 @@ class Harvest < ApplicationRecord
   end
 
   def update_ended_at
-    self.ended_at = Time.now unless self.usable?
+    self.ended_at = Time.zone.now unless self.usable?
   end
 
 end

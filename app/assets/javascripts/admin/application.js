@@ -12,6 +12,7 @@
 //
 //= require rails-ujs
 //= require jquery3
+//= require local-time
 //= require popper
 //= require bootstrap-sprockets
 //= require ../metaslurp

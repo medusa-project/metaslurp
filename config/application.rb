@@ -17,6 +17,8 @@ module Metaslurp
     config.action_dispatch.default_headers =
         config.action_dispatch.default_headers.delete('X-Frame-Options')
 
+    config.time_zone = ENV['METASLURP_TIME_ZONE']
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

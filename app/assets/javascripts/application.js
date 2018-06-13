@@ -13,6 +13,7 @@
 //= require rails-ujs
 //= require jquery3
 //= require js.cookie
+//= require local-time
 //= require popper
 //= require bootstrap-sprockets
 //= require_tree .

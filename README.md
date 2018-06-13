@@ -40,8 +40,8 @@ $ cd metaslurp
 
 ## 6) Configure the application
 
-Open `config/database.yml` and add the environment variables it uses to your
-environment.
+Open `config/metaslurp.yml` and `config/database.yml` and add the environment
+variables referenced within to your environment.
 
 ## 7) Create and seed the database
 
