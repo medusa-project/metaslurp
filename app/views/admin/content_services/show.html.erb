@@ -14,9 +14,9 @@
         Items
       </button>
       <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-        <%= link_to admin_content_service_reindex_path(@content_service),
+        <%= link_to admin_content_service_harvest_path(@content_service),
                     class: 'dropdown-item', method: 'post' do %>
-          <i class="fas fa-sync"></i> Reindex
+          <i class="fas fa-sync"></i> Harvest
         <% end %>
         <%= link_to admin_content_service_purge_path(@content_service),
                     class: 'dropdown-item', method: 'post',

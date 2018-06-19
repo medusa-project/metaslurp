@@ -64,6 +64,24 @@ module Admin
     end
 
     ##
+    # Responds to POST /admin/content-services/:key/harvest
+    #
+    def harvest
+      @content_service = ContentService.find_by_key(params[:content_service_key])
+      raise ActiveRecord::RecordNotFound unless @content_service
+
+      begin
+        @content_service.harvest_items_async
+
+        flash['success'] = 'Harvesting is in progress.'
+      rescue => e
+        flash['error'] = "#{e}"
+      ensure
+        redirect_back fallback_location: admin_content_service_path(@content_service)
+      end
+    end
+
+    ##
     # Responds to GET /admin/content-services
     #
     def index
@@ -96,17 +114,6 @@ module Admin
     end
 
     ##
-    # Responds to POST /admin/content-services/:key/reindex
-    #
-    def reindex
-      @content_service = ContentService.find_by_key(params[:content_service_key])
-      raise ActiveRecord::RecordNotFound unless @content_service
-
-      flash['error'] = 'Reindexing doesn\'t work yet.'
-      redirect_back fallback_location: admin_content_service_path(@content_service)
-    end
-
-    ##
     # Responds to GET /admin/content-services/:key
     #
     def show
@@ -131,7 +138,7 @@ module Admin
       else
         flash['success'] = 'Content service updated. Note that if any '\
             'element mappings were changed, the service will need to be '\
-            'reindexed.'
+            'reharvested.'
         redirect_to admin_content_service_path(@content_service)
       end
     end

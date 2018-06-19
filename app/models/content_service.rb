@@ -54,6 +54,45 @@ class ContentService < ApplicationRecord
         select{ |m| m.source_name == element.name}.first&.element_def
   end
 
+  ##
+  # Invokes [metaslurper](https://github.com/medusa-project/metaslurper) via
+  # an AWS ECS Fargate task to harvest items.
+  #
+  # @return [void]
+  # @raises [RuntimeError] unless Rails is in production mode.
+  #
+  def harvest_items_async
+    raise 'This feature only works in production. In development, invoke '\
+      'metaslurper from the command line.' unless Rails.env.production?
+
+    # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#run_task-instance_method
+    ecs = Aws::ECS::Client.new(region: ENV['AWS_REGION'])
+    args = {
+        cluster: ENV['METASLURPER_ECS_CLUSTER'],
+        task_definition: ENV['METASLURPER_ECS_TASK_DEFINITION'],
+        launch_type: 'FARGATE',
+        overrides: {
+            container_overrides: [
+                {
+                    name: 'metaslurper',
+                    command: ['java', '-jar', 'metaslurper.jar',
+                              '-source', self.key,
+                              '-sink', 'metaslurp',
+                              '-threads', '2']
+                },
+            ]
+        },
+        network_configuration: {
+            awsvpc_configuration: {
+                subnets: [ENV['METASLURPER_ECS_SUBNET']],
+                security_groups: [ENV['METASLURPER_ECS_SECURITY_GROUP']],
+                assign_public_ip: 'ENABLED'
+            },
+        }
+    }
+    ecs.run_task(args)
+  end
+
   def hash
     self.key.hash
   end
@@ -83,9 +122,10 @@ class ContentService < ApplicationRecord
   # @raises [RuntimeError] if not called in the production environment.
   #
   def send_delete_all_items_sns
-    raise 'This method only works in production mode.' unless Rails.env.production?
+    raise 'This method only works in production mode. In development, use '\
+        'the items:delete_from_service rake task.' unless Rails.env.production?
 
-    sns = Aws::SNS::Resource.new(region: 'us-east-2') # TODO: don't hard-code this
+    sns = Aws::SNS::Resource.new(region: ENV['AWS_REGION'])
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
     topic = sns.topic(ENV['SNS_TOPIC_ARN'])
     attrs = {

@@ -75,7 +75,7 @@
 # 7. Update tests for all of the above
 # 8. Update the ItemsController API test
 # 9. Add it to the API documentation
-# 10. Update the harvester and reindex everything
+# 10. Update the harvester and re-harvest everything
 #
 class Item
 
@@ -264,7 +264,7 @@ class Item
   # will not be the same as what is currently indexed; for that, see
   # fetch_indexed_json().
   #
-  # N.B.: Changing this may require reindexing and maybe even updating the
+  # N.B.: Changing this may require re-harvesting and maybe even updating the
   # index schema.
   #
   # @return [Hash] Indexable JSON representation of the instance.

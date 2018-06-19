@@ -5,6 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'aws-sdk-ecs', '~> 1'
 gem 'aws-sdk-sns', '~> 1'
 gem 'bootstrap', '~> 4.1.0'
 gem 'faraday'
