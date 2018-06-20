@@ -39,8 +39,12 @@
       <dd><%= @item.media_type.present? ? @item.media_type : 'None' %></dd>
       <dt>Last Harvest</dt>
       <dd>
-        <%= link_to harvest_title(@item.harvest),
-                    admin_harvest_path(@item.harvest) %>
+        <% if @item.harvest %>
+          <%= link_to harvest_title(@item.harvest),
+                      admin_harvest_path(@item.harvest) %>
+        <% else %>
+          Unknown
+        <% end %>
       </dd>
     </dl>
   </div>

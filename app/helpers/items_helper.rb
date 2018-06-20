@@ -38,7 +38,7 @@ module ItemsHelper
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       link_to(title, item.source_uri)
+      html +=       title
       if item.date
         html +=       " <small>#{item.date.year}</small>"
       end
@@ -64,7 +64,9 @@ module ItemsHelper
       html +=       icon_for(item) + ' '
       html +=       item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       html +=       ' | '
-      html +=       link_to(item.content_service.name, item.content_service)
+      html +=       link_to item.source_uri do
+                      raw("<i class=\"fas fa-external-link-alt\"></i> View in #{item.content_service.name}")
+                    end
       html +=         ' ' + remove_from_favorites_button(item)
       html +=         ' ' + add_to_favorites_button(item)
       if options[:link_to_admin]
