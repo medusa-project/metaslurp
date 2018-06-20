@@ -32,8 +32,14 @@
         <td><%= (harvest.progress * 100).round(1).to_s + '%' %></td>
         <td><%= distance_of_time_in_words(harvest.created_at,
                                           harvest.ended_at || Time.zone.now) %></td>
-        <td><span class="badge badge-pill badge-success">
-          <%= number_with_delimiter(harvest.num_succeeded) %></span></td>
+        <td>
+          <% if harvest.num_succeeded > 0 %>
+            <span class="badge badge-pill badge-success">
+              <%= number_with_delimiter(harvest.num_succeeded) %></span>
+          <% else %>
+            <span class="badge badge-pill badge-light">0</span>
+          <% end %>
+        </td>
         <td>
           <% if harvest.num_failed > 0 %>
             <span class="badge badge-pill badge-danger">

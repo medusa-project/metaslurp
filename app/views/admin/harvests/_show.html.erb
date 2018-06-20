@@ -35,8 +35,12 @@
     <dl>
       <dt>Succeeded Items</dt>
       <dd>
-        <span class="badge badge-pill badge-success">
-        <%= number_with_delimiter(@harvest.num_succeeded) %></span>
+        <% if @harvest.num_succeeded > 0 %>
+          <span class="badge badge-pill badge-success">
+            <%= number_with_delimiter(@harvest.num_succeeded) %></span>
+        <% else %>
+          <span class="badge badge-pill badge-light">0</span>
+        <% end %>
       </dd>
       <dt>Failed Items</dt>
       <dd>
