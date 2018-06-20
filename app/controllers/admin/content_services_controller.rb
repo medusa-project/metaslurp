@@ -73,7 +73,7 @@ module Admin
       begin
         @content_service.harvest_items_async
 
-        flash['success'] = 'Harvesting is in progress.'
+        flash['success'] = 'Harvesting will begin shortly.'
       rescue => e
         flash['error'] = "#{e}"
       ensure

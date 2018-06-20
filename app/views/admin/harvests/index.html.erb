@@ -1,6 +1,6 @@
 <% provide :title, 'Harvests' %>
 <% provide :body_id, 'dl-admin-harvests' %>
-<% provide :active_nav, 'entities' %>
+<% provide :active_nav, 'harvests' %>
 
 <%
 content_service_options = options_for_select(ContentService.all.order(:name).map{ |s| [s.name, s.id] })

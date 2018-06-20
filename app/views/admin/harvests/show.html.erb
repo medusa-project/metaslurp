@@ -1,6 +1,6 @@
-<% provide :title, @harvest %>
+<% provide :title, harvest_title(@harvest) %>
 <% provide :body_id, 'dl-admin-harvest' %>
-<% provide :active_nav, 'entities' %>
+<% provide :active_nav, 'harvests' %>
 
 <%= breadcrumb({ label: 'Home', url: admin_root_path },
                { label: 'Harvests', url: admin_harvests_path },

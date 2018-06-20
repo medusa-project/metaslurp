@@ -83,8 +83,21 @@ class Harvest < ApplicationRecord
   #
   def estimated_completion
     now = Time.zone.now
-    self.progress == 1.0 ?
-        now : Time.zone.at(now + ((now - self.created_at) * (1 - self.progress)))
+    if self.progress == 0.0
+      now.advance(years: 1)
+    elsif self.progress == 1.0
+      now
+    else
+      duration = now - self.created_at
+      Time.zone.at(now + (duration * (1 / self.progress)))
+    end
+  end
+
+  ##
+  # @return [Float]
+  #
+  def items_per_second
+    self.num_succeeded / ((self.ended_at || Time.zone.now) - self.created_at)
   end
 
   ##
@@ -92,7 +105,7 @@ class Harvest < ApplicationRecord
   #
   def progress
     self.num_items > 0 ?
-        (self.num_succeeded + self.num_failed) / self.num_items.to_f : 0
+        (self.num_succeeded + self.num_failed) / self.num_items.to_f : 0.0
   end
 
   def to_param

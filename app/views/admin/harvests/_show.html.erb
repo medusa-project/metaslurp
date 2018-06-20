@@ -25,6 +25,8 @@
       <dt>Run Time</dt>
       <dd><%= distance_of_time_in_words(@harvest.created_at,
                                         @harvest.ended_at || Time.zone.now) %></dd>
+      <dt>Items Per Minute</dt>
+      <dd><%= number_with_delimiter((@harvest.items_per_second * 60).round) %></dd>
       <% if @harvest.usable? %>
         <dt>ETA</dt>
         <dd><%= time_ago_in_words(@harvest.estimated_completion) %></dd>
@@ -33,6 +35,8 @@
   </div>
   <div class="col-sm-4">
     <dl>
+      <dt>Total Items To Harvest</dt>
+      <dd><%= number_with_delimiter(@harvest.num_items) %></dd>
       <dt>Succeeded Items</dt>
       <dd>
         <% if @harvest.num_succeeded > 0 %>
@@ -51,8 +55,6 @@
           <span class="badge badge-pill badge-light">0</span>
         <% end %>
       </dd>
-      <dt>Total Items To Harvest</dt>
-      <dd><%= number_with_delimiter(@harvest.num_items) %></dd>
     </dl>
   </div>
 </div>

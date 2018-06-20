@@ -45,8 +45,11 @@
           <div class="dropdown-menu" aria-labelledby="dl-entities-menu-toggle">
             <%= link_to 'Elements', admin_element_defs_path, class: 'dropdown-item' %>
             <%= link_to 'Content Services', admin_content_services_path, class: 'dropdown-item' %>
-            <%= link_to 'Harvests', admin_harvests_path, class: 'dropdown-item' %>
           </div>
+        </li>
+
+        <li class="nav-item" id="harvests-nav">
+          <%= link_to 'Harvests', admin_harvests_path, class: 'nav-link' %>
         </li>
 
         <li class="nav-item dropdown" id="access-nav">
