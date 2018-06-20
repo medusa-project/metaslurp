@@ -38,7 +38,11 @@ module ItemsHelper
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      html +=       title
+      if options[:link_to_admin]
+        html += link_to(title, admin_item_path(item), target: '_blank')
+      else
+        html += title
+      end
       if item.date
         html +=       " <small>#{item.date.year}</small>"
       end
@@ -69,13 +73,6 @@ module ItemsHelper
                     end
       html +=         ' ' + remove_from_favorites_button(item)
       html +=         ' ' + add_to_favorites_button(item)
-      if options[:link_to_admin]
-        html += link_to(admin_item_path(item),
-                        class: 'btn btn-light btn-sm',
-                        target: '_blank') do
-              raw('<i class="fas fa-lock"></i> Admin View')
-            end
-      end
       html +=     '</span><br>'
       html +=     desc if desc.present?
       html +=   '</div>'
