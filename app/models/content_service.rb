@@ -60,10 +60,15 @@ class ContentService < ApplicationRecord
   #
   # @return [void]
   # @raises [RuntimeError] unless Rails is in production mode.
+  # @raises [RuntimeError] if a harvest of this service is already in progress.
   #
   def harvest_items_async
     raise 'This feature only works in production. In development, invoke '\
-      'metaslurper from the command line.' unless Rails.env.production?
+      'metaslurper from the command line instead.' unless Rails.env.production?
+
+    if self.harvests.where(ended_at: nil).count > 0
+      raise 'Another harvest of this service is currently in progress.'
+    end
 
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#run_task-instance_method
     ecs = Aws::ECS::Client.new(region: ENV['AWS_REGION'])
