@@ -112,6 +112,7 @@ class Item
     BOOK           = 'Book'
     COLLECTION     = 'Collection'
     DATA_SET       = 'DataSet'
+    ENTITY         = 'Entity'
     FILE           = 'File'
     ITEM           = 'Item'
     NEWSPAPER_PAGE = 'NewspaperPage'
