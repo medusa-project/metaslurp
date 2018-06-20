@@ -83,7 +83,8 @@ class Harvest < ApplicationRecord
   #
   def estimated_completion
     now = Time.zone.now
-    Time.zone.at(now + ((now - self.created_at) * (1 / self.progress)))
+    self.progress == 1.0 ?
+        now : Time.zone.at(now + ((now - self.created_at) * (1 - self.progress)))
   end
 
   ##
