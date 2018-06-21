@@ -65,7 +65,7 @@ class TimeUtils
       # such as: 10000-01-01T00:00:00Z
       # Rather than making all of our regexes a lot more complicated to deal
       # with those, we will add a special check to disqualify them.
-      fail = true if date.match(/^[0-9]{5}-/)
+      fail = true if date.match(/^[0-9]{5,99}-/)
 
       iso8601 = nil
       # AA
