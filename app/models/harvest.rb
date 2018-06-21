@@ -129,6 +129,12 @@ class Harvest < ApplicationRecord
       update_attribute(attr, value) if value.present?
     end
 
+    # The JSON may include a `messages` array, which must be joined into a
+    # `message` string.
+    if json['messages'].respond_to?(:each)
+      self.message = json['messages'].join("\n")
+    end
+
     self.save!
   end
 
@@ -153,7 +159,7 @@ class Harvest < ApplicationRecord
   end
 
   def update_ended_at
-    self.ended_at = Time.zone.now unless self.usable?
+    self.ended_at = (Time.zone&.now || Time.now) unless self.usable?
   end
 
 end

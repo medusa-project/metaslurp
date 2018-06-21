@@ -149,10 +149,13 @@
     <td>Request Entity</td>
     <td><code class="code-block">{
     "status": 1,
-    "message": "Hello world",
     "num_items", 750,
     "num_succeeded": 500,
-    "num_failed" 2
+    "num_failed" 2,
+    "messages": [
+        "This item errored",
+        "And so did this one"
+    ]
 }</code>
 
       <table class="table table-condensed">
@@ -188,9 +191,9 @@
           </td>
         </tr>
         <tr>
-          <td><code>message</code></td>
+          <td><code>messages</code></td>
           <td>No</td>
-          <td>Arbitrary message to send back to the sink.</td>
+          <td>Array of arbitrary messages to send back to the sink.</td>
         </tr>
       </table>
     </td>

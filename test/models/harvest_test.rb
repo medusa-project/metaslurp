@@ -42,9 +42,11 @@ class HarvestTest < ActiveSupport::TestCase
   end
 
   test 'update_from_json() works' do
-    @instance.update_from_json(status: 2, num_items: 50)
+    @instance.update_from_json(status: 2, num_items: 50,
+                               messages: ['cats', 'dogs'])
     assert_equal 2, @instance.status
     assert_equal 50, @instance.num_items
+    assert_equal "cats\ndogs", @instance.message
   end
 
   # validate()
