@@ -50,6 +50,9 @@ class TimeUtils
   # | NE | [YYYY-YY]               |
   # | NF | [between YYYY and YYYY] |
   # | NG | [YYYY]-<YYYY >          |
+  # | NH | [cYYYY-YYYY]            |
+  # | NI | cYYYY-YYYY              |
+  # | NJ | cYYYY-                  |
   #
   # @param date [String]
   # @return [Time] Time instance in UTC, or nil if the given date string is
@@ -93,9 +96,9 @@ class TimeUtils
       elsif date.match(/^[0-9]{4}, ?c[0-9]{4}/)
         parts = date.split(',')
         iso8601 = sprintf('%s-01-01T00:00:00Z', parts[0])
-      # AL, AM, AN
+      # AL, AM, AN, NH
       elsif date.match(/^[\[]{0,2}[c©][0-9]{4}[\]]{0,2}/)
-        iso8601 = sprintf('%s-01-01T00:00:00Z', date.gsub(/[^0-9]/, ''))
+        iso8601 = sprintf('%s-01-01T00:00:00Z', date.split('-')[0].gsub(/[^0-9]/, ''))
       # AO, AP
       elsif date.gsub(',', '').downcase.match(/^(#{MONTHS.join('|')}),? [0-9]{4}/)
         parts = date.split(' ')

@@ -160,4 +160,19 @@ class TimeUtilsTest < ActiveSupport::TestCase
                  TimeUtils.string_date_to_time('[1923]-<1925 >')
   end
 
+  test 'string_date_to_time() works with NH' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[c1923-1925]')
+  end
+
+  test 'string_date_to_time() works with NI' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('c1923-1925')
+  end
+
+  test 'string_date_to_time() works with NJ' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('c1923-')
+  end
+
 end
