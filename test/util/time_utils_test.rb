@@ -12,6 +12,10 @@ class TimeUtilsTest < ActiveSupport::TestCase
     assert_raises ArgumentError do
       TimeUtils.string_date_to_time('cats')
     end
+
+    assert_raises ArgumentError do
+      TimeUtils.string_date_to_time('10000-01-01T00:00:00Z')
+    end
   end
 
   test 'string_date_to_time() works with AA' do

@@ -58,6 +58,13 @@ class TimeUtils
   def self.string_date_to_time(date)
     if date
       date = date.chomp('.')
+      fail = false
+
+      # IDEALS contains a whole bunch of ISO-8601 dates with five-digit years,
+      # such as: 10000-01-01T00:00:00Z
+      # Rather than making all of our regexes a lot more complicated to deal
+      # with those, we will add a special check to disqualify them.
+      fail = true if date.match(/^[0-9]{5}-/)
 
       iso8601 = nil
       # AA
@@ -120,7 +127,7 @@ class TimeUtils
         iso8601 = sprintf('%s-01-01T00:00:00Z', year)
       end
 
-      if iso8601
+      if iso8601 and !fail
         return Time.parse(iso8601)
       else
         raise ArgumentError, "Unrecognized date format: #{date}"
