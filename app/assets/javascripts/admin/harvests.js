@@ -14,7 +14,7 @@ var DLAdminHarvestsView = function() {
 
     var HarvestRefresher = function() {
 
-        var FREQUENCY = 5000;
+        var FREQUENCY = 10000;
 
         var refreshTimer;
 
@@ -62,7 +62,7 @@ var DLAdminHarvestView = function() {
 
     var HarvestRefresher = function() {
 
-        var FREQUENCY = 5000;
+        var FREQUENCY = 10000;
 
         var refreshTimer;
 
