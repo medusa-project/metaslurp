@@ -51,9 +51,11 @@ module AdminHelper
 
   ##
   # @param harvest [Harvest]
+  # @param options [Hash]
+  # @option options [Boolean] :no_js
   # @return [String]
   #
-  def harvest_title(harvest)
+  def harvest_title(harvest, options = {})
     title = ''
     service = harvest.content_service
     if service
@@ -61,7 +63,9 @@ module AdminHelper
     else
       title += harvest.content_service.key
     end
-    raw(title + ' ' + local_time(harvest.created_at))
+    datetime = options[:no_js] ?
+        harvest.created_at.to_s : local_time(harvest.created_at)
+    raw(title + ' ' + datetime)
   end
 
 end
