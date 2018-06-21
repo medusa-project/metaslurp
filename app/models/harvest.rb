@@ -125,7 +125,7 @@ class Harvest < ApplicationRecord
 
     Harvest.attribute_names.each do |attr|
       value = json[attr]
-      update_attribute(attr, value) if value.present?
+      send(attr.to_s + '=', value) if value.present?
     end
 
     # The JSON may include a `messages` array, which must be joined into a

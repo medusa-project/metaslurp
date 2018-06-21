@@ -49,6 +49,13 @@ class HarvestTest < ActiveSupport::TestCase
     assert_equal "cats\ndogs", @instance.message
   end
 
+  test 'update_from_json() respects validation' do
+    @instance = harvests(:aborted)
+    assert_raises ActiveRecord::RecordInvalid do
+      @instance.update_from_json(status: Harvest::Status::RUNNING)
+    end
+  end
+
   # validate()
 
   test 'validate() returns for valid instance' do
