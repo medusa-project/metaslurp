@@ -4,16 +4,22 @@
       <dt>Content Service</dt>
       <dd>
         <%= link_to(admin_content_service_path(@harvest.content_service)) do %>
-            <%= icon_for(@harvest.content_service) %>
-            <%= @harvest.content_service.name %>
+          <%= icon_for(@harvest.content_service) %>
+          <%= @harvest.content_service.name %>
         <% end %>
       </dd>
       <dt>Key</dt>
-      <dd><%= @harvest.key %></dd>
+      <dd><code><%= @harvest.key %></code></dd>
       <dt>Created</dt>
       <dd><%= local_time @harvest.created_at %></dd>
       <dt>Last Updated</dt>
-      <dd><%= local_time @harvest.updated_at %></dd>
+      <dd>
+        <% if Time.now - @harvest.updated_at > 1.hour %>
+          <%= local_time @harvest.updated_at %>
+        <% else %>
+          <%= local_time_ago @harvest.updated_at %>
+        <% end %>
+      </dd>
     </dl>
   </div>
   <div class="col-sm-4">
@@ -25,12 +31,12 @@
       <dt>Run Time</dt>
       <dd><%= distance_of_time_in_words(@harvest.created_at,
                                         @harvest.ended_at || Time.zone.now) %></dd>
-      <dt>Items Per Minute</dt>
-      <dd><%= number_with_delimiter((@harvest.items_per_second * 60).round) %></dd>
       <% if @harvest.usable? %>
         <dt>ETA</dt>
         <dd><%= time_ago_in_words(@harvest.estimated_completion) %></dd>
       <% end %>
+      <dt>Items Per Minute</dt>
+      <dd><%= number_with_delimiter((@harvest.items_per_second * 60).round) %></dd>
     </dl>
   </div>
   <div class="col-sm-4">
