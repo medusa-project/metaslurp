@@ -81,4 +81,47 @@ class HarvestTest < ActiveSupport::TestCase
     assert !@instance.validate
   end
 
+  test 'validate() returns false if status is being changed from a terminal status' do
+    @instance = harvests(:succeeded)
+    @instance.status = Harvest::Status::RUNNING
+    assert !@instance.validate
+
+    @instance = harvests(:failed)
+    @instance.status = Harvest::Status::RUNNING
+    assert !@instance.validate
+
+    @instance = harvests(:aborted)
+    @instance.status = Harvest::Status::RUNNING
+    assert !@instance.validate
+  end
+
+  test 'validate() returns true if status is being changed legally' do
+    @instance.status = Harvest::Status::RUNNING
+    assert @instance.validate
+
+    @instance = harvests(:new)
+    @instance.status = Harvest::Status::SUCCEEDED
+    assert @instance.validate
+
+    @instance = harvests(:new)
+    @instance.status = Harvest::Status::FAILED
+    assert @instance.validate
+
+    @instance = harvests(:new)
+    @instance.status = Harvest::Status::ABORTED
+    assert @instance.validate
+
+    @instance = harvests(:new)
+    @instance.status = Harvest::Status::SUCCEEDED
+    assert @instance.validate
+
+    @instance = harvests(:running)
+    @instance.status = Harvest::Status::FAILED
+    assert @instance.validate
+
+    @instance = harvests(:running)
+    @instance.status = Harvest::Status::ABORTED
+    assert @instance.validate
+  end
+
 end

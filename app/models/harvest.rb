@@ -75,7 +75,7 @@ class Harvest < ApplicationRecord
   validates :status, inclusion: { in: Status.all }, allow_blank: false
 
   after_initialize :populate_key
-  before_validation :restrict_key_changes
+  before_validation :restrict_key_changes, :restrict_status_changes
   before_save :update_ended_at
 
   ##
@@ -156,6 +156,15 @@ class Harvest < ApplicationRecord
   #
   def restrict_key_changes
     throw(:abort) if !self.new_record? and self.key_was != self.key
+  end
+
+  ##
+  # Disallows changes to a terminal status.
+  #
+  def restrict_status_changes
+    terminals = [Status::ABORTED, Status::SUCCEEDED, Status::FAILED]
+    throw(:abort) if !self.new_record? and self.status_changed? and
+        terminals.include?(self.status_was)
   end
 
   def update_ended_at
