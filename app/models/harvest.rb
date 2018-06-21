@@ -88,8 +88,7 @@ class Harvest < ApplicationRecord
     elsif self.progress == 1.0
       now
     else
-      duration = now - self.created_at
-      Time.zone.at(now + (duration * (1 / self.progress)))
+      Time.zone.at(now + ((self.num_items - self.num_succeeded - self.num_failed) / self.items_per_second))
     end
   end
 
