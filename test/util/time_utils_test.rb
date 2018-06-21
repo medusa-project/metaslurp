@@ -115,6 +115,11 @@ class TimeUtilsTest < ActiveSupport::TestCase
                  TimeUtils.string_date_to_time('03-23-1923')
   end
 
+  test 'string_date_to_time() works with AT' do
+    assert_equal Time.parse('1923-03-20 00:00:00Z'),
+                 TimeUtils.string_date_to_time('20 March 1923')
+  end
+
   test 'string_date_to_time() works with NA' do
     assert_equal Time.parse('1923-01-01 00:00:00Z'),
                  TimeUtils.string_date_to_time('1923-')

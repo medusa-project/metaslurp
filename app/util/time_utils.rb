@@ -35,6 +35,7 @@ class TimeUtils
   # | AQ | [YYYY or YYYY]      |
   # | AR | MM-YYYY             |
   # | AS | MM-DD-YYYY          |
+  # | AT | MM Month YYYY       |
   #
   # All formats may contain trailing periods.
   #
@@ -96,7 +97,7 @@ class TimeUtils
       elsif date.match(/^[\[]{0,2}[c©][0-9]{4}[\]]{0,2}/)
         iso8601 = sprintf('%s-01-01T00:00:00Z', date.gsub(/[^0-9]/, ''))
       # AO, AP
-      elsif date.gsub(',', '').downcase.match(/(#{MONTHS.join('|')}),? [0-9]{4}/)
+      elsif date.gsub(',', '').downcase.match(/^(#{MONTHS.join('|')}),? [0-9]{4}/)
         parts = date.split(' ')
         month = 1 + MONTHS.index(parts[0].gsub(/[^A-Za-z]/, '').downcase)
         iso8601 = sprintf('%s-%d-01T00:00:00Z', parts[1], month)
@@ -112,6 +113,11 @@ class TimeUtils
       elsif date.match(/^[0-9]{2}-[0-9]{2}-[0-9]{4}/)
         parts = date.split('-')
         iso8601 = sprintf('%s-%s-%sT00:00:00Z', parts[2], parts[0], parts[1])
+      # AT
+      elsif date.gsub(',', '').downcase.match(/^[0-9]{2} (#{MONTHS.join('|')}) [0-9]{4}/)
+        parts = date.split(' ')
+        month = 1 + MONTHS.index(parts[1].gsub(/[^A-Za-z]/, '').downcase)
+        iso8601 = sprintf('%s-%d-%dT00:00:00Z', parts[2], month, parts[0])
       # NA, NB, NC, ND
       elsif date.match(/[0-9]{2,3}-/)
         parts = date.split('-')
