@@ -167,7 +167,7 @@ class Harvest < ApplicationRecord
   end
 
   def update_ended_at
-    self.ended_at = (Time.zone&.now || Time.now) unless self.usable?
+    self.ended_at ||= (Time.zone&.now || Time.now) unless self.usable?
   end
 
 end
