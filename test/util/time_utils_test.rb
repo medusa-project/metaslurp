@@ -123,6 +123,36 @@ class TimeUtilsTest < ActiveSupport::TestCase
                  TimeUtils.string_date_to_time('20 March 1923')
   end
 
+  test 'string_date_to_time() works with AU' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('1923 [i.e. 1923-25]')
+  end
+
+  test 'string_date_to_time() works with AV' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('1923, i.e. 1924')
+  end
+
+  test 'string_date_to_time() works with AW' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[c1923, 1924]')
+  end
+
+  test 'string_date_to_time() works with AX' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('c1923 [c1924 or 1925]')
+  end
+
+  test 'string_date_to_time() works with AY' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('c1923, 1925')
+  end
+
+  test 'string_date_to_time() works with AZ' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[c1923.] 1925')
+  end
+
   test 'string_date_to_time() works with NA' do
     assert_equal Time.parse('1923-01-01 00:00:00Z'),
                  TimeUtils.string_date_to_time('1923-')
@@ -173,6 +203,36 @@ class TimeUtilsTest < ActiveSupport::TestCase
   test 'string_date_to_time() works with NJ' do
     assert_equal Time.parse('1923-01-01 00:00:00Z'),
                  TimeUtils.string_date_to_time('c1923-')
+  end
+
+  test 'string_date_to_time() works with NK' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('1923/1924-')
+  end
+
+  test 'string_date_to_time() works with NL' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('1923/24-')
+  end
+
+  test 'string_date_to_time() works with NM' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('c1923-c1924')
+  end
+
+  test 'string_date_to_time() works with NN' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[c1923]-1925')
+  end
+
+  test 'string_date_to_time() works with NO' do
+    assert_equal Time.parse('1886-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[1886/1887-1888/1889')
+  end
+
+  test 'string_date_to_time() works with NP' do
+    assert_equal Time.parse('1886-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('1886/1887-1888/89')
   end
 
 end

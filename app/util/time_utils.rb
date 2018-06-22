@@ -14,28 +14,34 @@ class TimeUtils
   #
   # Supported string formats:
   #
-  # | ID | Format              |
-  # |----|---------------------|
-  # | AA | ISO-8601 full       |
-  # | AB | YYYY:MM:DD HH:MM:SS |
-  # | AC | YYYY:MM:DD          |
-  # | AD | YYYY-MM-DD          |
-  # | AE | YYYY                |
-  # | AF | [YYYY]              |
-  # | AG | [[YYYY]             |
-  # | AH | YYYY]               |
-  # | AI | [YYYY?]             |
-  # | AJ | YYYY?]              |
-  # | AK | YYYY, cYYYY         |
-  # | AL | cYYYY               |
-  # | AM | [cYYYY]             |
-  # | AN | ©YYYY               |
-  # | AO | Month YYYY          |
-  # | AP | Month, YYYY         |
-  # | AQ | [YYYY or YYYY]      |
-  # | AR | MM-YYYY             |
-  # | AS | MM-DD-YYYY          |
-  # | AT | MM Month YYYY       |
+  # | ID | Format                |
+  # |----|-----------------------|
+  # | AA | ISO-8601 full         |
+  # | AB | YYYY:MM:DD HH:MM:SS   |
+  # | AC | YYYY:MM:DD            |
+  # | AD | YYYY-MM-DD            |
+  # | AE | YYYY                  |
+  # | AF | [YYYY]                |
+  # | AG | [[YYYY]               |
+  # | AH | YYYY]                 |
+  # | AI | [YYYY?]               |
+  # | AJ | YYYY?]                |
+  # | AK | YYYY, cYYYY           |
+  # | AL | cYYYY                 |
+  # | AM | [cYYYY]               |
+  # | AN | ©YYYY                 |
+  # | AO | Month YYYY            |
+  # | AP | Month, YYYY           |
+  # | AQ | [YYYY or YYYY]        |
+  # | AR | MM-YYYY               |
+  # | AS | MM-DD-YYYY            |
+  # | AT | MM Month YYYY         |
+  # | AU | YYYY [i.e. YYYY-YY]   |
+  # | AV | YYYY, i.e. YYYY-      |
+  # | AW | [cYYYY, YYYY]         |
+  # | AX | cYYYY [cYYYY or YYYY] |
+  # | AY | cYYYY, YYYY           |
+  # | AZ | [cYYYY.] YYYY         |
   #
   # All formats may contain trailing periods.
   #
@@ -53,6 +59,12 @@ class TimeUtils
   # | NH | [cYYYY-YYYY]            |
   # | NI | cYYYY-YYYY              |
   # | NJ | cYYYY-                  |
+  # | NK | YYYY/YYYY-              |
+  # | NL | YYYY/YY-                |
+  # | NM | cYYYY-cYYYY             |
+  # | NN | [cYYYY]-YYYY            |
+  # | NO | [YYYY/YYYY-YYYY/YYYY    |
+  # | NP | YYYY/YYYY-YYYY/YY       |
   #
   # @param date [String]
   # @return [Time] Time instance in UTC, or nil if the given date string is
@@ -62,13 +74,6 @@ class TimeUtils
   def self.string_date_to_time(date)
     if date
       date = date.chomp('.')
-      fail = false
-
-      # IDEALS contains a whole bunch of ISO-8601 dates with five-digit years,
-      # such as: 10000-01-01T00:00:00Z
-      # Rather than making all of our regexes a lot more complicated to deal
-      # with those, we will add a special check to disqualify them.
-      fail = true if date.match(/^[0-9]{5,99}-/)
 
       iso8601 = nil
       # AA
@@ -89,6 +94,12 @@ class TimeUtils
       # AD
       elsif date.match(/[0-9]{4}-[0-1][0-9]-[0-3][0-9]/)
         iso8601 = sprintf('%sT00:00:00Z', date)
+      # AU
+      elsif date.match(/[0-9]{4} \[/)
+        iso8601 = sprintf('%s-01-01T00:00:00Z', date.split(' ')[0])
+      # AV
+      elsif date.match(/^[0-9]{4},/)
+        iso8601 = sprintf('%s-01-01T00:00:00Z', date.gsub(',', '').split(' ')[0])
       # AE, AF, AG, AH, AI, AJ
       elsif date.match(/^[\[]{0,2}[0-9]{4}\??[\]]{0,2}$/)
         iso8601 = sprintf('%s-01-01T00:00:00Z', date.gsub(/[^0-9]/, ''))
@@ -96,9 +107,9 @@ class TimeUtils
       elsif date.match(/^[0-9]{4}, ?c[0-9]{4}/)
         parts = date.split(',')
         iso8601 = sprintf('%s-01-01T00:00:00Z', parts[0])
-      # AL, AM, AN, NH
+      # AL, AM, AN, AW, AX, AZ, NH
       elsif date.match(/^[\[]{0,2}[c©][0-9]{4}[\]]{0,2}/)
-        iso8601 = sprintf('%s-01-01T00:00:00Z', date.split('-')[0].gsub(/[^0-9]/, ''))
+        iso8601 = sprintf('%s-01-01T00:00:00Z', date.gsub(/[^0-9]/, ' ').split(' ')[0])
       # AO, AP
       elsif date.gsub(',', '').downcase.match(/^(#{MONTHS.join('|')}),? [0-9]{4}/)
         parts = date.split(' ')
@@ -121,11 +132,6 @@ class TimeUtils
         parts = date.split(' ')
         month = 1 + MONTHS.index(parts[1].gsub(/[^A-Za-z]/, '').downcase)
         iso8601 = sprintf('%s-%d-%dT00:00:00Z', parts[2], month, parts[0])
-      # NA, NB, NC, ND
-      elsif date.match(/[0-9]{2,3}-/)
-        parts = date.split('-')
-        year = parts[0].gsub(/[^0-9]/, '').ljust(4, '0')
-        iso8601 = sprintf('%s-01-01T00:00:00Z', year)
       # NF
       elsif date.match(/\[between [0-9]{4} and [0-9]{4}\]/)
         year = date.gsub(/[^0-9]/, '')[0..3]
@@ -134,15 +140,35 @@ class TimeUtils
       elsif date.match(/\[[0-9]{4}\]-</)
         year = date.gsub(/[^0-9]/, '')[0..3]
         iso8601 = sprintf('%s-01-01T00:00:00Z', year)
+      # NK, NL
+      elsif date.match(/[0-9]{4}\/[0-9]{2,4}-/)
+        iso8601 = sprintf('%s-01-01T00:00:00Z', date.split('/')[0])
+      # NA, NB, NC, ND
+      elsif date.match(/[0-9]{2,3}-/)
+        parts = date.split('-')
+        year = parts[0].gsub(/[^0-9]/, '').ljust(4, '0')
+        iso8601 = sprintf('%s-01-01T00:00:00Z', year)
       end
 
-      if iso8601 and !fail
+      # It's possible that an unsupported date format has slipped through.
+      # These often result in dates with 5+ digit years. Rather than making
+      # all of our regexes a lot more complicated to deal with those, we will
+      # add a special check to disqualify them.
+      iso8601 = nil if iso8601&.match(/^[0-9]{5,99}-/)
+
+      if iso8601
         return Time.parse(iso8601)
       else
         raise ArgumentError, "Unrecognized date format: #{date}"
       end
     end
     nil
+  end
+
+  private
+
+  def self.log_strategy(date, strategy)
+    Rails.logger.debug("Parsing #{date} using #{strategy} strategy")
   end
 
 end
