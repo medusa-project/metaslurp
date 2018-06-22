@@ -58,7 +58,7 @@ class ElementDef < ApplicationRecord
 
   validates :data_type, inclusion: { in: DataType.all }, allow_blank: false
   validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :name, presence: true, format: { with: /\A[a-zA-Z0-9-_]+\Z/ },
+  validates :name, presence: true, format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             uniqueness: { case_sensitive: false }
 
   validate :restrict_name_changes, :restrict_required_element_changes
