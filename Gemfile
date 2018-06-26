@@ -20,6 +20,9 @@ gem 'rails', '~> 5.2.0'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 
+# Updated by recommendation of a GitHub security check
+gem 'sprockets', '~> 3.7.2'
+
 group :development, :test do
   gem 'bootsnap'
   gem 'listen', '>= 3.0.5', '< 3.2'
