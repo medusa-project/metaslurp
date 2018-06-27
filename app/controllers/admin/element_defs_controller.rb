@@ -21,7 +21,7 @@ module Admin
       begin
         @element.save!
       rescue ActiveRecord::RecordInvalid
-        response.headers['X-Kumquat-Result'] = 'error'
+        response.headers['X-DL-Result'] = 'error'
         render partial: 'shared/validation_messages',
                locals: { entity: @element }
       rescue => e
@@ -29,7 +29,7 @@ module Admin
         keep_flash
         render 'create'
       else
-        response.headers['X-Kumquat-Result'] = 'success'
+        response.headers['X-DL-Result'] = 'success'
         flash['success'] = "Element \"#{@element.name}\" created."
         keep_flash
         render 'create' # create.js.erb will reload the page
