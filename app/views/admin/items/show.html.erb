@@ -9,10 +9,13 @@
        aria-selected="true">System Information</a>
     <a class="nav-item nav-link" id="nav-descriptive-info-tab" data-toggle="tab"
        href="#nav-descriptive-info" role="tab" aria-controls="nav-descriptive-info"
-       aria-selected="false">Descriptive Information</a>
+       aria-selected="false">Description</a>
+    <a class="nav-item nav-link" id="nav-indexed-fields-tab" data-toggle="tab"
+       href="#nav-indexed-fields" role="tab" aria-controls="nav-indexed-fields"
+       aria-selected="false">Indexed Fields</a>
     <a class="nav-item nav-link" id="nav-document-tab" data-toggle="tab"
        href="#nav-document" role="tab" aria-controls="nav-document"
-       aria-selected="false">Indexed Document</a>
+       aria-selected="false">Raw Document</a>
   </div>
 </nav>
 
@@ -72,14 +75,59 @@
     </table>
   </div>
 
+  <div class="tab-pane fade" id="nav-indexed-fields" role="tabpanel"
+       aria-labelledby="nav-indexed-fields-tab">
+    <div class="row">
+      <div class="col-sm-9 col-lg-10">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+              <th>Boost (<%= Boost::MIN_BOOST %>&ndash;<%= Boost::MAX_BOOST %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @indexed_document['_source'].each do |field, values| %>
+              <% values = [values] unless values.respond_to?(:each) %>
+              <% values.each do |value| %>
+                <tr>
+                  <td><code><%= field %></code></td>
+                  <td><code><%= value %></code></td>
+                  <td>
+                    <% boost = @boosts.find{ |b| b.field == field and b.value == value } %>
+                    <% if boost %>
+                      <% if boost.boost > 0 %>
+                        <span class="badge badge-pill badge-success"><%= boost.boost %></span>
+                      <% elsif boost.boost < 0 %>
+                        <span class="badge badge-pill badge-danger"><%= boost.boost %></span>
+                      <% end %>
+                    <% else %>
+                      <span class="badge badge-pill badge-light">0</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-3 col-lg-2">
+        <%= render partial: 'field_legend' %>
+      </div>
+    </div>
+  </div>
+
   <div class="tab-pane fade" id="nav-document" role="tabpanel"
        aria-labelledby="nav-document-tab">
-    <div class="alert alert-info">
-      <ul>
-        <li><code><%= SourceElement::INDEX_PREFIX %>*</code>: source element</li>
-        <li><code><%= LocalElement::STRING_INDEX_PREFIX %>*</code>: local element</li>
-      </ul>
+    <div class="row">
+      <div class="col-sm-9 col-lg-10">
+        <pre><%= JSON.pretty_unparse(@indexed_document) %></pre>
+      </div>
+      <div class="col-sm-3 col-lg-2">
+        <%= render partial: 'field_legend' %>
+      </div>
     </div>
-    <pre><%= JSON.pretty_unparse(@indexed_document) %></pre>
   </div>
+
 </div>
