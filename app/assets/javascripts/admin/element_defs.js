@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-var DLAdminElementsView = function() {
+var DLAdminElementDefsView = function() {
 
     this.init = function() {
         var ROOT_URL = $('input[name="dl-root-url"]').val();
@@ -20,7 +20,7 @@ var DLAdminElementsView = function() {
 
 var ready = function() {
     if ($('body#dl-admin-elements').length) {
-        new DLAdminElementsView().init();
+        new DLAdminElementDefsView().init();
     }
 };
 
