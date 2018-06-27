@@ -1,0 +1,21 @@
+<% provide :title, 'Boosts' %>
+<% provide :body_id, 'dl-admin-boosts' %>
+<% provide :active_nav, 'server' %>
+
+<% if current_user.admin? %>
+  <%= button_bar({ type: 'button',
+                   label: 'Add Boost',
+                   'data-toggle': 'modal',
+                   'data-target': '#dl-add-boost-modal',
+                   icon: 'fa-plus' }) %>
+<% end %>
+
+<h1>Boosts</h1>
+
+<div id="dl-boosts">
+  <%= render 'boosts' %>
+</div>
+
+<%= render partial: 'add_modal', locals: { boost: @new_boost,
+                                           context: :new } %>
+<%= render partial: 'edit_modal' %>

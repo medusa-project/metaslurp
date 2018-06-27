@@ -1,0 +1,34 @@
+<%
+  # @param boost [Boost]
+  # @param context [Symbol] :new or :edit
+%>
+
+<%= form_for([:admin, boost], remote: true) do |f| %>
+  <div class="dl-error-messages">
+    <% # populated via ajax by shared/_validation_messages.js.erb
+    %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :field %>
+    <%= f.text_field :field, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :value %>
+    <%= f.text_field :value, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :boost %>
+    <%= f.number_field :boost, class: 'form-control' %>
+  </div>
+
+  <div class="clearfix">
+    <div class="float-right">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      <%= f.submit(context == :new ? 'Create Boost' : 'Edit Boost',
+                   class: 'btn btn-primary') %>
+    </div>
+  </div>
+<% end %>

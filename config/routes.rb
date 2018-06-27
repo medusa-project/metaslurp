@@ -34,6 +34,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
+    resources :boosts
     match '/configuration', to: 'configuration#index', via: :get
     match '/configuration', to: 'configuration#update', via: :patch
     resources :content_services, param: :key, path: 'content-services' do

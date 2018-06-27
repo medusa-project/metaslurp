@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_13_143200) do
+ActiveRecord::Schema.define(version: 2018_06_27_140038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "boosts", force: :cascade do |t|
+    t.string "field", null: false
+    t.string "value", null: false
+    t.integer "boost", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["field", "value"], name: "index_boosts_on_field_and_value", unique: true
+  end
 
   create_table "content_services", force: :cascade do |t|
     t.string "name", null: false
