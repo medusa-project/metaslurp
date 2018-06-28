@@ -67,7 +67,7 @@ class ContentService < ApplicationRecord
     raise 'This feature only works in production. In development, invoke '\
       'metaslurper from the command line instead.' unless Rails.env.production?
 
-    if self.harvests.where(ended_at: nil).count > 0
+    if self.harvests.where(ended_at: nil).where('key != ?', harvest_key).count > 0
       raise 'Another harvest of this service is currently in progress.'
     end
 
