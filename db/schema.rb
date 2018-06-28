@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_27_140038) do
+ActiveRecord::Schema.define(version: 2018_06_28_184339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 2018_06_27_140038) do
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["created_at"], name: "index_harvests_on_created_at"
     t.index ["key"], name: "index_harvests_on_key", unique: true
     t.index ["status"], name: "index_harvests_on_status"
@@ -109,6 +110,7 @@ ActiveRecord::Schema.define(version: 2018_06_27_140038) do
   add_foreign_key "element_mappings", "content_services", on_update: :cascade, on_delete: :cascade
   add_foreign_key "element_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
   add_foreign_key "harvests", "content_services", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "harvests", "users", on_update: :cascade, on_delete: :nullify
   add_foreign_key "roles_users", "roles", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "users", on_update: :cascade, on_delete: :cascade
 end

@@ -71,7 +71,8 @@ module Admin
       raise ActiveRecord::RecordNotFound unless @content_service
 
       begin
-        @content_service.harvest_items_async
+        harvest = @content_service.harvests.build(user: current_user)
+        @content_service.harvest_items_async(harvest.key)
 
         flash['success'] = 'Harvesting will begin shortly.'
       rescue => e
