@@ -10,7 +10,7 @@ module Api
       def create
         begin
           json = request_json
-          harvest = Harvest.new
+          harvest = Harvest.new(user: current_user)
           harvest.update_from_json(json)
           Rails.logger.debug("Created harvest #{harvest}")
         rescue ArgumentError, JSON::ParserError => e

@@ -8,6 +8,12 @@
           <%= @harvest.content_service.name %>
         <% end %>
       </dd>
+      <dt>Triggered By</dt>
+      <dd>
+        <%= link_to(admin_user_path(@harvest.user)) do %>
+          <%= icon_for(@harvest.user) %> <%= @harvest.user %>
+        <% end %>
+      </dd>
       <dt>Key</dt>
       <dd><code><%= @harvest.key %></code></dd>
       <dt>Created</dt>
@@ -67,5 +73,6 @@
 
 <% if @harvest.message.present? %>
   <hr>
+  <h2>Harvester Messages</h2>
   <pre><%= @harvest.message %></pre>
 <% end %>

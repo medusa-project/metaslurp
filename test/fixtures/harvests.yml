@@ -7,6 +7,7 @@ new:
   num_items: 0
   num_succeeded: 0
   num_failed: 0
+  user: admin
   message: MyString
 
 running:
@@ -16,6 +17,7 @@ running:
   num_items: 0
   num_succeeded: 0
   num_failed: 0
+  user: admin
   ended_at:
   message: MyString
 
@@ -26,6 +28,7 @@ aborted:
   num_items: 0
   num_succeeded: 0
   num_failed: 0
+  user: admin
   ended_at:
   message: MyString
 
@@ -36,6 +39,7 @@ succeeded:
   num_items: 0
   num_succeeded: 0
   num_failed: 0
+  user: admin
   ended_at:
   message: MyString
 
@@ -46,5 +50,6 @@ failed:
   num_items: 0
   num_succeeded: 0
   num_failed: 0
+  user: admin
   ended_at:
   message: MyString

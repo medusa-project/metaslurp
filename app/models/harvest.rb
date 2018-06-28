@@ -23,6 +23,7 @@
 # * num_succeeded:       Number of items successfully ingested.
 # * status:              One of the Harvest::Status constant values.
 # * updated_at:          Managed by Rails.
+# * user_id:             ID of the User who triggered the harvest.
 #
 class Harvest < ApplicationRecord
 
@@ -70,6 +71,7 @@ class Harvest < ApplicationRecord
   end
 
   belongs_to :content_service, inverse_of: :harvests
+  belongs_to :user, inverse_of: :harvests
 
   validates :key, presence: true, uniqueness: { case_sensitive: false }
   validates :status, inclusion: { in: Status.all }, allow_blank: false

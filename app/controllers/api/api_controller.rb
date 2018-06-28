@@ -25,6 +25,7 @@ module Api
       authenticate_or_request_with_http_basic('HTTP API') do |username, secret|
         user = User.find_by_username(username)
         if user
+          sign_in user
           return user.api_key == secret
         end
       end

@@ -58,11 +58,12 @@ class ContentService < ApplicationRecord
   # Invokes [metaslurper](https://github.com/medusa-project/metaslurper) via
   # an AWS ECS Fargate task to harvest items.
   #
+  # @param harvest_key [String]
   # @return [void]
   # @raises [RuntimeError] unless Rails is in production mode.
   # @raises [RuntimeError] if a harvest of this service is already in progress.
   #
-  def harvest_items_async
+  def harvest_items_async(harvest_key)
     raise 'This feature only works in production. In development, invoke '\
       'metaslurper from the command line instead.' unless Rails.env.production?
 
@@ -83,7 +84,12 @@ class ContentService < ApplicationRecord
                     command: ['java', '-jar', 'metaslurper.jar',
                               '-source', self.key,
                               '-sink', 'metaslurp',
-                              '-threads', '2']
+                              '-threads', '2'],
+                    environment: [ # this is an additive override
+                        {
+                            'SERVICE_SINK_METASLURP_HARVEST_KEY' => harvest_key
+                        }
+                    ]
                 },
             ]
         },
