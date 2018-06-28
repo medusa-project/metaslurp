@@ -87,7 +87,8 @@ class ContentService < ApplicationRecord
                               '-threads', '2'],
                     environment: [ # this is an additive override
                         {
-                            'SERVICE_SINK_METASLURP_HARVEST_KEY' => harvest_key
+                            name: 'SERVICE_SINK_METASLURP_HARVEST_KEY',
+                            value: harvest_key
                         }
                     ]
                 },
