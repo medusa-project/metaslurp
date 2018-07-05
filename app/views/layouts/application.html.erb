@@ -19,7 +19,7 @@
 
   <body <%= yield(:body_id).present? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
         <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
-    <%= render partial: 'layouts/main_menu' %>
+    <%= render partial: 'layouts/header' %>
 
     <% # It would be better to use the config.force_ssl config option here,
        # but this causes problems with the Elastic Beanstalk health check, which
@@ -29,7 +29,7 @@
     <%= hidden_field_tag('dl-current-path', request.path) %>
 
     <div class="container-fluid">
-      <div id="dl-page-content">
+      <div class="page-content">
         <%= yield.force_encoding(Encoding::UTF_8) %>
       </div>
     </div>

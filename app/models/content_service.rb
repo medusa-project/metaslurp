@@ -27,22 +27,22 @@ class ContentService < ApplicationRecord
   # @see send_delete_all_items_sns()
   #
   def delete_all_items
-    index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
-    query = sprintf('{
-        "query": {
-          "bool": {
-            "filter": [
-              {
-                "term": {
-                  "%s":"%s"
-                }
-              }
-            ]
-          }
+    query = {
+        query: {
+            bool: {
+                filter: [
+                    {
+                        term: {
+                            Item::IndexFields::SERVICE_KEY + '.keyword' => self.key
+                        }
+                    }
+                ]
+            }
         }
-      }', Item::IndexFields::SERVICE_KEY + '.keyword', self.key)
-
-    ElasticsearchClient.instance.delete_by_query(index, query)
+    }
+    ElasticsearchClient.instance.delete_by_query(
+        ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX),
+        JSON.generate(query))
   end
 
   ##
