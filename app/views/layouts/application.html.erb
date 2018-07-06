@@ -37,7 +37,8 @@
       <footer>
         <div class="row">
           <div class="col-sm-12">
-            Some footer text, and a <a href="#">link</a>.
+            <%= link_to 'Contact us', "mailto:#{Option::string(Option::Keys::ADMINISTRATOR_EMAIL)}" %>
+            for questions and to provide feedback.
           </div>
         </div>
         <div class="row">
