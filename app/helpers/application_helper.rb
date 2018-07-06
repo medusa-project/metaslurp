@@ -203,7 +203,9 @@ module ApplicationHelper
     prev_start = (prev_page - 1) * per_page
     next_start = (next_page - 1) * per_page
     last_start = (num_pages - 1) * per_page
-    permitted_params = params.permit(permitted_params)
+    unless permitted_params.kind_of?(ActionController::Parameters)
+      permitted_params = params.permit(permitted_params)
+    end
 
     first_link = link_to(permitted_params.except(:start),
                          remote: true, class: 'page-link', 'aria-label': 'First') do
