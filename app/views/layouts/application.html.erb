@@ -19,7 +19,6 @@
 
   <body <%= yield(:body_id).present? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
         <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
-    <%= render partial: 'layouts/header' %>
 
     <% # It would be better to use the config.force_ssl config option here,
        # but this causes problems with the Elastic Beanstalk health check, which
@@ -29,9 +28,26 @@
     <%= hidden_field_tag('dl-current-path', request.path) %>
 
     <div class="container-fluid">
+      <%= render partial: 'layouts/header' %>
+
       <div class="page-content">
         <%= yield.force_encoding(Encoding::UTF_8) %>
       </div>
+
+      <footer>
+        <div class="row">
+          <div class="col-sm-12">
+            Some footer text, and a <a href="#">link</a>.
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <a href="http://illinois.edu">
+              <%= image_tag 'illinois_wordmark_footer.svg', alt: 'University of Illinois Logo' %></a>
+            <p class="copyright-p"><%= Option::string(Option::Keys::COPYRIGHT_STATEMENT) %></p>
+          </div>
+        </div>
+      </footer>
     </div>
   </body>
 </html>
