@@ -131,8 +131,8 @@ class ItemFinder < AbstractFinder
             j.set! LocalElement::STRING_INDEX_PREFIX + '*', {}
           end
           j.require_field_match false
-          j.pre_tags [ '<span class="dl-highlight">' ]
-          j.post_tags [ '</span>' ]
+          j.pre_tags [ '<mark class="dl-highlight">' ]
+          j.post_tags [ '</mark>' ]
           j.number_of_fragments 0
           # We need to duplicate the query_string part of the query here, or
           # else filters will be highlighted too.

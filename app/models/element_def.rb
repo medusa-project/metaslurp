@@ -144,7 +144,7 @@ class ElementDef < ApplicationRecord
   # Disallows changes to the name.
   #
   def restrict_name_changes
-    if self.name_was != self.name
+    if !self.new_record? and self.name_was != self.name
       errors.add(:name, 'cannot be changed.')
     end
   end
