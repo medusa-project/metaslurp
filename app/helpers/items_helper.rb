@@ -2,7 +2,6 @@ module ItemsHelper
 
   MAX_MEDIA_TITLE_LENGTH = 120
   MAX_MEDIA_DESCRIPTION_LENGTH = 200
-  MAX_MEDIA_THUMBNAIL_WIDTH = 120
 
   ##
   # Renders the given items as a series of
@@ -31,10 +30,9 @@ module ItemsHelper
 
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
-        image_tag('test-pattern.jpg',
-                  class: 'mr-3',
-                  width: MAX_MEDIA_THUMBNAIL_WIDTH,
-                  alt: "Thumbnail for #{item}")
+        thumbnail_for(item,
+                      class: 'mr-3',
+                      alt: "Thumbnail for #{item}")
       end
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
@@ -65,9 +63,6 @@ module ItemsHelper
         html +=   "#{sorted_element.label}: #{el.value}<br>" if el
       end
       html +=     '<span class="dl-info-line">'
-      html +=       icon_for(item) + ' '
-      html +=       item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
-      html +=       ' | '
       html +=       link_to item.source_uri do
                       raw("<i class=\"fas fa-external-link-alt\"></i> View in #{item.content_service.name}")
                     end
