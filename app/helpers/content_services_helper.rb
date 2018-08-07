@@ -11,7 +11,9 @@ module ContentServicesHelper
     services.each do |service|
       html += '<div class="card">'
       html +=   link_to(service) do
-        image_tag('test-pattern.jpg', class: 'card-img-top', alt: "Thumbnail for #{service}")
+        thumbnail_for(service,
+                      class: 'card-img-top',
+                      alt: "Thumbnail for #{service}")
       end
       html +=   '<div class="card-body">'
       html +=     '<h5 class="card-title">'

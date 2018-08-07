@@ -252,6 +252,39 @@ module ApplicationHelper
     raw(html)
   end
 
+  ##
+  # @param entity [Object]
+  # @param options [Hash] Options to pass to `image_tag()`
+  # @return [String] HTML <img> tag
+  #
+  def thumbnail_for(entity, options = {})
+    # SVG versions of these:
+    # https://github.com/encharm/Font-Awesome-SVG-PNG/tree/master/black/svg
+    if entity == Item
+      icon = 'cube'
+    elsif entity.kind_of?(Item)
+      case entity.variant
+        when Item::Variants::BOOK
+          icon = 'book'
+        when Item::Variants::COLLECTION
+          icon = 'folder-open-o'
+        when Item::Variants::DATA_SET
+          icon = 'archive'
+        when Item::Variants::FILE
+          icon = 'file-o'
+        when Item::Variants::NEWSPAPER_PAGE
+          icon = 'newspaper-o'
+        else
+          icon = 'cube'
+      end
+    elsif entity == ContentService or entity.kind_of?(ContentService)
+      icon = 'database'
+    else
+      icon = 'cube'
+    end
+    image_tag('fontawesome-' + icon + '.svg', options)
+  end
+
   private
 
   ##
