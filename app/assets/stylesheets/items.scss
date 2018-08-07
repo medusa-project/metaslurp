@@ -13,30 +13,4 @@
   #dl-facets {
     padding-right: 0px;
   }
-
-  #dl-items {
-    img {
-      max-height: 120px;
-      max-width: 120px;
-      opacity: 0.4;
-      padding: 1em;
-    }
-  }
-
-  .media-body {
-    .mt-0 {
-      margin-bottom: 0.25em;
-    }
-
-    .dl-info-line {
-      color: gray;
-      a {
-        color: gray;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-    }
-  }
 }
