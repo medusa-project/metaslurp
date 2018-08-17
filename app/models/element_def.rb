@@ -153,7 +153,8 @@ class ElementDef < ApplicationRecord
   # Disallows changes to the data type of system-required elements.
   #
   def restrict_required_element_changes
-    if self.system_required? and self.data_type_was != self.data_type
+    if !self.new_record? and self.system_required? and
+        self.data_type_was != self.data_type
       errors.add(:data_type, 'cannot be changed')
     end
   end
