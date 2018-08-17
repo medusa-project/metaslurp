@@ -64,7 +64,7 @@ class ElementDef < ApplicationRecord
   validate :restrict_name_changes, :restrict_required_element_changes
   before_destroy :restrict_required_element_deletion
 
-  SYSTEM_REQUIRED_ELEMENTS = %w(title description date)
+  SYSTEM_REQUIRED_ELEMENTS = %w(title description date hathiTrustURL internetArchiveURL)
 
   ##
   # @param struct [Hash] Deserialized hash from JSON.parse()
@@ -153,7 +153,8 @@ class ElementDef < ApplicationRecord
   # Disallows changes to the data type of system-required elements.
   #
   def restrict_required_element_changes
-    if self.system_required? and self.data_type_was != self.data_type
+    if !self.new_record? and self.system_required? and
+        self.data_type_was != self.data_type
       errors.add(:data_type, 'cannot be changed')
     end
   end
