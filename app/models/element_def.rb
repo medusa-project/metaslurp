@@ -64,7 +64,7 @@ class ElementDef < ApplicationRecord
   validate :restrict_name_changes, :restrict_required_element_changes
   before_destroy :restrict_required_element_deletion
 
-  SYSTEM_REQUIRED_ELEMENTS = %w(title description date)
+  SYSTEM_REQUIRED_ELEMENTS = %w(title description date hathiTrustURL internetArchiveURL)
 
   ##
   # @param struct [Hash] Deserialized hash from JSON.parse()

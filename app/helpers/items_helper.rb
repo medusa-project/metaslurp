@@ -64,14 +64,37 @@ module ItemsHelper
         end
         html +=   "#{sorted_element.label}: #{el.value}<br>" if el
       end
+
+      # Info line (beneath title)
       html +=     '<span class="dl-info-line">'
       html +=       icon_for(item) + ' '
       html +=       item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       html +=       ' | '
-      html +=       link_to item.source_uri do
-                      raw("<i class=\"fas fa-external-link-alt\"></i> View in #{item.content_service.name}")
-                    end
-      html +=         ' ' + remove_from_favorites_button(item)
+
+      ht_url = item.element(:hathiTrustURL)
+      if ht_url
+        html += link_to ht_url.value do
+          raw(" <i class=\"fas fa-external-link-alt\"></i> HathiTrust ")
+        end
+        html +=       ' | '
+      end
+
+      ia_url = item.element(:internetArchiveURL)
+      if ia_url
+        html += link_to ia_url.value do
+          raw(" <i class=\"fas fa-external-link-alt\"></i> Internet Archive ")
+        end
+        html +=       ' | '
+      end
+
+      if !ht_url and !ia_url
+        html += link_to item.source_uri do
+          raw(" <i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name} ")
+        end
+        html +=       ' | '
+      end
+
+      html +=         remove_from_favorites_button(item)
       html +=         ' ' + add_to_favorites_button(item)
       html +=     '</span><br>'
       html +=     desc if desc.present?
