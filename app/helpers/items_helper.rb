@@ -71,27 +71,35 @@ module ItemsHelper
       html +=       item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       html +=       ' | '
 
-      ht_url = item.element(:hathiTrustURL)
+      catalog_url = item.element(:uiucCatalogURL) # only Book Tracker items will have this
+      if catalog_url
+        html += link_to catalog_url.value do
+          raw(" <i class=\"fas fa-external-link-alt\"></i> Library Catalog ")
+        end
+        html += ' | '
+      end
+
+      ht_url = item.element(:hathiTrustURL) # only Book Tracker items will have this
       if ht_url
         html += link_to ht_url.value do
           raw(" <i class=\"fas fa-external-link-alt\"></i> HathiTrust ")
         end
-        html +=       ' | '
+        html += ' | '
       end
 
-      ia_url = item.element(:internetArchiveURL)
+      ia_url = item.element(:internetArchiveURL) # only Book Tracker items will have this
       if ia_url
         html += link_to ia_url.value do
           raw(" <i class=\"fas fa-external-link-alt\"></i> Internet Archive ")
         end
-        html +=       ' | '
+        html += ' | '
       end
 
-      if !ht_url and !ia_url
+      if !ht_url and !ia_url and !catalog_url
         html += link_to item.source_uri do
           raw(" <i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name} ")
         end
-        html +=       ' | '
+        html += ' | '
       end
 
       html +=         remove_from_favorites_button(item)
