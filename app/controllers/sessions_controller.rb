@@ -27,8 +27,7 @@ class SessionsController < WebsiteController
 
   def destroy
     sign_out
-    return_url = params[:referer] || root_path
-    redirect_to return_url
+    redirect_back fallback_location: root_path
   end
 
   ##
