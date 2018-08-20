@@ -71,7 +71,7 @@ module ItemsHelper
 
       catalog_url = item.element(:uiucCatalogURL) # only Book Tracker items will have this
       if catalog_url
-        html += link_to catalog_url.value do
+        html += link_to "#{catalog_url.value.chomp('/Description')}/Description" do # TODO: get this whole URL from Book Tracker
           raw(" <i class=\"fas fa-external-link-alt\"></i> Library Catalog ")
         end
         html += ' | '
