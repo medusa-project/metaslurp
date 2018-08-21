@@ -8,11 +8,9 @@
   }
 
   .page-content {
-    img {
-      padding: 2em;
-    }
     img[data-type="svg"] {
       opacity: 0.4;
+      padding: 1em;
     }
   }
 
