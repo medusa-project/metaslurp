@@ -29,7 +29,7 @@
 
 <div class="row">
 
-  <div class="col-sm-8">
+  <div class="col-sm-6 col-md-7 col-lg-8">
 
     <% if @num_items > 0 %>
       <div class="row justify-content-md-center">
@@ -54,7 +54,7 @@
     <% end %>
   </div>
 
-  <div class="col-sm-4">
+  <div class="col-sm-6 col-md-5 col-lg-4">
     <%= thumbnail_for(@service, class: 'img-fluid',
                       alt: "Thumbnail for #{@service}") %>
   </div>

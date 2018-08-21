@@ -36,8 +36,10 @@
   img {
     max-height: 120px;
     max-width: 120px;
-    opacity: 0.4;
     padding: 1em;
+  }
+  img[data-type="svg"] {
+    opacity: 0.4;
   }
   .media-body {
     .mt-0 {
