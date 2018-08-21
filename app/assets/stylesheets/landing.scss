@@ -7,9 +7,13 @@
     margin: 2em 0em 1em 0em;
   }
 
-  .page-content img {
-    opacity: 0.4;
-    padding: 2em;
+  .page-content {
+    img {
+      padding: 2em;
+    }
+    img[data-type="svg"] {
+      opacity: 0.4;
+    }
   }
 
 }

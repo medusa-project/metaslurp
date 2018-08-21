@@ -153,7 +153,9 @@ module Admin
     end
 
     def sanitized_params
-      params.require(:content_service).permit(:description, :element_mappings, :key, :name, :uri)
+      params.require(:content_service).permit(:description, :element_mappings,
+                                              :key, :name,
+                                              :representative_image, :uri)
     end
 
   end

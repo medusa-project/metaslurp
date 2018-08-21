@@ -1,6 +1,7 @@
 module ApplicationHelper
 
   MAX_PAGINATION_LINKS = 7
+  THUMBNAIL_SIZE = 800
 
   ##
   # Formats a boolean for display.
@@ -278,11 +279,17 @@ module ApplicationHelper
           icon = 'cube'
       end
     elsif entity == ContentService or entity.kind_of?(ContentService)
-      icon = 'database'
+      # Check for a representative image in ActiveStorage.
+      if entity.representative_image.attached?
+        return image_tag(entity.representative_image.variant(resize: "#{THUMBNAIL_SIZE}x#{THUMBNAIL_SIZE}"),
+                         options)
+      else
+        icon = 'database'
+      end
     else
       icon = 'cube'
     end
-    image_tag('fontawesome-' + icon + '.svg', options)
+    image_tag('fontawesome-' + icon + '.svg', options.merge('data-type': 'svg'))
   end
 
   private

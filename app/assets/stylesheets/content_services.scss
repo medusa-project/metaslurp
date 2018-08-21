@@ -1,6 +1,10 @@
 #content_services_index, #content_services_show {
-  .page-content img {
-    opacity: 0.4;
-    padding: 2em;
+  .page-content {
+    img {
+      padding: 2em;
+    }
+    img[data-type="svg"] {
+      opacity: 0.4;
+    }
   }
 }
