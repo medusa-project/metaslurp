@@ -73,7 +73,7 @@ module Admin
       begin
         harvest = Harvest.create!(content_service: @content_service,
                                   user: current_user)
-        @content_service.harvest_items_async(harvest.key)
+        @content_service.harvest_items_async(harvest)
 
         flash['success'] = 'Harvesting will begin shortly.'
       rescue => e
