@@ -60,15 +60,39 @@ class ContentService < ApplicationRecord
   #
   # @param harvest [Harvest]
   # @return [void]
-  # @raises [RuntimeError] unless Rails is in production mode.
+  # @raises [EnvironmentError] unless Rails is in production mode.
   # @raises [RuntimeError] if a harvest of this service is already in progress.
+  # @raises [ArgumentError] if an incremental harvest is requested but a full
+  #                         harvest hasn't been completed yet.
   #
   def harvest_items_async(harvest)
-    raise 'This feature only works in production. In development, invoke '\
-      'metaslurper from the command line instead.' unless Rails.env.production?
+    unless Rails.env.production?
+      raise EnvironmentError, 'This feature only works in production. '\
+        'In development, invoke the harvester from the command line instead.'
+    end
 
     if self.harvests.where(ended_at: nil).where('key != ?', harvest.key).count > 0
       raise 'Another harvest of this service is currently in progress.'
+    end
+
+    # https://github.com/medusa-project/metaslurper
+    command = ['java', '-jar', 'metaslurper.jar',
+               '-source', self.key,
+               '-sink', 'metaslurp',
+               '-threads', '2']
+    # If the harvest is incremental, and this service has already been
+    # harvested successfully, send the -incremental argument to the harvester
+    # with the last successful harvest's ending epoch time.
+    if harvest.incremental
+      # Use created_at instead of ended_at because technically some content
+      # could have changed between the two times.
+      if self.last_completed_harvest&.created_at
+        command << '-incremental'
+        command << self.last_completed_harvest.created_at.to_i
+      else
+        raise ArgumentError, 'Can\'t harvest this service incrementally '\
+            'until a full harvest has been completed.'
+      end
     end
 
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#run_task-instance_method
@@ -81,10 +105,7 @@ class ContentService < ApplicationRecord
             container_overrides: [
                 {
                     name: 'metaslurper',
-                    command: ['java', '-jar', 'metaslurper.jar',
-                              '-source', self.key,
-                              '-sink', 'metaslurp',
-                              '-threads', '2'],
+                    command: command,
                     environment: [ # this is an additive override
                         {
                             name: 'SERVICE_SINK_METASLURP_HARVEST_KEY',
@@ -107,6 +128,16 @@ class ContentService < ApplicationRecord
 
   def hash
     self.key.hash
+  end
+
+  ##
+  # @return [Harvest]
+  #
+  def last_completed_harvest
+    self.harvests
+        .where(status: Harvest::Status::SUCCEEDED)
+        .order(created_at: :desc)
+        .limit(1).first
   end
 
   ##
