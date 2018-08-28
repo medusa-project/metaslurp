@@ -72,10 +72,14 @@ module Admin
 
       begin
         harvest = Harvest.create!(content_service: @content_service,
-                                  user: current_user)
-        @content_service.harvest_items_async(harvest.key)
+                                  user: current_user,
+                                  incremental: (params[:harvest_type] == 'incremental'))
+        @content_service.harvest_items_async(harvest)
 
         flash['success'] = 'Harvesting will begin shortly.'
+      rescue EnvironmentError => e
+        flash['error'] = "#{e}"
+        harvest&.destroy!
       rescue => e
         flash['error'] = "#{e}"
       ensure
@@ -154,7 +158,7 @@ module Admin
 
     def sanitized_params
       params.require(:content_service).permit(:description, :element_mappings,
-                                              :key, :name,
+                                              :harvest_type, :key, :name,
                                               :representative_image, :uri)
     end
 

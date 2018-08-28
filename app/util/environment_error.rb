@@ -1,0 +1,3 @@
+class EnvironmentError < RuntimeError
+
+end

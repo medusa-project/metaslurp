@@ -47,6 +47,10 @@
   </div>
   <div class="col-sm-4">
     <dl>
+      <dt>Type</dt>
+      <dd><%= @harvest.incremental ?
+                  raw("Incremental since #{local_time(@harvest.content_service.last_completed_harvest&.created_at)}") :
+                  'Full' %></dd>
       <dt>Total Items To Harvest</dt>
       <dd><%= number_with_delimiter(@harvest.num_items) %></dd>
       <dt>Succeeded Items</dt>

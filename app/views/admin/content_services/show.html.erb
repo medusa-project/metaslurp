@@ -14,10 +14,10 @@
         Items
       </button>
       <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-        <%= link_to admin_content_service_harvest_path(@content_service),
-                    class: 'dropdown-item', method: 'post' do %>
+        <a class="dropdown-item" href="#"
+                data-toggle="modal" data-target="#dl-harvest-modal">
           <i class="fas fa-sync"></i> Harvest
-        <% end %>
+        </a>
         <%= link_to admin_content_service_purge_path(@content_service),
                     class: 'dropdown-item', method: 'post',
                     data: { confirm: 'Are you sure you want to purge all items '\
@@ -99,3 +99,6 @@
     </table>
   </div>
 </div>
+
+<%= render partial: 'harvest_modal', locals: { content_service: @content_service,
+                                               context: :new } %>
