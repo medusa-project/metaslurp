@@ -77,11 +77,9 @@ module Admin
         @content_service.harvest_items_async(harvest)
 
         flash['success'] = 'Harvesting will begin shortly.'
-      rescue EnvironmentError => e
-        flash['error'] = "#{e}"
-        harvest&.destroy!
       rescue => e
         flash['error'] = "#{e}"
+        harvest&.destroy!
       ensure
         redirect_back fallback_location: admin_content_service_path(@content_service)
       end

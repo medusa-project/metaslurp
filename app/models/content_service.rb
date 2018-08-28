@@ -60,14 +60,13 @@ class ContentService < ApplicationRecord
   #
   # @param harvest [Harvest]
   # @return [void]
-  # @raises [EnvironmentError] unless Rails is in production mode.
-  # @raises [RuntimeError] if a harvest of this service is already in progress.
-  # @raises [ArgumentError] if an incremental harvest is requested but a full
-  #                         harvest hasn't been completed yet.
+  # @raises [RuntimeError] if a harvest of this service is already in progress,
+  #                        or if an incremental harvest is requested but a full
+  #                        harvest hasn't been completed yet.
   #
   def harvest_items_async(harvest)
     unless Rails.env.production?
-      raise EnvironmentError, 'This feature only works in production. '\
+      raise 'This feature only works in production. '\
         'In development, invoke the harvester from the command line instead.'
     end
 
@@ -90,8 +89,8 @@ class ContentService < ApplicationRecord
         command << '-incremental'
         command << self.last_completed_harvest.created_at.to_i.to_s
       else
-        raise ArgumentError, 'Can\'t harvest this service incrementally '\
-            'until a full harvest has been completed.'
+        raise 'Can\'t harvest this service incrementally until a full '\
+            'harvest has been completed.'
       end
     end
 

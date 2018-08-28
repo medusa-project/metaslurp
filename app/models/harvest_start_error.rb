@@ -1,0 +1,3 @@
+class HarvestStartError < RuntimeError
+
+end
