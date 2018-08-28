@@ -1,3 +1,0 @@
-class EnvironmentError < RuntimeError
-
-end
