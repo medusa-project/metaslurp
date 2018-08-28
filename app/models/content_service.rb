@@ -89,7 +89,7 @@ class ContentService < ApplicationRecord
       # could have changed between the two times.
       if self.last_completed_harvest&.created_at
         command << '-incremental'
-        command << self.last_completed_harvest.created_at.to_i
+        command << self.last_completed_harvest.created_at.to_i.to_s
       else
         raise ArgumentError, 'Can\'t harvest this service incrementally '\
             'until a full harvest has been completed.'
