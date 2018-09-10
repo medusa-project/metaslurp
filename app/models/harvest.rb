@@ -86,7 +86,7 @@ class Harvest < ApplicationRecord
   def estimated_completion
     now = Time.zone.now
     if self.progress == 0.0
-      now.advance(years: 1)
+      nil
     elsif self.progress == 1.0
       now
     else
