@@ -119,6 +119,11 @@ class TimeUtilsTest < ActiveSupport::TestCase
   end
 
   test 'string_date_to_time() works with AT' do
+    # D Month YYYY
+    assert_equal Time.parse('1923-02-05 00:00:00Z'),
+                 TimeUtils.string_date_to_time('5 February 1923')
+
+    # DD Month YYYY
     assert_equal Time.parse('1923-03-20 00:00:00Z'),
                  TimeUtils.string_date_to_time('20 March 1923')
   end
