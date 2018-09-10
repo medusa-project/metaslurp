@@ -35,7 +35,7 @@ class TimeUtils
   # | AQ | [YYYY or YYYY]        |
   # | AR | MM-YYYY               |
   # | AS | MM-DD-YYYY            |
-  # | AT | MM Month YYYY         |
+  # | AT | DD Month YYYY         |
   # | AU | YYYY [i.e. YYYY-YY]   |
   # | AV | YYYY, i.e. YYYY-      |
   # | AW | [cYYYY, YYYY]         |
@@ -128,7 +128,7 @@ class TimeUtils
         parts = date.split('-')
         iso8601 = sprintf('%s-%s-%sT00:00:00Z', parts[2], parts[0], parts[1])
       # AT
-      elsif date.gsub(',', '').downcase.match(/^[0-9]{2} (#{MONTHS.join('|')}) [0-9]{4}/)
+      elsif date.gsub(',', '').downcase.match(/^[0-9]{1,2} (#{MONTHS.join('|')}) [0-9]{4}/)
         parts = date.split(' ')
         month = 1 + MONTHS.index(parts[1].gsub(/[^A-Za-z]/, '').downcase)
         iso8601 = sprintf('%s-%d-%dT00:00:00Z', parts[2], month, parts[0])
