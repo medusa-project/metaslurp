@@ -79,6 +79,7 @@ class ContentService < ApplicationRecord
     command = ['java', '-jar', 'metaslurper.jar',
                '-source', self.key,
                '-sink', 'metaslurp',
+               '-log_level', 'info',
                '-threads', '2']
     # If the harvest is incremental, and this service has already been
     # harvested successfully, send the -incremental argument to the harvester
