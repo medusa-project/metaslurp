@@ -33,13 +33,15 @@
       <dt>Status</dt>
       <dd><%= harvest_status_badge @harvest.status %></dd>
       <dt>Progress</dt>
-      <dd><%= (@harvest.progress * 100).round(1).to_s + '%' %></dd>
+      <dd><%= (@harvest.progress * 100).round(2).to_s + '%' %></dd>
       <dt>Run Time</dt>
       <dd><%= distance_of_time_in_words(@harvest.created_at,
                                         @harvest.ended_at || Time.zone.now) %></dd>
       <% if @harvest.usable? %>
         <dt>ETA</dt>
-        <dd><%= time_ago_in_words(@harvest.estimated_completion) %></dd>
+        <dd><%= @harvest.estimated_completion ?
+                    time_ago_in_words(@harvest.estimated_completion) :
+                    'Unknown' %></dd>
       <% end %>
       <dt>Items Per Minute</dt>
       <dd><%= number_with_delimiter((@harvest.items_per_second * 60).round) %></dd>
