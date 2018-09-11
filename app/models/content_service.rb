@@ -84,6 +84,7 @@ class ContentService < ApplicationRecord
                     command: ['java', '-jar', 'metaslurper.jar',
                               '-source', self.key,
                               '-sink', 'metaslurp',
+                              '-log_level', 'info',
                               '-threads', '2'],
                     environment: [ # this is an additive override
                         {
