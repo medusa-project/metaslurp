@@ -37,7 +37,7 @@ module Api
           json = request_json
           harvest.update_from_json(json)
           Rails.logger.debug("Updated harvest #{harvest}")
-        rescue ArgumentError, JSON::ParserError => e
+        rescue ArgumentError, ActiveRecord::RecordInvalid, JSON::ParserError => e
           Rails.logger.debug("Invalid: #{json}")
           render plain: e.message, status: :bad_request
         rescue IOError => e

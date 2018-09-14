@@ -69,6 +69,15 @@ module Api
       assert_response :success
     end
 
+    test 'update() with valid credentials trying to update a closed harvest returns 400' do
+      @valid_harvest.update!(status: Harvest::Status::ABORTED)
+      @valid_harvest.status = Harvest::Status::RUNNING # no save
+      patch '/api/v1/harvests/' + @valid_harvest.key,
+            env: { 'rack.input': JSON.generate(@valid_harvest.as_json) },
+            headers: valid_headers
+      assert_response :bad_request
+    end
+
     test 'update() with valid credentials and empty entity returns 400' do
       patch '/api/v1/harvests/' + @valid_harvest.key, headers: valid_headers
       assert_response :bad_request
