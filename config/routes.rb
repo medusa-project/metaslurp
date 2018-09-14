@@ -55,4 +55,7 @@ Rails.application.routes.draw do
     end
   end
 
+  # Catch-all route that overrides Rails' 404 handling.
+  match '*any', to: 'errors#not_found', via: :all
+
 end
