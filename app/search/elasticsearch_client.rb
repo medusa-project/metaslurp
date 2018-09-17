@@ -212,6 +212,14 @@ class ElasticsearchClient
   end
 
   ##
+  # @return [Hash] Summary of JVM statistics.
+  #
+  def jvm_statistics
+    response = @@http_client.get('/_nodes/stats/jvm?pretty')
+    JSON.parse(response.body)
+  end
+
+  ##
   # @param index [String]
   # @param query [String] JSON query string.
   # @return [String] Response body.

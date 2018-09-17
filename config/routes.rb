@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     end
     resources :items, only: :show
     resources :roles, param: :key
+    match '/status', to: 'status#status', via: :get
     resources :users, param: :username do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'
     end
