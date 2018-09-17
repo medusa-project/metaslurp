@@ -8,7 +8,7 @@ end
 gem 'aws-sdk-ecs', '~> 1' # used to trigger harvests
 gem 'aws-sdk-s3' # used by Active Storage
 gem 'aws-sdk-sns', '~> 1' # used to send SNS messages to trigger Lambda functions
-gem 'bootstrap', '~> 4.1.1'
+gem 'bootstrap', '~> 4.1.2'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme'
 gem 'faraday'
 gem 'image_processing', '~> 1.2' # rescales uploaded representative images
@@ -22,9 +22,6 @@ gem 'pg'
 gem 'rails', '~> 5.2.0'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-
-# Updated by recommendation of a GitHub security check
-gem 'sprockets', '~> 3.7.2'
 
 group :development, :test do
   gem 'bootsnap'
