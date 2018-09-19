@@ -91,7 +91,8 @@ class ElasticsearchIndex
           client.delete_index_alias(current_index.name,
                                     current_index.current_alias_name)
         rescue IOError => e
-          raise e unless e.message.include?('aliases_not_found_exception')
+          raise e unless e.message.include?('aliases_not_found_exception') or
+              e.message.include?('index_not_found_exception')
         end
 
         puts latest_index.name
