@@ -19,6 +19,12 @@ namespace :elasticsearch do
       ElasticsearchClient.instance.delete_index(args[:name])
     end
 
+    desc 'Delete an index alias by name'
+    task :delete_alias, [:index_name, :alias_name] => :environment do |task, args|
+      ElasticsearchClient.instance
+          .delete_index_alias(args[:index_name], args[:alias_name])
+    end
+
     desc 'Delete all current indexes'
     task :delete_current => :environment do |task, args|
       ElasticsearchIndex::ALL_INDEX_TYPES.each do |type|
