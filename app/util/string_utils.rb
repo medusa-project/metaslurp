@@ -25,7 +25,7 @@ class StringUtils
   #                  given length.
   #
   def self.truncate(string, length, indicator = nil)
-    if string.length > length
+    if string.present? and string.length > length
       count = 0
       words = string.split(' ')
       new_words = []
