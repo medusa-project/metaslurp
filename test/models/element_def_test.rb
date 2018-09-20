@@ -15,37 +15,39 @@ class ElementDefTest < ActiveSupport::TestCase
     end
   end
 
-  # indexed_field()
+  # indexed_date_field()
 
-  test 'indexed_field() returns the correct value when the data type is DATE' do
+  test 'indexed_date_field() returns the correct value when the data type is DATE' do
     @instance.data_type = ElementDef::DataType::DATE
-    assert_equal 'd_title', @instance.indexed_field
+    assert_equal 'local_date_title', @instance.indexed_date_field
   end
 
-  test 'indexed_field() returns the correct value when the data type is STRING' do
-    assert_equal 'e_title', @instance.indexed_field
+  test 'indexed_date_field() returns the correct value when the data type is STRING' do
+    assert_raises do
+      assert_equal 'local_text_title', @instance.indexed_date_field
+    end
   end
 
-  # indexed_keyword_field()
+  # indexed_facet_field()
 
-  test 'indexed_keyword_field() returns the correct value when the data type is DATE' do
+  test 'indexed_facet_field() returns the correct value when the data type is DATE' do
     @instance.data_type = ElementDef::DataType::DATE
-    assert_equal 'd_title', @instance.indexed_keyword_field
+    assert_equal 'local_date_title', @instance.indexed_facet_field
   end
 
-  test 'indexed_keyword_field() returns the correct value when the data type is STRING' do
-    assert_equal 'e_title.keyword', @instance.indexed_keyword_field
+  test 'indexed_facet_field() returns the correct value when the data type is STRING' do
+    assert_equal 'local_facet_title', @instance.indexed_facet_field
   end
 
   # indexed_sort_field()
 
   test 'indexed_sort_field() returns the correct value when the data type is DATE' do
     @instance.data_type = ElementDef::DataType::DATE
-    assert_equal 'd_title', @instance.indexed_sort_field
+    assert_equal 'local_date_title', @instance.indexed_sort_field
   end
 
   test 'indexed_sort_field() returns the correct value when the data type is STRING' do
-    assert_equal 'e_title.sort', @instance.indexed_sort_field
+    assert_equal 'local_sort_title', @instance.indexed_sort_field
   end
 
   # to_s()

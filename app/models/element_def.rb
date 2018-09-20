@@ -52,7 +52,7 @@ class ElementDef < ApplicationRecord
     end
   end
 
-  attr_accessor :indexed_keyword_field
+  attr_accessor :indexed_facet_field
 
   has_many :element_mappings, inverse_of: :element_def
 
@@ -78,29 +78,29 @@ class ElementDef < ApplicationRecord
   end
 
   ##
-  # @return [String] Name of the indexed field for the instance.
+  # @return [String] Name of the indexed keyword field for the instance.
   #
-  def indexed_field
+  def indexed_date_field
     case self.data_type
       when DataType::DATE
         [LocalElement::DATE_INDEX_PREFIX, self.name].join
       else
-        LocalElement.new(name: self.name).indexed_field
-    end
+        raise 'This method only works with date-type instances'
+      end
   end
 
   ##
   # @return [String] Name of the indexed keyword field for the instance.
   #
-  def indexed_keyword_field
-    if @indexed_keyword_field
-      @indexed_keyword_field
+  def indexed_facet_field
+    if @indexed_facet_field.present?
+      @indexed_facet_field
     else
       case self.data_type
         when DataType::DATE
           [LocalElement::DATE_INDEX_PREFIX, self.name].join
         else
-          LocalElement.new(name: self.name).indexed_keyword_field
+          LocalElement.new(name: self.name).indexed_facet_field
       end
     end
   end
@@ -115,6 +115,18 @@ class ElementDef < ApplicationRecord
       else
         LocalElement.new(name: self.name).indexed_sort_field
     end
+  end
+
+  ##
+  # @return [String] Name of the indexed text field for the instance.
+  #
+  def indexed_text_field
+    case self.data_type
+      when DataType::DATE
+        [LocalElement::DATE_INDEX_PREFIX, self.name].join
+      else
+        LocalElement.new(name: self.name).indexed_text_field
+      end
   end
 
   ##

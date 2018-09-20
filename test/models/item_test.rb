@@ -36,11 +36,11 @@ class ItemTest < ActiveSupport::TestCase
                 Item::IndexFields::SOURCE_ID => 'cats',
                 Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
                 Item::IndexFields::VARIANT => Item::Variants::ITEM,
-                (SourceElement::INDEX_PREFIX + 'title') => [
+                (SourceElement::RAW_INDEX_PREFIX + 'title') => [
                     'title 1',
                     'title 2'
                 ],
-                (LocalElement::STRING_INDEX_PREFIX + 'title') => [
+                (LocalElement::TEXT_INDEX_PREFIX + 'title') => [
                     'title 1',
                     'title 2'
                 ],
@@ -154,11 +154,11 @@ class ItemTest < ActiveSupport::TestCase
                  struct[Item::IndexFields::VARIANT]
 
     assert_equal ['value'],
-                 struct[SourceElement::INDEX_PREFIX + 'title']
+                 struct[SourceElement::RAW_INDEX_PREFIX + 'title']
     assert_equal ['2018-05-01T22:16:06Z'],
-                 struct[SourceElement::INDEX_PREFIX + 'date']
+                 struct[SourceElement::RAW_INDEX_PREFIX + 'date']
     assert_equal ['value'],
-                 struct[LocalElement::STRING_INDEX_PREFIX + 'title']
+                 struct[LocalElement::TEXT_INDEX_PREFIX + 'title']
     assert_equal '2018-05-01T22:16:06Z',
                  struct[LocalElement::DATE_INDEX_PREFIX + 'date']
   end

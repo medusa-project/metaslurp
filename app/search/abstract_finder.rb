@@ -213,10 +213,10 @@ class AbstractFinder
     # Assemble the response aggregations into Facets.
     facetable_elements.each do |element|
       @result_json['aggregations']&.each do |key, agg|
-        if key == element.indexed_keyword_field
+        if key == element.indexed_facet_field
           facet = Facet.new
           facet.name = element.label
-          facet.field = element.indexed_keyword_field
+          facet.field = element.indexed_facet_field
           agg['buckets'].each do |es_bucket|
             bucket = Bucket.new
             bucket.name = es_bucket['key'].to_s

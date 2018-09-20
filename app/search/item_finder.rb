@@ -128,7 +128,7 @@ class ItemFinder < AbstractFinder
       if @highlight and @query
         j.highlight do
           j.fields do
-            j.set! LocalElement::STRING_INDEX_PREFIX + '*', {}
+            j.set! LocalElement::TEXT_INDEX_PREFIX + '*', {}
           end
           j.require_field_match false
           j.pre_tags [ '<mark class="dl-highlight">' ]
@@ -151,9 +151,9 @@ class ItemFinder < AbstractFinder
         if @aggregations
           # Facetable elements of the content service
           facetable_elements.each do |element|
-            j.set! element.indexed_keyword_field do
+            j.set! element.indexed_facet_field do
               j.terms do
-                j.set! :field, element.indexed_keyword_field
+                j.set! :field, element.indexed_facet_field
                 j.size @bucket_limit
               end
             end
@@ -191,7 +191,7 @@ class ItemFinder < AbstractFinder
   def facetable_elements
     elements = [
         ElementDef.new(name: Item::IndexFields::SERVICE_KEY,
-                       indexed_keyword_field: Item::IndexFields::SERVICE_KEY + Element::KEYWORD_FIELD_SUFFIX,
+                       indexed_facet_field: Item::IndexFields::SERVICE_KEY,
                        label: 'Service',
                        facetable: true)
     ]

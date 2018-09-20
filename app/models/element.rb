@@ -1,7 +1,7 @@
+##
+# "Abstract" base class for LocalElements and SourceElements.
+#
 class Element
-
-  KEYWORD_FIELD_SUFFIX = '.keyword'
-  SORT_FIELD_SUFFIX = '.sort'
 
   attr_accessor :name, :value
 

@@ -10,18 +10,18 @@
 # # Identifiers
 #
 # Identifiers are unique across all items and content services and stable from
-# harvest to harvest. Those are the only requirements, but it's nice if they
-# also look pretty in URIs.
+# harvest to harvest. Those are the only requirements, but it's also nice if
+# they aren't too ugly in URIs.
 #
 # # Description
 #
 # Items have a number of hard-coded attributes (see below) as well as
-# collections of Elements, which represent metadata elements of the instance
-# within the content service, and Elements, which represent local metadata
-# elements to which Elements get mapped. Hard-coded attributes are used by the
-# system. Elements contain free-form strings and can be mapped to Elements to
-# control how they work with regard to searching, faceting, etc. on a
-# per-ContentService basis.
+# collections of SourceElements, which represent metadata elements of the
+# instance within the content service, and LocalElements, which represent local
+# metadata elements to which SourceElements get mapped. Hard-coded attributes
+# are used by the system. LocalElements contain free-form strings and can be
+# mapped to ElementDefs to control how they work with regard to searching,
+# faceting, etc. on a per-ContentService basis.
 #
 # # Dates
 #
@@ -90,16 +90,16 @@ class Item
   # These should all be dynamic fields if at all possible (see class doc).
   #
   class IndexFields
-    ACCESS_IMAGE_URI = 'k_access_image_uri'
-    FULL_TEXT = 't_full_text'
-    HARVEST_KEY = 'k_harvest_key'
-    ID = '_id'
-    LAST_INDEXED = 'd_last_indexed'
-    MEDIA_TYPE = 'k_media_type'
-    SERVICE_KEY = 'k_service_key'
-    SOURCE_ID = 'k_source_id'
-    SOURCE_URI = 'k_source_uri'
-    VARIANT = 'k_variant'
+    ACCESS_IMAGE_URI = 'system_keyword_access_image_uri'
+    FULL_TEXT        = 'system_text_full_text'
+    HARVEST_KEY      = 'system_keyword_harvest_key'
+    ID               = '_id'
+    LAST_INDEXED     = 'system_date_last_indexed'
+    MEDIA_TYPE       = 'system_keyword_media_type'
+    SERVICE_KEY      = 'system_keyword_service_key'
+    SOURCE_ID        = 'system_keyword_source_id'
+    SOURCE_URI       = 'system_keyword_source_uri'
+    VARIANT          = 'system_keyword_variant'
   end
 
   ##
@@ -162,40 +162,30 @@ class Item
 
     jsrc = jobj['_source']
     item.access_image_uri = jsrc[IndexFields::ACCESS_IMAGE_URI]
-    item.full_text = jsrc[IndexFields::FULL_TEXT]
-    item.harvest_key = jsrc[IndexFields::HARVEST_KEY]
-    item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
-    item.media_type = jsrc[IndexFields::MEDIA_TYPE]
-    item.service_key = jsrc[IndexFields::SERVICE_KEY]
-    item.source_id = jsrc[IndexFields::SOURCE_ID]
-    item.source_uri = jsrc[IndexFields::SOURCE_URI]
-    item.variant = jsrc[IndexFields::VARIANT]
+    item.full_text        = jsrc[IndexFields::FULL_TEXT]
+    item.harvest_key      = jsrc[IndexFields::HARVEST_KEY]
+    item.last_indexed     = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
+    item.media_type       = jsrc[IndexFields::MEDIA_TYPE]
+    item.service_key      = jsrc[IndexFields::SERVICE_KEY]
+    item.source_id        = jsrc[IndexFields::SOURCE_ID]
+    item.source_uri       = jsrc[IndexFields::SOURCE_URI]
+    item.variant          = jsrc[IndexFields::VARIANT]
 
     # Read source elements.
-    prefix = SourceElement::INDEX_PREFIX
+    prefix = SourceElement::RAW_INDEX_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
-      # This should always be true, but just in case there is a string value
-      # instead of an array for some reason...
-      if jsrc[key].respond_to?(:each)
-        jsrc[key].each do |value|
-          item.elements << SourceElement.new(name: name, value: value)
-        end
-      else
-        item.elements << SourceElement.new(name: name, value: jsrc[key])
+      jsrc[key].each do |value|
+        item.elements << SourceElement.new(name: name, value: value)
       end
     end
 
-    # Read local string elements.
-    prefix = LocalElement::STRING_INDEX_PREFIX
+    # Read local text elements.
+    prefix = LocalElement::TEXT_INDEX_PREFIX
     jsrc.keys.select{ |k| k.start_with?(prefix) }.each do |key|
       name = key[prefix.length..key.length]
-      if jsrc[key].respond_to?(:each)
-        jsrc[key].each do |value|
-          item.local_elements << LocalElement.new(name: name, value: value)
-        end
-      else
-        item.local_elements << LocalElement.new(name: name, value: jsrc[key])
+      jsrc[key].each do |value|
+        item.local_elements << LocalElement.new(name: name, value: value)
       end
     end
 
@@ -210,7 +200,7 @@ class Item
     jhl = jobj['highlight']
 
     if jhl # will be nil if highlighting is disabled
-      prefix = LocalElement::STRING_INDEX_PREFIX
+      prefix = LocalElement::TEXT_INDEX_PREFIX
       jhl.keys.select{ |k| k.start_with?(prefix) }.each do |key|
         name = key[prefix.length..key.length]
         jhl[key].each do |value|
@@ -231,17 +221,18 @@ class Item
     jobj = jobj.stringify_keys
     item = Item.new
     item.access_image_uri = jobj['access_image_uri']
+    item.full_text        = jobj['full_text']
+    item.harvest_key      = jobj['harvest_key']
+    item.id               = jobj['id']
+    item.media_type       = jobj['media_type']
+    item.service_key      = jobj['service_key']
+    item.source_id        = jobj['source_id']
+    item.source_uri       = jobj['source_uri']
+    item.variant          = jobj['variant']
+
     if jobj['elements'].respond_to?(:each)
       jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
     end
-    item.full_text = jobj['full_text']
-    item.harvest_key = jobj['harvest_key']
-    item.id = jobj['id']
-    item.media_type = jobj['media_type']
-    item.service_key = jobj['service_key']
-    item.source_id = jobj['source_id']
-    item.source_uri = jobj['source_uri']
-    item.variant = jobj['variant']
 
     item.validate
     item
@@ -273,41 +264,55 @@ class Item
   def as_indexed_json
     doc = {}
     doc[IndexFields::ACCESS_IMAGE_URI] = self.access_image_uri
-    doc[IndexFields::FULL_TEXT] = self.full_text
-    doc[IndexFields::HARVEST_KEY] = self.harvest_key
-    doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
-    doc[IndexFields::MEDIA_TYPE] = self.media_type
-    doc[IndexFields::SERVICE_KEY] = self.service_key
-    doc[IndexFields::SOURCE_ID] = self.source_id
-    doc[IndexFields::SOURCE_URI] = self.source_uri
-    doc[IndexFields::VARIANT] = self.variant
+    doc[IndexFields::FULL_TEXT]        = self.full_text
+    doc[IndexFields::HARVEST_KEY]      = self.harvest_key
+    doc[IndexFields::LAST_INDEXED]     = Time.now.utc.iso8601
+    doc[IndexFields::MEDIA_TYPE]       = self.media_type
+    doc[IndexFields::SERVICE_KEY]      = self.service_key
+    doc[IndexFields::SOURCE_ID]        = self.source_id
+    doc[IndexFields::SOURCE_URI]       = self.source_uri
+    doc[IndexFields::VARIANT]          = self.variant
 
     self.elements.each do |src_elem|
-      value = src_elem.value[0..ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH]
+      value = src_elem.value
 
-      # Add the source element value to an array, as there may be more than
-      # one element with the same name.
-      unless doc.keys.include?(src_elem.indexed_field)
-        doc[src_elem.indexed_field] = []
+      # Raw source field
+      unless doc.keys.include?(src_elem.raw_field)
+        doc[src_elem.raw_field] = []
       end
-      doc[src_elem.indexed_field] << value
+      doc[src_elem.raw_field] << value
+
+      # Analyzed source field
+      unless doc.keys.include?(src_elem.analyzed_field)
+        doc[src_elem.analyzed_field] = []
+      end
+      doc[src_elem.analyzed_field] << value
 
       # Add the mapped local element, if one exists.
       e_def = self.content_service&.element_def_for_element(src_elem)
       if e_def
-        unless doc.keys.include?(e_def.indexed_field)
-          doc[e_def.indexed_field] = []
+        unless doc.keys.include?(e_def.indexed_facet_field)
+          doc[e_def.indexed_facet_field] = []
+        end
+        unless doc.keys.include?(e_def.indexed_sort_field)
+          doc[e_def.indexed_sort_field] = []
+        end
+        unless doc.keys.include?(e_def.indexed_text_field)
+          doc[e_def.indexed_text_field] = []
         end
         case e_def.data_type
-          when ElementDef::DataType::DATE
-            begin
-              doc[e_def.indexed_field] =
-                  TimeUtils::string_date_to_time(value)&.iso8601
-            rescue ArgumentError => e
-              Rails.logger.warn("Item.as_indexed_json(): #{e}")
-            end
-          else
-            doc[e_def.indexed_field] << value
+        when ElementDef::DataType::DATE
+          begin
+            doc[e_def.indexed_date_field] =
+                TimeUtils::string_date_to_time(value)&.iso8601
+          rescue ArgumentError => e
+            Rails.logger.warn("Item.as_indexed_json(): #{e}")
+          end
+        else
+          max_length = ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH
+          doc[e_def.indexed_sort_field]  << StringUtils.strip_leading_articles(value)[0..max_length]
+          doc[e_def.indexed_text_field]  << ActionView::Base.full_sanitizer.sanitize(value)
+          doc[e_def.indexed_facet_field] << doc[e_def.indexed_text_field][0..max_length]
         end
       end
     end
@@ -320,15 +325,15 @@ class Item
   def as_json(options = {})
     struct = super(options)
     struct['access_image_uri'] = self.access_image_uri
-    struct['variant'] = self.variant
-    struct['elements'] = self.elements.map { |e| e.as_json(options) }
-    struct['full_text'] = self.full_text
-    struct['harvest_key'] = self.harvest_key
-    struct['id'] = self.id
-    struct['media_type'] = self.media_type
-    struct['service_key'] = self.service_key
-    struct['source_id'] = self.source_id
-    struct['source_uri'] = self.source_uri
+    struct['variant']          = self.variant
+    struct['elements']         = self.elements.map { |e| e.as_json(options) }
+    struct['full_text']        = self.full_text
+    struct['harvest_key']      = self.harvest_key
+    struct['id']               = self.id
+    struct['media_type']       = self.media_type
+    struct['service_key']      = self.service_key
+    struct['source_id']        = self.source_id
+    struct['source_uri']       = self.source_uri
     struct
   end
 
