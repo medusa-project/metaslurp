@@ -181,7 +181,10 @@ class ItemFinder < AbstractFinder
   def query_json(j)
     # See: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
     j.query_string do
-      j.query @query[:query]
+      # Filter out unicode non-letters & non-numerics
+      # See: https://www.regular-expressions.info/unicode.html#prop
+      query = @query[:query].gsub(/[^\p{L}+\p{N}+]/, '')
+      j.query "(#{query} OR *#{query}*)"
       j.default_field @query[:field]
       j.default_operator 'AND'
       j.lenient true
