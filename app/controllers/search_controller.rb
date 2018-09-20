@@ -14,7 +14,6 @@ class SearchController < ApplicationController
     finder = ItemFinder.new.
         query_all(params[:q]).
         facet_filters(params[:fq]).
-        highlight(true).
         order(params[:sort]).
         start(@start).
         limit(@limit)

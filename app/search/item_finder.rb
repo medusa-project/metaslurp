@@ -124,28 +124,6 @@ class ItemFinder < AbstractFinder
         end
       end
 
-      # Highlighting
-      if @highlight and @query
-        j.highlight do
-          j.fields do
-            j.set! LocalElement::TEXT_INDEX_PREFIX + '*', {}
-          end
-          j.require_field_match false
-          j.pre_tags [ '<mark class="dl-highlight">' ]
-          j.post_tags [ '</mark>' ]
-          j.number_of_fragments 0
-          # We need to duplicate the query_string part of the query here, or
-          # else filters will be highlighted too.
-          j.highlight_query do
-            j.bool do
-              j.must do
-                query_json(j)
-              end
-            end
-          end
-        end
-      end
-
       # Aggregations
       j.aggregations do
         if @aggregations

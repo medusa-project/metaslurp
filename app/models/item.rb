@@ -53,8 +53,6 @@
 # * full_text:            Full text.
 # * harvest_key:          Key of the harvest during which the item was last
 #                         updated.
-# * highlighted_elements: Enumerable of Elements that match a query, whose
-#                         values contain HTML tags representing the matches.
 # * id:                   Identifier within the application.
 # * local_elements:       Enumerable of LocalElements.
 # * service_key:          Key of the ContentService from which the instance was
@@ -84,7 +82,7 @@ class Item
 
   attr_accessor :access_image_uri, :full_text, :harvest_key, :id, :last_indexed,
                 :media_type, :service_key, :source_id, :source_uri, :variant
-  attr_reader :elements, :highlighted_elements, :local_elements
+  attr_reader :elements, :local_elements
 
   ##
   # These should all be dynamic fields if at all possible (see class doc).
@@ -196,19 +194,6 @@ class Item
       item.local_elements << LocalElement.new(name: name, value: jsrc[key])
     end
 
-    # Read highlighted elements.
-    jhl = jobj['highlight']
-
-    if jhl # will be nil if highlighting is disabled
-      prefix = LocalElement::TEXT_INDEX_PREFIX
-      jhl.keys.select{ |k| k.start_with?(prefix) }.each do |key|
-        name = key[prefix.length..key.length]
-        jhl[key].each do |value|
-          item.highlighted_elements << LocalElement.new(name: name, value: value)
-        end
-      end
-    end
-
     item
   end
 
@@ -239,9 +224,8 @@ class Item
   end
 
   def initialize(args = {})
-    @elements             = Set.new
-    @highlighted_elements = Set.new
-    @local_elements       = Set.new
+    @elements       = Set.new
+    @local_elements = Set.new
     args.each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
@@ -383,21 +367,6 @@ class Item
 
   def hash
     self.id.hash
-  end
-
-  ##
-  # @return [String] Highlighted title value, or the result of `title`.
-  #
-  def highlighted_description
-    self.highlighted_elements.find{ |e| e.name == 'description' }&.value ||
-        self.description
-  end
-
-  ##
-  # @return [String] Highlighted title value, or the result of `title`.
-  #
-  def highlighted_title
-    self.highlighted_elements.find{ |e| e.name == 'title' }&.value || self.title
   end
 
   ##

@@ -16,17 +16,8 @@ module ItemsHelper
     html = '<ul class="list-unstyled">'
 
     items.each do |item|
-      hl_title = item.highlighted_title || ''
-      hl_title_no_tags = item.title || ''
-      title_tag_length = hl_title.length - hl_title_no_tags.length
-      hl_desc = item.highlighted_description || ''
-      hl_desc_no_tags = item.description || ''
-      desc_tag_length = hl_desc.length - hl_desc_no_tags.length
-
-      title = raw(StringUtils.truncate(hl_title,
-                                       MAX_MEDIA_TITLE_LENGTH + title_tag_length))
-      desc = raw(StringUtils.truncate(hl_desc,
-                                      MAX_MEDIA_DESCRIPTION_LENGTH + desc_tag_length))
+      title = raw(StringUtils.truncate(item.title, MAX_MEDIA_TITLE_LENGTH))
+      desc = raw(StringUtils.truncate(item.description, MAX_MEDIA_DESCRIPTION_LENGTH))
 
       html += '<li class="media my-4">'
       html +=     link_to(item.source_uri) do
@@ -50,16 +41,10 @@ module ItemsHelper
       # https://bugs.library.illinois.edu/browse/DLDS-45
       sorted_element = ElementDef.all.find{ |e| e.indexed_sort_field == params[:sort] }
       if sorted_element
-        # Try to get a highlighted one.
         exclude_elements = %w(date title)
-        el = item.highlighted_elements
+        el = item.elements
                  .reject{ |e| exclude_elements.include?(e.name) }
                  .find{ |e| e.name == sorted_element.name }
-        unless el # fall back to the non-highlighted one
-          el = item.elements
-                   .reject{ |e| exclude_elements.include?(e.name) }
-                   .find{ |e| e.name == sorted_element.name }
-        end
         html +=   "#{sorted_element.label}: #{el.value}<br>" if el
       end
 
