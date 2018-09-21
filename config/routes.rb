@@ -56,7 +56,10 @@ Rails.application.routes.draw do
     end
   end
 
-  # Catch-all route that overrides Rails' 404 handling. TODO: this breaks active storage
-  #match '*any', to: 'errors#not_found', via: :all
+  # Catch-all route that overrides Rails' 404 handling.
+  #match '*any', to: 'errors#not_found', via: :all # this breaks Active Storage
+  get '*all', to: 'errors#not_found', constraints: lambda { |request|
+    request.path.exclude? 'rails/active_storage'
+  }
 
 end
