@@ -158,6 +158,16 @@ class TimeUtilsTest < ActiveSupport::TestCase
                  TimeUtils.string_date_to_time('[c1923.] 1925')
   end
 
+  test 'string_date_to_time() works with BA' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('[ca. 1923]')
+  end
+
+  test 'string_date_to_time() works with BB' do
+    assert_equal Time.parse('1923-01-01 00:00:00Z'),
+                 TimeUtils.string_date_to_time('MDCCCXLVI [1923]')
+  end
+
   test 'string_date_to_time() works with NA' do
     assert_equal Time.parse('1923-01-01 00:00:00Z'),
                  TimeUtils.string_date_to_time('1923-')

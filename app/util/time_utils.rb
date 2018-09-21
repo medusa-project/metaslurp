@@ -42,8 +42,11 @@ class TimeUtils
   # | AX | cYYYY [cYYYY or YYYY] |
   # | AY | cYYYY, YYYY           |
   # | AZ | [cYYYY.] YYYY         |
+  # | BA | ss. YYYY              |
+  # | BB | MDCCCXLVI [YYYY]      |
   #
-  # All formats may contain trailing periods.
+  # All formats may contain trailing periods. Parentheses are normalized as
+  # square brackets.
   #
   # Supported range formats (the beginning of the range is used):
   #
@@ -74,6 +77,23 @@ class TimeUtils
   def self.string_date_to_time(date)
     if date
       date = date.chomp('.')
+
+      # Remove roman numerals.
+      date.gsub!(/MD\S*/, '')
+      date.strip!
+
+      # Normalize () as []
+      if date[0] == '(' and date[date.length - 1] == ')'
+        date = '[' + date[1..date.length - 2] + ']'
+      end
+
+      # If the date begins with a bracket, ensure it ends with one, and vice
+      # versa.
+      if date[0] == '[' and date[date.length - 1] != ']'
+        date += ']'
+      elsif date[0] != '[' and date[date.length - 1] == ']'
+        date = '[' + date
+      end
 
       iso8601 = nil
       # AA
@@ -132,6 +152,10 @@ class TimeUtils
         parts = date.split(' ')
         month = 1 + MONTHS.index(parts[1].gsub(/[^A-Za-z]/, '').downcase)
         iso8601 = sprintf('%s-%d-%dT00:00:00Z', parts[2], month, parts[0])
+      # BA
+      elsif date.match(/\[\w+. [0-9]{4}\]/)
+        year = date.gsub(/[^0-9]/, '')[0..3]
+        iso8601 = sprintf('%s-01-01T00:00:00Z', year)
       # NF
       elsif date.match(/\[between [0-9]{4} and [0-9]{4}\]/)
         year = date.gsub(/[^0-9]/, '')[0..3]
