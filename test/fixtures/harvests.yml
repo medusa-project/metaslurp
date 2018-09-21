@@ -10,6 +10,7 @@ new:
   user: admin
   message: MyString
   incremental: false
+  ecs_task_uuid: nil
 
 running:
   key: running
@@ -22,6 +23,7 @@ running:
   ended_at:
   message: MyString
   incremental: false
+  ecs_task_uuid: nil
 
 aborted:
   key: aborted
@@ -34,6 +36,7 @@ aborted:
   ended_at:
   message: MyString
   incremental: false
+  ecs_task_uuid: nil
 
 succeeded:
   key: succeeded
@@ -46,6 +49,7 @@ succeeded:
   ended_at:
   message: MyString
   incremental: false
+  ecs_task_uuid: nil
 
 failed:
   key: failed
@@ -58,3 +62,4 @@ failed:
   ended_at:
   message: MyString
   incremental: false
+  ecs_task_uuid: nil

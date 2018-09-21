@@ -96,7 +96,7 @@ class ContentService < ApplicationRecord
       end
     end
 
-    # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#run_task-instance_method
+    # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#run_task-instance_method
     ecs = Aws::ECS::Client.new(region: ENV['AWS_REGION'])
     args = {
         cluster: ENV['METASLURPER_ECS_CLUSTER'],
@@ -124,7 +124,9 @@ class ContentService < ApplicationRecord
             },
         }
     }
-    ecs.run_task(args)
+    response = ecs.run_task(args)
+    uuid = response.to_h[:tasks][0][:task_arn].split('/').last
+    harvest.update!(ecs_task_uuid: uuid)
   end
 
   def hash

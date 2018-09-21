@@ -81,6 +81,19 @@ class Harvest < ApplicationRecord
   before_save :update_ended_at
 
   ##
+  # @return [Hash] See:
+  #         https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#describe_tasks-instance_method
+  #
+  def ecs_task
+    if self.ecs_task_uuid
+      ecs = Aws::ECS::Client.new(region: ENV['AWS_REGION'])
+      response = ecs.describe_tasks({ cluster: ENV['METASLURPER_ECS_CLUSTER'],
+                                      tasks: [ self.ecs_task_uuid ] })
+      response.to_h[:tasks][0]
+    end
+  end
+
+  ##
   # @return [Time]
   #
   def estimated_completion
