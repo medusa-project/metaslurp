@@ -9,6 +9,7 @@ new:
   num_failed: 0
   user: admin
   message: MyString
+  incremental: false
 
 running:
   key: running
@@ -20,6 +21,7 @@ running:
   user: admin
   ended_at:
   message: MyString
+  incremental: false
 
 aborted:
   key: aborted
@@ -31,6 +33,7 @@ aborted:
   user: admin
   ended_at:
   message: MyString
+  incremental: false
 
 succeeded:
   key: succeeded
@@ -42,6 +45,7 @@ succeeded:
   user: admin
   ended_at:
   message: MyString
+  incremental: false
 
 failed:
   key: failed
@@ -53,3 +57,4 @@ failed:
   user: admin
   ended_at:
   message: MyString
+  incremental: false

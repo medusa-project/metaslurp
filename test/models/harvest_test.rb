@@ -25,6 +25,13 @@ class HarvestTest < ActiveSupport::TestCase
     assert_equal 0.25, @instance.progress
   end
 
+  test 'progress() clamps the max return value to 1' do
+    @instance.num_items = 100
+    @instance.num_succeeded = 125
+    @instance.num_failed = 5
+    assert_equal 1, @instance.progress
+  end
+
   # update()
 
   test 'update() restricts key changes' do
@@ -73,7 +80,8 @@ class HarvestTest < ActiveSupport::TestCase
   end
 
   test 'validate() returns false if key is not unique' do
-    h2 = Harvest.create!(content_service: content_services(:one))
+    h2 = Harvest.create!(content_service: content_services(:one),
+                         user: users(:admin))
     @instance.key = h2.key
     assert !@instance.validate
   end

@@ -105,8 +105,9 @@ class Harvest < ApplicationRecord
   # @return [Float] Between 0 and 1.
   #
   def progress
-    self.num_items > 0 ?
+    value = (self.num_items > 0) ?
         (self.num_succeeded + self.num_failed) / self.num_items.to_f : 0.0
+    (value > 1) ? 1 : value
   end
 
   def to_param
