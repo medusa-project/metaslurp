@@ -79,7 +79,15 @@ module ItemsHelper
 
       if !ht_url and !ia_url and !catalog_url
         html +=       ' | '
-        html += link_to item.source_uri do
+
+        uri = item.source_uri
+        # If the item is from IDNC/Veridian, append the search query in order
+        # to make it appear highlighted on the page.
+        if item.content_service.key == 'idnc' and params[:q].present?
+          uri += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
+        end
+
+        html += link_to uri do
           raw(" <i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name} ")
         end
       end
