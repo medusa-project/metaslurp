@@ -183,7 +183,7 @@ class ItemFinder < AbstractFinder
     j.query_string do
       # Filter out unicode non-letters & non-numerics
       # See: https://www.regular-expressions.info/unicode.html#prop
-      query = @query[:query].gsub(/[^\p{L}+\p{N}+]/, '')
+      query = @query[:query].gsub(/[^\p{L}+\p{N}+ ]/, '')
       query = '*' if query.blank?
       j.query "(#{query} OR #{query}*)"
       j.default_field @query[:field]
