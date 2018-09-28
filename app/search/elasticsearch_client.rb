@@ -238,6 +238,33 @@ class ElasticsearchClient
     response.body
   end
 
+  ##
+  # @param from_index [ElasticsearchIndex]
+  # @param to_index [ElasticsearchIndex]
+  #
+  def reindex(from_index, to_index)
+    path = '/_reindex'
+    body = {
+        source: {
+            index: from_index.name
+        },
+        dest: {
+            index: to_index.name
+        }
+    }
+    body = JSON.generate(body)
+    response = @@http_client.post do |request|
+      request.path = path
+      request.body = body
+      request.headers['Content-Type'] = 'application/json'
+    end
+
+    @@logger.debug("ElasticsearchClient.reindex():\n"\
+        "    Request: #{body.force_encoding('UTF-8')}\n"\
+        "    Response: #{response.body.force_encoding('UTF-8')}")
+    response.body
+  end
+
   private
 
   def endpoint

@@ -63,14 +63,19 @@ $ bin/rails elasticsearch:indexes:migrate
 
 ## Migrating the Elasticsearch indexes
 
-Rather than trying to change the existing indexes in place, the recommended
-procedure is to create a new set of indexes, populate them with documents, and
-then switch the application over to use them. The application doesn't refer to
-index names, but rather stable aliases of the indexes, so the steps are:
+Elasticsearch index schemas are generally immutable. The migration procedure is:
 
-1. Create the latest indexes: `bin/rails elasticsearch:indexes:create_latest`
-2. Populate them with documents (this hasn't been written yet)
-3. Switch over the aliases: `bin/rails elasticsearch:indexes:migrate`
+1. Define a new index schema in `app/search/schemas`
+2. Create an index that uses it:
+   `bin/rails elasticsearch:indexes:create_latest`
+3. Populate the new index with documents. There are two ways to do this:
+     1. If the schema change was backwards-compatible with the source documents
+        added to the index, invoke `bin/rails elasticsearch:indexes:reindex`.
+        This will copy all source documents from the current index into the new
+        index, effectively reindexing them.
+     2. Otherwise, reharvest everything. (N.B.: it's not currently possible to
+        harvest into a non-current index.)
+4. Switch over the alias: `bin/rails elasticsearch:indexes:migrate`
 
 # Notes
 

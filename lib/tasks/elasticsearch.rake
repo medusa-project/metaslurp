@@ -54,6 +54,17 @@ namespace :elasticsearch do
       ElasticsearchIndex.migrate_to_latest
     end
 
+    desc 'Copy the current index into the latest index'
+    task :reindex => :environment do |task, args|
+      if ElasticsearchIndex.current_version != ElasticsearchIndex.latest_version
+        from_index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
+        to_index = ElasticsearchIndex.latest(Item::ELASTICSEARCH_INDEX)
+        ElasticsearchClient.instance.reindex(from_index, to_index)
+      else
+        STDERR.puts 'Latest index is the same as the current index. Aborting.'
+      end
+    end
+
     desc 'Print schema versions'
     task :versions => :environment do |task, args|
       puts "Current: #{ElasticsearchIndex.current_version}"
