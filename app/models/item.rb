@@ -48,19 +48,17 @@
 #
 # # Attributes
 #
-# * access_image_uri      URI of a high-quality access image.
-# * elements:             Enumerable of SourceElements.
-# * full_text:            Full text.
-# * harvest_key:          Key of the harvest during which the item was last
-#                         updated.
-# * id:                   Identifier within the application.
-# * local_elements:       Enumerable of LocalElements.
-# * service_key:          Key of the ContentService from which the instance was
-#                         obtained.
-# * source_id:            Identifier of the instance within its ContentService.
-# * variant:              Like a subclass. Used to differentiate types of
-#                         instances that all have more-or-less the same
-#                         properties.
+# * access_images   Set of Images.
+# * elements:       Enumerable of SourceElements.
+# * full_text:      Full text.
+# * harvest_key:    Key of the harvest during which the item was last updated.
+# * id:             Identifier within the application.
+# * local_elements: Enumerable of LocalElements.
+# * service_key:    Key of the ContentService from which the instance was
+#                   obtained.
+# * source_id:      Identifier of the instance within its ContentService.
+# * variant:        Like a subclass. Used to differentiate types of instances
+#                   that all have more-or-less the same properties.
 #
 # ## Adding an attribute
 #
@@ -80,24 +78,24 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :access_image_uri, :full_text, :harvest_key, :id, :last_indexed,
-                :media_type, :service_key, :source_id, :source_uri, :variant
-  attr_reader :elements, :local_elements
+  attr_accessor :full_text, :harvest_key, :id, :last_indexed, :media_type,
+                :service_key, :source_id, :source_uri, :variant
+  attr_reader :access_images, :elements, :local_elements
 
   ##
   # These should all be dynamic fields if at all possible (see class doc).
   #
   class IndexFields
-    ACCESS_IMAGE_URI = 'system_keyword_access_image_uri'
-    FULL_TEXT        = 'system_text_full_text'
-    HARVEST_KEY      = 'system_keyword_harvest_key'
-    ID               = '_id'
-    LAST_INDEXED     = 'system_date_last_indexed'
-    MEDIA_TYPE       = 'system_keyword_media_type'
-    SERVICE_KEY      = 'system_keyword_service_key'
-    SOURCE_ID        = 'system_keyword_source_id'
-    SOURCE_URI       = 'system_keyword_source_uri'
-    VARIANT          = 'system_keyword_variant'
+    ACCESS_IMAGES = 'system_object_images'
+    FULL_TEXT     = 'system_text_full_text'
+    HARVEST_KEY   = 'system_keyword_harvest_key'
+    ID            = '_id'
+    LAST_INDEXED  = 'system_date_last_indexed'
+    MEDIA_TYPE    = 'system_keyword_media_type'
+    SERVICE_KEY   = 'system_keyword_service_key'
+    SOURCE_ID     = 'system_keyword_source_id'
+    SOURCE_URI    = 'system_keyword_source_uri'
+    VARIANT       = 'system_keyword_variant'
   end
 
   ##
@@ -159,7 +157,6 @@ class Item
     item.id = jobj[IndexFields::ID]
 
     jsrc = jobj['_source']
-    item.access_image_uri = jsrc[IndexFields::ACCESS_IMAGE_URI]
     item.full_text        = jsrc[IndexFields::FULL_TEXT]
     item.harvest_key      = jsrc[IndexFields::HARVEST_KEY]
     item.last_indexed     = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
@@ -168,6 +165,13 @@ class Item
     item.source_id        = jsrc[IndexFields::SOURCE_ID]
     item.source_uri       = jsrc[IndexFields::SOURCE_URI]
     item.variant          = jsrc[IndexFields::VARIANT]
+
+    # Read access images.
+    jsrc[IndexFields::ACCESS_IMAGES].each do |struct|
+      item.access_images << Image.new(size: struct['size'].to_i,
+                                      crop: struct['crop'].to_sym,
+                                      uri: struct['uri'])
+    end
 
     # Read source elements.
     prefix = SourceElement::RAW_INDEX_PREFIX
@@ -205,18 +209,29 @@ class Item
   def self.from_json(jobj)
     jobj = jobj.stringify_keys
     item = Item.new
-    item.access_image_uri = jobj['access_image_uri']
-    item.full_text        = jobj['full_text']
-    item.harvest_key      = jobj['harvest_key']
-    item.id               = jobj['id']
-    item.media_type       = jobj['media_type']
-    item.service_key      = jobj['service_key']
-    item.source_id        = jobj['source_id']
-    item.source_uri       = jobj['source_uri']
-    item.variant          = jobj['variant']
+    item.full_text   = jobj['full_text']
+    item.harvest_key = jobj['harvest_key']
+    item.id          = jobj['id']
+    item.media_type  = jobj['media_type']
+    item.service_key = jobj['service_key']
+    item.source_id   = jobj['source_id']
+    item.source_uri  = jobj['source_uri']
+    item.variant     = jobj['variant']
 
+    # Read access images.
+    if jobj['access_images'].respond_to?(:each)
+      jobj['access_images'].each do |struct|
+        item.access_images << Image.new(size: struct['size'].to_i,
+                                        crop: struct['crop'].to_sym,
+                                        uri: struct['uri'])
+      end
+    end
+
+    # Read elements.
     if jobj['elements'].respond_to?(:each)
-      jobj['elements'].each { |je| item.elements << SourceElement.from_json(je) }
+      jobj['elements'].each do |je|
+        item.elements << SourceElement.from_json(je)
+      end
     end
 
     item.validate
@@ -226,6 +241,8 @@ class Item
   def initialize(args = {})
     @elements       = Set.new
     @local_elements = Set.new
+    @access_images  = Set.new
+
     args.each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
     end
@@ -247,16 +264,22 @@ class Item
   #
   def as_indexed_json
     doc = {}
-    doc[IndexFields::ACCESS_IMAGE_URI] = self.access_image_uri
-    doc[IndexFields::FULL_TEXT]        = self.full_text
-    doc[IndexFields::HARVEST_KEY]      = self.harvest_key
-    doc[IndexFields::LAST_INDEXED]     = Time.now.utc.iso8601
-    doc[IndexFields::MEDIA_TYPE]       = self.media_type
-    doc[IndexFields::SERVICE_KEY]      = self.service_key
-    doc[IndexFields::SOURCE_ID]        = self.source_id
-    doc[IndexFields::SOURCE_URI]       = self.source_uri
-    doc[IndexFields::VARIANT]          = self.variant
+    doc[IndexFields::FULL_TEXT]     = self.full_text
+    doc[IndexFields::HARVEST_KEY]   = self.harvest_key
+    doc[IndexFields::LAST_INDEXED]  = Time.now.utc.iso8601
+    doc[IndexFields::MEDIA_TYPE]    = self.media_type
+    doc[IndexFields::SERVICE_KEY]   = self.service_key
+    doc[IndexFields::SOURCE_ID]     = self.source_id
+    doc[IndexFields::SOURCE_URI]    = self.source_uri
+    doc[IndexFields::VARIANT]       = self.variant
 
+    # Images
+    doc[IndexFields::ACCESS_IMAGES] = []
+    self.access_images.each do |image|
+      doc[IndexFields::ACCESS_IMAGES] << image.as_json
+    end
+
+    # Elements
     self.elements.each do |src_elem|
       value = src_elem.value
 
@@ -308,21 +331,21 @@ class Item
   #
   def as_json(options = {})
     struct = super(options)
-    struct['access_image_uri'] = self.access_image_uri
-    struct['variant']          = self.variant
-    struct['elements']         = self.elements.map { |e| e.as_json(options) }
-    struct['full_text']        = self.full_text
-    struct['harvest_key']      = self.harvest_key
-    struct['id']               = self.id
-    struct['media_type']       = self.media_type
-    struct['service_key']      = self.service_key
-    struct['source_id']        = self.source_id
-    struct['source_uri']       = self.source_uri
+    struct['access_images'] = self.access_images.as_json
+    struct['variant']       = self.variant
+    struct['elements']      = self.elements.map { |e| e.as_json(options) }
+    struct['full_text']     = self.full_text
+    struct['harvest_key']   = self.harvest_key
+    struct['id']            = self.id
+    struct['media_type']    = self.media_type
+    struct['service_key']   = self.service_key
+    struct['source_id']     = self.source_id
+    struct['source_uri']    = self.source_uri
     struct
   end
 
   ##
-  # @return [ContentService] Service corresponding to `service_key`.
+  # @return [ContentService] Content service corresponding to `service_key`.
   #
   def content_service
     ContentService.find_by_key(self.service_key)
@@ -354,9 +377,7 @@ class Item
     self.local_elements.find{ |e| e.name == name.to_s }
   end
 
-  def eql?(obj)
-    self.==(obj)
-  end
+  alias :eql? :==
 
   ##
   # @return [Harvest] Harvest corresponding to `harvest_key`.
@@ -383,7 +404,7 @@ class Item
                                                 self.as_indexed_json)
   end
 
-  alias_method :save!, :save
+  alias :save! :save
 
   ##
   # @return [String]

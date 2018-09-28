@@ -10,24 +10,42 @@ class ItemTest < ActiveSupport::TestCase
                          source_id: 'cats',
                          source_uri: 'http://example.org/cats',
                          full_text: 'Lorem ipsum',
-                         access_image_uri: 'http://example.org/cats/image.jpg',
                          variant: Item::Variants::ITEM)
-    @instance.elements << SourceElement.new(name: 'title', value: 'value')
+    @instance.access_images << Image.new(size: 256,
+                                         crop: :full,
+                                         uri: 'http://example.org/cats/image-256.jpg')
+    @instance.access_images << Image.new(size: 512,
+                                         crop: :full,
+                                         uri: 'http://example.org/cats/image-512.jpg')
+    @instance.elements << SourceElement.new(name: 'title',
+                                            value: 'value')
     @instance.elements << SourceElement.new(name: 'date',
                                             value: '2018-05-01T22:16:06Z')
-    @instance.local_elements << LocalElement.new(name: 'title', value: 'value')
+    @instance.local_elements << LocalElement.new(name: 'title',
+                                                 value: 'value')
     @instance.local_elements << LocalElement.new(name: 'date',
                                                  value: '2018-05-01T22:16:06Z')
   end
 
   # from_indexed_json()
 
-  test 'from_indexed_json() with valid data returns an instance' do
+  test 'from_indexed_json with valid data returns an instance' do
     item = Item.from_indexed_json(
         {
             Item::IndexFields::ID => 'cats',
             '_source' => {
-                Item::IndexFields::ACCESS_IMAGE_URI => 'http://example.org/cats/image.jpg',
+                Item::IndexFields::ACCESS_IMAGES => [
+                    {
+                        'size' => 256,
+                        'crop' => 'full',
+                        'uri' => 'http://example.org/cats/image-256.jpg'
+                    },
+                    {
+                        'size' => 512,
+                        'crop' => 'full',
+                        'uri' => 'http://example.org/cats/image-512.jpg'
+                    }
+                ],
                 Item::IndexFields::FULL_TEXT => 'Lorem ipsum',
                 Item::IndexFields::HARVEST_KEY => harvests(:new).key,
                 Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
@@ -47,7 +65,6 @@ class ItemTest < ActiveSupport::TestCase
                 (LocalElement::DATE_INDEX_PREFIX + 'date') => '1987-01-01T00:00:00Z'
             }
         })
-    assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal 'Lorem ipsum', item.full_text
     assert_equal harvests(:new).key, item.harvest_key
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
@@ -58,6 +75,15 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'http://example.org/cats', item.source_uri
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 2, item.elements.length
+
+    expected = Set.new
+    expected << Image.new(size: 256,
+                          crop: :full,
+                          uri: 'http://example.org/cats/image-256.jpg')
+    expected << Image.new(size: 512,
+                          crop: :full,
+                          uri: 'http://example.org/cats/image-512.jpg')
+    assert_equal expected, item.access_images
 
     src_titles = item.elements.select{ |e| e.name == 'title' }
     assert_equal 'title 1', src_titles[0].value
@@ -84,10 +110,23 @@ class ItemTest < ActiveSupport::TestCase
             'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
             'full_text': 'Lorem ipsum',
-            'access_image_uri': 'http://example.org/cats/image.jpg',
+            'access_images': [
+                {
+                    'size' => 256,
+                    'crop' => 'full',
+                    'uri' => 'http://example.org/cats/image-256.jpg'
+                },
+                {
+                    'size' => 512,
+                    'crop' => 'full',
+                    'uri' => 'http://example.org/cats/image-512.jpg'
+                }
+            ],
             'elements': [
-                'name': 'name',
-                'value': 'value'
+                {
+                    'name': 'name',
+                    'value': 'value'
+                }
             ]
         })
     assert_equal Item::Variants::ITEM, item.variant
@@ -98,10 +137,20 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
-    assert_equal 'http://example.org/cats/image.jpg', item.access_image_uri
     assert_equal 1, item.elements.length
-    assert_equal 'name', item.elements.to_a[0].name
-    assert_equal 'value', item.elements.to_a[0].value
+
+    expected = Set.new
+    expected << Image.new(size: 256,
+                          crop: :full,
+                          uri: 'http://example.org/cats/image-256.jpg')
+    expected << Image.new(size: 512,
+                          crop: :full,
+                          uri: 'http://example.org/cats/image-512.jpg')
+    assert_equal expected, item.access_images
+
+    element = item.elements.to_a[0]
+    assert_equal 'name', element.name
+    assert_equal 'value', element.value
   end
 
   test 'from_json() with invalid data raises an error' do
@@ -135,8 +184,6 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'as_indexed_json() works' do
     struct = @instance.as_indexed_json
-    assert_equal @instance.access_image_uri,
-                 struct[Item::IndexFields::ACCESS_IMAGE_URI]
     assert_equal @instance.full_text,
                  struct[Item::IndexFields::FULL_TEXT]
     assert_equal @instance.harvest_key,
@@ -152,6 +199,20 @@ class ItemTest < ActiveSupport::TestCase
                  struct[Item::IndexFields::SOURCE_URI]
     assert_equal @instance.variant,
                  struct[Item::IndexFields::VARIANT]
+
+    expected = [
+        {
+            'size' => 256,
+            'crop' => 'full',
+            'uri' => 'http://example.org/cats/image-256.jpg'
+        },
+        {
+            'size' => 512,
+            'crop' => 'full',
+            'uri' => 'http://example.org/cats/image-512.jpg'
+        }
+    ]
+    assert_equal expected, struct[Item::IndexFields::ACCESS_IMAGES]
 
     assert_equal ['value'],
                  struct[SourceElement::RAW_INDEX_PREFIX + 'title']
@@ -175,8 +236,22 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'cats', struct['source_id']
     assert_equal 'http://example.org/cats', struct['source_uri']
-    assert_equal 'http://example.org/cats/image.jpg', struct['access_image_uri']
     assert_equal 2, struct['elements'].length
+
+    expected = [
+        {
+            'size' => 256,
+            'crop' => 'full',
+            'uri' => 'http://example.org/cats/image-256.jpg'
+        },
+        {
+            'size' => 512,
+            'crop' => 'full',
+            'uri' => 'http://example.org/cats/image-512.jpg'
+        }
+    ]
+    assert_equal expected, struct['access_images']
+
     assert_equal 'title', struct['elements'][0]['name']
     assert_equal 'value', struct['elements'][0]['value']
   end

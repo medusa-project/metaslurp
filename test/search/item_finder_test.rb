@@ -20,7 +20,6 @@ class ItemFinderTest < ActiveSupport::TestCase
                     service_key: content_services(:one).key,
                     source_id: 'cats',
                     source_uri: 'http://example.org/cats',
-                    access_image_uri: 'http://example.org/cats/image.jpg',
                     variant: Item::Variants::ITEM)
     item.elements << SourceElement.new(name: 'name', value: 'value')
     item.save!

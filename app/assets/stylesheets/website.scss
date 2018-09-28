@@ -34,12 +34,13 @@
 
 #dl-items, #dl-favorites {
   img {
-    max-height: 120px;
-    max-width: 120px;
+    margin-right: 1em;
+    max-height: 150px;
+    max-width: 150px;
   }
   img[data-type="svg"] {
     opacity: 0.4;
-    padding: 1em;
+    padding: 0.8em;
   }
   .media-body {
     .mt-0 {

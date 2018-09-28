@@ -264,7 +264,15 @@ module ApplicationHelper
     if entity == Item
       icon = 'cube'
     elsif entity.kind_of?(Item)
-      case entity.variant
+      # Check for a usable access image.
+      image = entity.access_images
+          .select{ |im| im.size > 128 and im.size <= 512 and im.crop == :square }
+          .sort{ |im| im.size }.last
+      if image
+        return image_tag(image.uri)
+      else
+        # Fall back to a generic icon based on variant.
+        case entity.variant
         when Item::Variants::BOOK
           icon = 'book'
         when Item::Variants::COLLECTION
@@ -277,6 +285,7 @@ module ApplicationHelper
           icon = 'newspaper-o'
         else
           icon = 'cube'
+        end
       end
     elsif entity == ContentService or entity.kind_of?(ContentService)
       # Check for a representative image in ActiveStorage.

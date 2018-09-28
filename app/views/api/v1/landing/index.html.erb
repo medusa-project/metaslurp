@@ -243,7 +243,18 @@
     "source_id": "some-item",
     "source_uri": "http://example.org/some-item",
     "full_text": "The quick brown fox jumped over the lazy dog."
-    "access_image_uri": "http://example.org/some-item/image.jp2",
+    "access_images": {
+        {
+            "size": 128,
+            "crop": "full",
+            "uri": "http://example.org/image-full-128.jpg"
+        },
+        {
+            "size": 256,
+            "crop": "square",
+            "uri": "http://example.org/image-square-256.jpg"
+        }
+    },
     "elements" : [
         {
             "name": "some-element-name",
@@ -264,9 +275,10 @@
           <th>Description</th>
         </tr>
         <tr>
-          <td><code>access_image_uri</code></td>
+          <td><code>access_images</code></td>
           <td>No</td>
-          <td>URI of a high-quality image representing the item.</td>
+          <td>Image sizes should be powers of 2 in the range of 2<sup>8</sup>
+            through 2<sup>11</sup>.</td>
         </tr>
         <tr>
           <td><code>variant</code></td>
@@ -312,7 +324,6 @@
           <td>A recognized media a.k.a. MIME type. Should be a specific type and
             not something generic like <code>application/octet-stream</code>
             (unless the represented data really is an unspecified binary format).
-            May or may not be the type of <code>access_image_uri</code>.
             May be omitted if unknown or not applicable.
           </td>
         </tr>
