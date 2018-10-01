@@ -156,18 +156,18 @@ class Item
     item = Item.new
     item.id = jobj[IndexFields::ID]
 
-    jsrc = jobj['_source']
-    item.full_text        = jsrc[IndexFields::FULL_TEXT]
-    item.harvest_key      = jsrc[IndexFields::HARVEST_KEY]
-    item.last_indexed     = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
-    item.media_type       = jsrc[IndexFields::MEDIA_TYPE]
-    item.service_key      = jsrc[IndexFields::SERVICE_KEY]
-    item.source_id        = jsrc[IndexFields::SOURCE_ID]
-    item.source_uri       = jsrc[IndexFields::SOURCE_URI]
-    item.variant          = jsrc[IndexFields::VARIANT]
+    jsrc              = jobj['_source']
+    item.full_text    = jsrc[IndexFields::FULL_TEXT]
+    item.harvest_key  = jsrc[IndexFields::HARVEST_KEY]
+    item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
+    item.media_type   = jsrc[IndexFields::MEDIA_TYPE]
+    item.service_key  = jsrc[IndexFields::SERVICE_KEY]
+    item.source_id    = jsrc[IndexFields::SOURCE_ID]
+    item.source_uri   = jsrc[IndexFields::SOURCE_URI]
+    item.variant      = jsrc[IndexFields::VARIANT]
 
     # Read access images.
-    jsrc[IndexFields::ACCESS_IMAGES].each do |struct|
+    jsrc[IndexFields::ACCESS_IMAGES]&.each do |struct|
       item.access_images << Image.new(size: struct['size'].to_i,
                                       crop: struct['crop'].to_sym,
                                       uri: struct['uri'])
@@ -264,14 +264,14 @@ class Item
   #
   def as_indexed_json
     doc = {}
-    doc[IndexFields::FULL_TEXT]     = self.full_text
-    doc[IndexFields::HARVEST_KEY]   = self.harvest_key
-    doc[IndexFields::LAST_INDEXED]  = Time.now.utc.iso8601
-    doc[IndexFields::MEDIA_TYPE]    = self.media_type
-    doc[IndexFields::SERVICE_KEY]   = self.service_key
-    doc[IndexFields::SOURCE_ID]     = self.source_id
-    doc[IndexFields::SOURCE_URI]    = self.source_uri
-    doc[IndexFields::VARIANT]       = self.variant
+    doc[IndexFields::FULL_TEXT]    = self.full_text
+    doc[IndexFields::HARVEST_KEY]  = self.harvest_key
+    doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
+    doc[IndexFields::MEDIA_TYPE]   = self.media_type
+    doc[IndexFields::SERVICE_KEY]  = self.service_key
+    doc[IndexFields::SOURCE_ID]    = self.source_id
+    doc[IndexFields::SOURCE_URI]   = self.source_uri
+    doc[IndexFields::VARIANT]      = self.variant
 
     # Images
     doc[IndexFields::ACCESS_IMAGES] = []
@@ -384,6 +384,18 @@ class Item
   #
   def harvest
     Harvest.find_by_key(self.harvest_key)
+  end
+
+  ##
+  # @return [Image]
+  #
+  def thumbnail_image
+    self.access_images
+        .select{ |im| im.size > ApplicationHelper::MIN_THUMBNAIL_SIZE }
+        .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE }
+        .select{ |im| im.crop == :square }
+        .sort{ |im| im.size }
+        .last
   end
 
   def hash

@@ -1,7 +1,9 @@
 module ApplicationHelper
 
   MAX_PAGINATION_LINKS = 7
-  THUMBNAIL_SIZE = 800
+  MIN_THUMBNAIL_SIZE = 128
+  MAX_THUMBNAIL_SIZE = 512
+  CONTENT_SERVICE_THUMBNAIL_SIZE = 800
 
   ##
   # Formats a boolean for display.
@@ -264,12 +266,8 @@ module ApplicationHelper
     if entity == Item
       icon = 'cube'
     elsif entity.kind_of?(Item)
-      # Check for a usable access image.
-      image = entity.access_images
-          .select{ |im| im.size > 128 and im.size <= 512 and im.crop == :square }
-          .sort{ |im| im.size }.last
-      if image
-        return image_tag(image.uri)
+      if entity.thumbnail_image
+        return image_tag(item_image_url(entity))
       else
         # Fall back to a generic icon based on variant.
         case entity.variant
@@ -290,7 +288,7 @@ module ApplicationHelper
     elsif entity == ContentService or entity.kind_of?(ContentService)
       # Check for a representative image in ActiveStorage.
       if entity.representative_image.attached?
-        return image_tag(entity.representative_image.variant(resize: "#{THUMBNAIL_SIZE}x#{THUMBNAIL_SIZE}"),
+        return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}"),
                          options)
       else
         icon = 'database'

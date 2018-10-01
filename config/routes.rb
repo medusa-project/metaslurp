@@ -15,7 +15,9 @@ Rails.application.routes.draw do
   resources :collections, only: :index
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
   resources :favorites, only: :index
-  resources :items, only: :index
+  resources :items, only: :index do
+    match '/image', to: 'items#image', via: :get
+  end
   match '/search', to: 'search#index', via: :get
 
   ############################ REST API routes ##############################
