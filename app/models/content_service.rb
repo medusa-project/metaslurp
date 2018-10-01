@@ -34,7 +34,7 @@ class ContentService < ApplicationRecord
                 filter: [
                     {
                         term: {
-                            Item::IndexFields::SERVICE_KEY + '.keyword' => self.key
+                            Item::IndexFields::SERVICE_KEY => self.key
                         }
                     }
                 ]
