@@ -410,9 +410,11 @@ class Item
   # @return [Image]
   #
   def thumbnail_image
+    # Use the largest available access image up to MAX_THUMBNAIL_SIZE.
+    # Prefer a square crop, but return a full crop if it's a better fit.
     self.access_images
-        .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE and im.crop == :square }
-        .sort{ |im| im.size }
+        .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE }
+        .sort{ |a, b| [a.size, a.crop] <=> [b.size, b.crop] }
         .last
   end
 
