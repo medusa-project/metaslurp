@@ -386,18 +386,6 @@ class Item
     Harvest.find_by_key(self.harvest_key)
   end
 
-  ##
-  # @return [Image]
-  #
-  def thumbnail_image
-    self.access_images
-        .select{ |im| im.size > ApplicationHelper::MIN_THUMBNAIL_SIZE }
-        .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE }
-        .select{ |im| im.crop == :square }
-        .sort{ |im| im.size }
-        .last
-  end
-
   def hash
     self.id.hash
   end
@@ -417,6 +405,16 @@ class Item
   end
 
   alias :save! :save
+
+  ##
+  # @return [Image]
+  #
+  def thumbnail_image
+    self.access_images
+        .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE and im.crop == :square }
+        .sort{ |im| im.size }
+        .last
+  end
 
   ##
   # @return [String]
