@@ -23,6 +23,7 @@ class ItemsController < ApplicationController
         request = Net::HTTP::Get.new(uri)
 
         http.request(request) do |response|
+          expires_in 1.year, public: true
           send_data response.read_body,
                     disposition: 'inline',
                     filename: 'image.jpg'
