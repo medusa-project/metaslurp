@@ -20,11 +20,17 @@ module ItemsHelper
       desc = raw(StringUtils.truncate(item.description, MAX_MEDIA_DESCRIPTION_LENGTH))
 
       html += '<li class="media my-4">'
+      html +=   '<div class="dl-thumbnail-container">'
       html +=     link_to(item.source_uri) do
-        thumbnail_for(item,
-                      class: 'mr-3',
+        thumbnail_for(item, class: 'mr-3',
                       alt: "Thumbnail for #{item}")
       end
+      unless thumbnail_is_local?(item)
+        # N.B.: this was made by https://loading.io with the following settings:
+        # rolling, color: #cacaca, radius: 25, stroke width: 10, speed: 5, size: 150
+        html +=     image_tag('thumbnail-spinner.svg', class: 'dl-load-indicator')
+      end
+      html +=   '</div>'
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
       if options[:link_to_admin]

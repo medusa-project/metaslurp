@@ -33,14 +33,23 @@
 }
 
 #dl-items, #dl-favorites {
-  img {
-    margin-right: 1em;
-    max-height: 150px;
-    max-width: 150px;
-  }
-  img[data-type="svg"] {
-    opacity: 0.4;
-    padding: 0.8em;
+  .dl-thumbnail-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 150px;
+    img {
+      max-height: 150px;
+      max-width: 150px;
+    }
+    img[data-location="remote"] {
+      display: none; // will be displayed onload via JS
+    }
+    img[data-type="svg"] {
+      opacity: 0.4;
+      padding: 0.8em;
+    }
   }
   .media-body {
     .mt-0 {

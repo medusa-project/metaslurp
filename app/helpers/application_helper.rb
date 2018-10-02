@@ -266,7 +266,8 @@ module ApplicationHelper
       icon = 'cube'
     elsif entity.kind_of?(Item)
       if entity.thumbnail_image
-        return image_tag(item_image_url(entity))
+        return image_tag(item_image_url(entity),
+                         options.merge('data-location': 'remote'))
       else
         # Fall back to a generic icon based on variant.
         case entity.variant
@@ -288,14 +289,27 @@ module ApplicationHelper
       # Check for a representative image in ActiveStorage.
       if entity.representative_image.attached?
         return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}"),
-                         options)
+                         options.merge('data-location': 'local'))
       else
         icon = 'database'
       end
     else
       icon = 'cube'
     end
-    image_tag('fontawesome-' + icon + '.svg', options.merge('data-type': 'svg'))
+    image_tag('fontawesome-' + icon + '.svg', options.merge('data-type': 'svg',
+                                                            'data-location': 'local'))
+  end
+
+  ##
+  # @param entity [Object]
+  # @return [String] Whether the thumbnail returned by thumbnail_for() is local,
+  #                  i.e. hosted within the application.
+  #
+  def thumbnail_is_local?(entity)
+    if entity.kind_of?(Item) and entity.thumbnail_image
+      return false
+    end
+    true
   end
 
   private

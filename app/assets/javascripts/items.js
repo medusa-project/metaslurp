@@ -47,6 +47,11 @@ var DLItemsView = function() {
             });
         });
 
+        $('.dl-thumbnail-container img[data-location="remote"]').on('load', function() {
+            $(this).parent().next('.dl-load-indicator').remove();
+            $(this).fadeIn(300);
+        });
+
         $('.pagination:eq(1) a').on('click', function() {
             $('#dl-search-status')[0].scrollIntoView({behavior: "smooth"});
         });
