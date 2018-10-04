@@ -172,6 +172,8 @@ module ApplicationHelper
           icon = 'fa-file'
         when Item::Variants::NEWSPAPER_PAGE
           icon = 'fa-newspaper'
+        when Item::Variants::PAPER
+          icon = 'fa-file-alt'
         else
           icon = 'fa-cube'
       end
@@ -281,6 +283,8 @@ module ApplicationHelper
           icon = 'file-o'
         when Item::Variants::NEWSPAPER_PAGE
           icon = 'newspaper-o'
+        when Item::Variants::PAPER
+          icon = 'file-text-o'
         else
           icon = 'cube'
         end

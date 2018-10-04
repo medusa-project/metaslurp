@@ -102,7 +102,7 @@ class Item
   # To add a variant:
   #
   # 1. Add it here
-  # 2. Make ApplicationHelper.icon_for() aware of it
+  # 2. Make ApplicationHelper.icon_for() and thumbnail_for() aware of it
   #
   class Variants
     BOOK           = 'Book'
@@ -112,6 +112,7 @@ class Item
     FILE           = 'File'
     ITEM           = 'Item'
     NEWSPAPER_PAGE = 'NewspaperPage'
+    PAPER          = 'Paper'
 
     ##
     # @return [Enumerable<String>] String values of all variants.
