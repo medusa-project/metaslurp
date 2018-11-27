@@ -38,11 +38,11 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user-dropdown">
               <%= link_to 'Administration', admin_root_path, class: 'dropdown-item' %>
-              <%= link_to 'Sign Out', signout_path, method: :delete, class: 'dropdown-item' %>
+              <%= link_to 'Log Out', signout_path, method: :delete, class: 'dropdown-item' %>
             </div>
           </div>
         <% else %>
-          <%= link_to 'Sign In', signin_path, class: 'stripe-link' %>
+          <%= link_to 'Staff Login', signin_path, class: 'stripe-link' %>
         <% end %>
       </div>
     </div>
