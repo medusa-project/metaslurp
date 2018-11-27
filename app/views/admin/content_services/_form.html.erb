@@ -23,7 +23,7 @@
     <%= f.file_field :representative_image, class: 'form-control' %>
     <p class="text-info">
       <i class="fa fa-info-circle"></i>
-      Image should be at least <%= ApplicationHelper::THUMBNAIL_SIZE %> pixels in the
+      Image should be at least <%= ApplicationHelper::MAX_THUMBNAIL_SIZE %> pixels in the
       smallest dimension. It will be resized automatically.</p>
   </div>
 
