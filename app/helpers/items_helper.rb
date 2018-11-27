@@ -98,8 +98,6 @@ module ItemsHelper
         end
       end
 
-      html +=         remove_from_favorites_button(item)
-      html +=         ' ' + add_to_favorites_button(item)
       html +=     '</span><br>'
       html +=     desc if desc.present?
       html +=   '</div>'
@@ -108,14 +106,6 @@ module ItemsHelper
 
     html += '</ul>'
     raw(html)
-  end
-
-  ##
-  # @return [Integer]
-  #
-  def num_favorites
-    cookies[:favorites] ?
-        cookies[:favorites].split(FavoritesController::COOKIE_DELIMITER).length : 0
   end
 
   ##
@@ -160,32 +150,6 @@ module ItemsHelper
       html += '</optgroup>
           </select>'
     end
-    raw(html)
-  end
-
-  private
-
-  ##
-  # @param item [Item]
-  # @return [String] HTML <button> element
-  #
-  def add_to_favorites_button(item)
-    html = '<button class="btn btn-light btn-sm ' +
-        'dl-add-to-favorites" data-item-id="' + item.id + '">'
-    html += '  <i class="far fa-heart"></i>'
-    html += '</button>'
-    raw(html)
-  end
-
-  ##
-  # @param item [Item]
-  # @return [String] HTML <button> element
-  #
-  def remove_from_favorites_button(item)
-    html = '<button class="btn btn-sm btn-outline-danger ' +
-        'dl-remove-from-favorites" data-item-id="' + item.id + '">'
-    html += '  <i class="fas fa-heart"></i> Remove'
-    html += '</button>'
     raw(html)
   end
 

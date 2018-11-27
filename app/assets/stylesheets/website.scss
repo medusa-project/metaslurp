@@ -32,7 +32,7 @@
   }
 }
 
-#dl-items, #dl-favorites {
+#dl-items {
   .dl-thumbnail-container {
     display: flex;
     align-items: center;
@@ -67,14 +67,4 @@
       }
     }
   }
-}
-
-.dl-add-to-favorites {
-  border:0px;
-  color: #e00000;
-  display:none;
-}
-
-.dl-remove-from-favorites {
-  display:none;
 }

@@ -71,12 +71,6 @@
             <%= icon_for(Item) %> Items
           <% end %>
         </li>
-        <li class="nav-item" id="favorites-nav">
-          <%= link_to favorites_path, class: 'nav-link' do %>
-            <span class="fas fa-heart"></span> Favorites
-            <span class="badge badge-pill badge-secondary dl-favorites-count"><%= num_favorites %></span>
-          <% end %>
-        </li>
       </ul>
       <%= form_tag(search_path, method: :get, enforce_utf8: false, class: 'form-inline my-2 my-lg-0') do %>
         <div class="input-group">
