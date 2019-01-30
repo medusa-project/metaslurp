@@ -141,9 +141,11 @@ module ApplicationHelper
   def flashes
     html = ''
     flash.each do |type, message|
-      html += "<div class=\"dl-flash alert alert-dismissable #{bootstrap_class_for(type)}\">
+      html += "<div class=\"alert alert-dismissable #{bootstrap_class_for(type)}\" role=\"alert\">
           <button type=\"button\" class=\"close\" data-dismiss=\"alert\"
-                  aria-hidden=\"true\">&times;</button>
+                  aria-label=\"Close\">
+            <span aria-hidden=\"true\">&times;</span>
+          </button>
           #{message}
         </div>"
     end
