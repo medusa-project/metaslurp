@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         as: 'auth' # used by omniauth
   match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
+  match '/entry', to: 'sessions#backdoor', via: :get
 
   resources :collections, only: :index
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
