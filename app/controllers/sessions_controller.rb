@@ -27,7 +27,9 @@ class SessionsController < WebsiteController
   end
 
   def debug
+    session[:time] = Time.now.iso8601 if session[:time].blank?
     struct = {
+        time: session[:time],
         current_user: current_user,
         session_keys: session.keys
     }
