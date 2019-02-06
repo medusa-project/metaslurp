@@ -26,6 +26,14 @@ class SessionsController < WebsiteController
     redirect_to root_url
   end
 
+  def debug
+    struct = {
+        current_user: current_user,
+        session_keys: session.keys
+    }
+    render plain: struct
+  end
+
   def destroy
     sign_out
     redirect_back fallback_location: root_path
