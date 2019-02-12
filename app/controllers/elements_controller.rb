@@ -13,7 +13,8 @@ class ElementsController < ApplicationController
           data_type: ElementDef::DataType::to_s(e.data_type),
           searchable: e.searchable,
           sortable: e.sortable,
-          facetable: e.facetable
+          facetable: e.facetable,
+          indexed_sort_field: e.sortable ? e.indexed_sort_field : nil
       }
     }
   end
