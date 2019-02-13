@@ -33,6 +33,7 @@ json.facets do
     json.buckets do
       json.array! facet.buckets do |bucket|
         json.name bucket.name
+        json.label bucket.label
         json.set! :count, bucket.count
       end
     end
