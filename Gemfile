@@ -8,7 +8,7 @@ end
 gem 'aws-sdk-ecs', '~> 1' # used to trigger harvests
 gem 'aws-sdk-s3' # used by Active Storage
 gem 'aws-sdk-sns', '~> 1' # used to send SNS messages to trigger Lambda functions
-gem 'bootstrap', '~> 4.1'
+gem 'bootstrap', '~> 4.3'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme'
 gem 'faraday'
 gem 'image_processing', '~> 1.2' # rescales uploaded representative images
@@ -20,7 +20,7 @@ gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'pg'
 gem 'puma'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.2'
 gem 'sassc'
 gem 'uglifier', '>= 1.3.0'
 
