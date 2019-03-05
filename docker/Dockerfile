@@ -4,6 +4,7 @@ ARG secret_key_base
 
 ENV RAILS_ENV=production
 ENV RAILS_LOG_TO_STDOUT=true
+ENV RAILS_MAX_THREADS=5
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV SECRET_KEY_BASE=$secret_key_base
 
@@ -24,4 +25,4 @@ EXPOSE 3000
 
 #ENTRYPOINT ["bin/rails", "db:migrate"]
 
-CMD ["bin/puma"]
+CMD ["bin/rails", "server"]
