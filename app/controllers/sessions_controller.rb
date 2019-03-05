@@ -7,7 +7,6 @@ class SessionsController < WebsiteController
   # Responds to POST /auth/:provider/callback
   #
   def create
-    Rails.logger.error('SessionsController.create()')
     auth_hash = request.env['omniauth.auth']
     if auth_hash and auth_hash[:uid]
       username = auth_hash[:uid].split('@').first
