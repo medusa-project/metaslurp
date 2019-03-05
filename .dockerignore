@@ -1,0 +1,13 @@
+# Git
+/.git
+
+# Docker
+/docker*.sh
+/Dockerfile
+/env*.list
+
+# Application
+/log
+/storage
+/tmp
+README.*

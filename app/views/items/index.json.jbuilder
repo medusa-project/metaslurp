@@ -16,11 +16,9 @@ json.results do
     json.elements do
       json.array! item.local_elements do |element|
         e_def = service.element_def_for_element(element)
-        if e_def
-          json.name element.name
-          json.label e_def.label
-          json.value element.value
-        end
+        json.name element.name
+        json.label e_def ? e_def.label : element.name
+        json.value element.value
       end
     end
   end
@@ -33,6 +31,7 @@ json.facets do
     json.buckets do
       json.array! facet.buckets do |bucket|
         json.name bucket.name
+        json.label bucket.label
         json.set! :count, bucket.count
       end
     end

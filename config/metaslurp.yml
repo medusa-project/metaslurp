@@ -1,11 +1,12 @@
-development: &development
-  :elasticsearch_endpoint: <%= ENV['METASLURP_DEV_ELASTICSEARCH_ENDPOINT'] %>
-  :time_zone: <%= ENV['METASLURP_TIME_ZONE'] %>
+default: &default
+  :elasticsearch_endpoint: <%= ENV['ELASTICSEARCH_ENDPOINT'] %>
+  :time_zone: <%= ENV['TIME_ZONE'] %>
+
+development:
+  <<: *default
 
 test:
-  :elasticsearch_endpoint: <%= ENV['METASLURP_TEST_ELASTICSEARCH_ENDPOINT'] %>
-  :time_zone: <%= ENV['METASLURP_TIME_ZONE'] %>
+  <<: *default
 
 production:
-  :elasticsearch_endpoint: <%= ENV['METASLURP_PROD_ELASTICSEARCH_ENDPOINT'] %>
-  :time_zone: <%= ENV['METASLURP_TIME_ZONE'] %>
+  <<: *default

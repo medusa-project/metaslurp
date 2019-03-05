@@ -7,13 +7,17 @@ Rails.application.routes.draw do
 
   ######################## Public website routes ############################
 
+  match '/debug', to: 'sessions#debug', via: :get
+
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
         as: 'auth' # used by omniauth
   match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
+  match '/entry', to: 'sessions#backdoor', via: :get
 
   resources :collections, only: :index
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
+  resources :elements, only: :index, param: :name
   resources :items, only: :index do
     match '/image', to: 'items#image', via: :get
   end

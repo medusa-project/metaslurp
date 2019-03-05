@@ -4,9 +4,35 @@ class SessionsController < WebsiteController
   skip_before_action :verify_authenticity_token
 
   ##
+  # Simple temporary backdoor while we work on getting Shibboleth working
+  # properly.
+  #
+  def backdoor
+    users = {
+        '8013014944eacdae3874dbda4762e45d7733387452ba48f915084372090453b9': 'alexd'
+    }
+
+    provided_sha256 = Digest::SHA2.hexdigest(params[:key])
+    username = users[provided_sha256.to_sym]
+
+    if username
+      user = User.find_by_username(username)
+      if user
+        return_url = clear_and_return_return_path
+        sign_in user
+        redirect_to return_url
+        return
+      end
+    end
+    flash['error'] = 'Sign-in failed.'
+    redirect_to root_url
+  end
+
+  ##
   # Responds to POST /auth/:provider/callback
   #
   def create
+    Rails.logger.error('SessionsController.create()')
     auth_hash = request.env['omniauth.auth']
     if auth_hash and auth_hash[:uid]
       username = auth_hash[:uid].split('@').first
@@ -23,6 +49,16 @@ class SessionsController < WebsiteController
     end
     flash['error'] = 'Sign-in failed.'
     redirect_to root_url
+  end
+
+  def debug
+    session[:time] = Time.now.iso8601 if session[:time].blank?
+    struct = {
+        time: session[:time],
+        current_user: current_user,
+        session_keys: session.keys
+    }
+    render plain: struct
   end
 
   def destroy
