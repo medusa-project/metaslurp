@@ -7,8 +7,6 @@ Rails.application.routes.draw do
 
   ######################## Public website routes ############################
 
-  match '/debug', to: 'sessions#debug', via: :get
-
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
         as: 'auth' # used by omniauth
   match '/signin', to: 'sessions#new', via: :get
