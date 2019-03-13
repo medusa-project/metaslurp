@@ -20,7 +20,7 @@ gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'pg'
 gem 'puma'
-gem 'rails', '~> 5.2.2'
+gem 'rails', '~> 5.2.2.1'
 gem 'sassc'
 gem 'uglifier', '>= 1.3.0'
 
