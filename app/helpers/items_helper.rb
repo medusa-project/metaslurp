@@ -33,11 +33,17 @@ module ItemsHelper
       html +=   '</div>'
       html +=   '<div class="media-body">'
       html +=     '<h5 class="mt-0">'
-      if options[:link_to_admin]
-        html += link_to(title, admin_item_path(item), target: '_blank')
+
+
+      # If the item is from IDNC/Veridian, append the search query in order
+      # to make it appear highlighted on the page.
+      if item.content_service.key == 'idnc' and params[:q].present?
+        item_uri += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
       else
-        html += title
+        item_uri = item.source_uri
       end
+      html += link_to(title, item_uri)
+
       if item.date
         html +=       " <small>#{item.date.year}</small>"
       end
@@ -84,17 +90,14 @@ module ItemsHelper
       end
 
       if !ht_url and !ia_url and !catalog_url
-        html +=       ' | '
+        html +=       " in <i class=\"fas fa-database\"></i> #{item.content_service.name}"
+      end
 
-        uri = item.source_uri
-        # If the item is from IDNC/Veridian, append the search query in order
-        # to make it appear highlighted on the page.
-        if item.content_service.key == 'idnc' and params[:q].present?
-          uri += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
-        end
-
-        html += link_to uri do
-          raw(" <i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name} ")
+      if options[:link_to_admin]
+        html += ' ' + link_to(admin_item_path(item),
+                              class: 'btn btn-sm btn-light',
+                              target: '_blank') do
+          raw("<i class=\"fas fa-lock\"></i> Admin")
         end
       end
 

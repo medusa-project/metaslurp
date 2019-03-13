@@ -1,6 +1,6 @@
 class CollectionsController < ApplicationController
 
-  PERMITTED_PARAMS = []
+  PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start]
 
   before_action :set_sanitized_params
 
@@ -16,13 +16,20 @@ class CollectionsController < ApplicationController
         start(@start).
         limit(@limit)
     @items = finder.to_a
+    @facets = finder.facets
     @count = finder.count
     @current_page = finder.page
     @num_results_shown = [@limit, @count].min
+  end
 
-    respond_to do |format|
-      format.html
-      format.js
+  def show
+    @item = Item.find(params[:id])
+    if @item.variant != Item::Variants::COLLECTION
+      raise ArgumentError, 'This item is not a collection.'
+    end
+    @content_service = @item.content_service
+    if @content_service.key == 'mc'
+      @content_service = ContentService.find_by_key('dls')
     end
   end
 
