@@ -10,30 +10,31 @@ module ItemsHelper
   # @param items [Enumerable<Item>]
   # @param options [Hash]
   # @option options [Boolean] :link_to_admin
+  # @option options [Boolean] :include_type
   # @return [String] HTML string
   #
   def items_as_media(items, options = {})
-    html = '<ul class="list-unstyled">'
+    html = StringIO.new
+    html << '<ul class="list-unstyled">'
 
     items.each do |item|
       title = raw(StringUtils.truncate(item.title, MAX_MEDIA_TITLE_LENGTH))
       desc = raw(StringUtils.truncate(item.description, MAX_MEDIA_DESCRIPTION_LENGTH))
 
-      html += '<li class="media my-4">'
-      html +=   '<div class="dl-thumbnail-container">'
-      html +=     link_to(item.source_uri) do
+      html << '<li class="media my-4">'
+      html <<   '<div class="dl-thumbnail-container">'
+      html <<     link_to(item.source_uri) do
         thumbnail_for(item, class: 'mr-3',
                       alt: "Thumbnail for #{item}")
       end
       unless thumbnail_is_local?(item)
         # N.B.: this was made by https://loading.io with the following settings:
         # rolling, color: #cacaca, radius: 25, stroke width: 10, speed: 5, size: 150
-        html +=     image_tag('thumbnail-spinner.svg', class: 'dl-load-indicator')
+        html <<     image_tag('thumbnail-spinner.svg', class: 'dl-load-indicator')
       end
-      html +=   '</div>'
-      html +=   '<div class="media-body">'
-      html +=     '<h5 class="mt-0">'
-
+      html <<   '</div>'
+      html <<   '<div class="media-body">'
+      html <<     '<h5 class="mt-0">'
 
       # If the item is from IDNC/Veridian, append the search query in order
       # to make it appear highlighted on the page.
@@ -42,12 +43,14 @@ module ItemsHelper
       else
         item_uri = item.source_uri
       end
-      html += link_to(title, item_uri)
+      html << link_to(title, item_uri)
 
       if item.date
-        html +=       " <small>#{item.date.year}</small>"
+        html << '<small>'
+        html << item.date.year
+        html << '</small>'
       end
-      html +=     '</h5>'
+      html << '</h5>'
       # Display the currently sorted element value, if not date or title (which
       # are already visible), on its own line:
       # https://bugs.library.illinois.edu/browse/DLDS-45
@@ -57,58 +60,62 @@ module ItemsHelper
         el = item.elements
                  .reject{ |e| exclude_elements.include?(e.name) }
                  .find{ |e| e.name == sorted_element.name }
-        html +=   "#{sorted_element.label}: #{el.value}<br>" if el
+        html <<   "#{sorted_element.label}: #{el.value}<br>" if el
       end
 
       # Info line (beneath title)
-      html +=     '<span class="dl-info-line">'
-      html +=       icon_for(item) + ' '
-      html +=       item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
-
+      html <<     '<span class="dl-info-line">'
+      if options[:include_type]
+        html << icon_for(item)
+        html << ' '
+        html << item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
+        html << ' | '
+      end
       ht_url = item.element(:hathiTrustURL) # only Book Tracker items will have this
       if ht_url
-        html +=       ' | '
-        html += link_to ht_url.value do
+        html <<       ' | '
+        html << link_to(ht_url.value) do
           raw(" <i class=\"fas fa-external-link-alt\"></i> HathiTrust ")
         end
       end
 
       ia_url = item.element(:internetArchiveURL) # only Book Tracker items will have this
       if ia_url
-        html +=       ' | '
-        html += link_to ia_url.value do
+        html <<       ' | '
+        html << link_to(ia_url.value) do
           raw(" <i class=\"fas fa-external-link-alt\"></i> Internet Archive ")
         end
       end
 
       catalog_url = item.element(:uiucCatalogURL) # only Book Tracker items will have this
       if catalog_url
-        html +=       ' | '
-        html += link_to "#{catalog_url.value.chomp('/Description')}/Description" do
+        html <<       ' | '
+        html << link_to("#{catalog_url.value.chomp('/Description')}/Description") do
           raw(" <i class=\"fas fa-external-link-alt\"></i> Library Catalog ")
         end
       end
 
       if !ht_url and !ia_url and !catalog_url
-        html +=       " in <i class=\"fas fa-database\"></i> #{item.content_service.name}"
+        html <<       " <i class=\"fas fa-database\"></i> #{item.content_service.name}"
       end
 
       if options[:link_to_admin]
-        html += ' ' + link_to(admin_item_path(item),
-                              class: 'btn btn-sm btn-light',
-                              target: '_blank') do
+        html << ' '
+        html << link_to(admin_item_path(item),
+                        class: 'btn btn-sm btn-light',
+                        target: '_blank') do
           raw("<i class=\"fas fa-lock\"></i> Admin")
         end
       end
 
-      html +=     '</span><br>'
-      html +=     desc if desc.present?
-      html +=   '</div>'
-      html += '</li>'
+      html <<     '</span><br>'
+      html <<     desc if desc.present?
+      html <<   '</div>'
+      html << '</li>'
     end
 
-    html += '</ul>'
-    raw(html)
+    html << '</ul>'
+    raw(html.string)
   end
 
   ##
