@@ -3,15 +3,60 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #landing {
-  #dl-search-area {
-    margin: 2em 0em 1em 0em;
+  nav.navbar {
+    margin-bottom: 0px;
   }
 
-  .page-content {
-    img[data-type="svg"] {
-      opacity: 0.4;
-      padding: 1em;
+  #dl-banner {
+    /* https://digital.library.illinois.edu/items/f07734a0-4b72-0134-1da8-0050569601ca-f */
+    background-image:image-url("banner_1.jpg");
+    background-position: center 16%;
+    height: 410px;
+    #dl-search {
+      margin-top: 330px;
     }
+
+    @media (max-width: 500px) {
+      background-size: 200%;
+      height: 230px;
+      #dl-search {
+        margin-top: 160px;
+      }
+    }
+
+    @media (min-width : 501px) and (max-width: 900px) {
+      background-size: 250%;
+      height: 330px;
+      #dl-search {
+        margin-top: 260px;
+      }
+    }
+  }
+
+  #dl-description {
+    padding: 1em 0em 1em 0em;
+  }
+
+  .card {
+    margin-bottom: 20px;
+    .card-title a, .card-text a {
+      color: black;
+    }
+  }
+  .card-img-overlay {
+    padding: 0;
+    .dl-card-text-backdrop {
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      .card-title a, .card-text a {
+        color: white;
+      }
+    }
+  }
+
+  img[data-type="svg"] {
+    opacity: 0.4;
+    padding: 1em;
   }
 
 }

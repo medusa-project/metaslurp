@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between">
       <div class="table-row">
         <div class="table-cell">
-          <a class="navbar-brand" href="http://illinois.edu/">
+          <a class="navbar-brand" href="https://illinois.edu/">
             <%= image_tag 'imark.svg', class: 'imark', alt: 'University of Illinois I-Mark' %>
           </a>
         </div>
@@ -49,18 +49,13 @@
   </div>
 
   <nav class="navbar navbar-expand-md" role="navigation">
-    <%= link_to 'Gateway', root_path, class: 'navbar-brand' %>
+    <%= link_to 'Digital Collections', root_path, class: 'navbar-brand' %>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item" id="content-services-nav">
-          <%= link_to content_services_path, class: 'nav-link' do %>
-            <%= icon_for(ContentService) %> Services
-          <% end %>
-        </li>
         <li class="nav-item" id="collections-nav">
           <%= link_to collections_path, class: 'nav-link' do %>
             <%= icon_for(Item.new(variant: Item::Variants::COLLECTION)) %> Collections

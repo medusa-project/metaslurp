@@ -2,7 +2,8 @@ module ApplicationHelper
 
   MAX_PAGINATION_LINKS = 7
   MAX_THUMBNAIL_SIZE = 512
-  CONTENT_SERVICE_THUMBNAIL_SIZE = 800
+  CONTENT_SERVICE_THUMBNAIL_SIZE = 4096
+  THUMBNAIL_JPEG_QUALITY = 60
 
   ##
   # Formats a boolean for display.
@@ -294,7 +295,9 @@ module ApplicationHelper
     elsif entity == ContentService or entity.kind_of?(ContentService)
       # Check for a representative image in ActiveStorage.
       if entity.representative_image.attached?
-        return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}"),
+        return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}",
+                                                             quality: THUMBNAIL_JPEG_QUALITY,
+                                                             interlace: 'plane'),
                          options.merge('data-location': 'local'))
       else
         icon = 'database'

@@ -16,6 +16,10 @@ module AdminHelper
           html += number_field_tag("configuration[#{key[:key]}]",
                                    Option::string(key[:key]),
                                    class: 'form-control')
+        when :textarea
+          html += text_area_tag("configuration[#{key[:key]}]",
+                                 Option::string(key[:key]),
+                                 class: 'form-control')
         else
           html += text_field_tag("configuration[#{key[:key]}]",
                                  Option::string(key[:key]),

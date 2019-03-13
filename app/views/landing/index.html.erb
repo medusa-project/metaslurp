@@ -1,11 +1,11 @@
 <% provide(:body_id, 'landing') %>
 
-<div id="dl-search-area" class="row justify-content-sm-center">
+<div id="dl-banner" class="row justify-content-sm-center">
   <div class="col-sm-6">
-    <%= form_tag(search_path, method: :get, enforce_utf8: false) do %>
+    <%= form_tag(search_path, method: :get, enforce_utf8: false, id: 'dl-search') do %>
       <div class="input-group mb-4">
         <%= search_field_tag(:q, '',
-                             placeholder: raw('Search&hellip;'),
+                             placeholder: raw("Search across #{number_with_delimiter(@num_items)} items&hellip;"),
                              'aria-label': 'Search',
                              class: 'form-control form-control-lg') %>
         <div class="input-group-append">
@@ -16,4 +16,99 @@
   </div>
 </div>
 
-<%= content_services_as_cards(@services) %>
+<div id="dl-description">
+  <%= sanitize(Option::string(Option::Keys::WEBSITE_INTRO_TEXT)&.gsub("\n", '<br>'),
+               tags: %w(p br), attributes: %w()) %>
+</div>
+
+<h2>Collections</h2>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card bg-dark text-white">
+      <%= thumbnail_for(@services[:dls],
+                        class: 'card-img-top',
+                        alt: "Thumbnail for #{@services[:dls]}") %>
+      <div class="card-img-overlay d-flex flex-column justify-content-end">
+        <div class="dl-card-text-backdrop">
+          <h5 class="card-title">
+            <%= link_to 'Digital Special Collections', @services[:dls].uri %>
+          </h5>
+          <p class="card-text d-none d-sm-block">
+            <%= @services[:dls].description %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Services</h2>
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <%= thumbnail_for(@services[:ideals],
+                        class: 'card-img-top',
+                        alt: "Thumbnail for #{@services[:ideals]}") %>
+      <div class="card-body">
+        <h5 class="card-title">
+          <%= link_to 'Scholarship', @services[:ideals].uri %>
+        </h5>
+        <p class="card-text"><%= @services[:ideals].description %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card bg-dark text-white">
+          <%= thumbnail_for(@services[:book],
+                            class: 'card-img-top',
+                            alt: "Thumbnail for #{@services[:book]}") %>
+          <div class="card-img-overlay d-flex flex-column justify-content-md">
+            <div class="dl-card-text-backdrop">
+              <h5 class="card-title">
+                <%= link_to 'Digitized Books',
+                            items_path('fq[]': 'system_keyword_service_key:book') %>
+              </h5>
+              <p class="card-text d-none d-sm-block">
+                <%= @services[:book].description %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12">
+        <div class="card bg-dark text-white">
+          <%= thumbnail_for(@services[:databank],
+                            class: 'card-img-top',
+                            alt: "Thumbnail for #{@services[:databank]}") %>
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <div class="dl-card-text-backdrop">
+              <h5 class="card-title">
+                <%= link_to 'Research Data', @services[:databank].uri %>
+              </h5>
+              <p class="card-text d-none d-sm-block">
+                <%= @services[:databank].description %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <%= thumbnail_for(@services[:idnc],
+                        class: 'card-img-top',
+                        alt: "Thumbnail for #{@services[:idnc]}") %>
+      <div class="card-body">
+        <h5 class="card-title">
+          <%= link_to 'Digitized Newspapers', @services[:idnc].uri %>
+        </h5>
+        <p class="card-text"><%= @services[:idnc].description %></p>
+      </div>
+    </div>
+  </div>
+</div>
