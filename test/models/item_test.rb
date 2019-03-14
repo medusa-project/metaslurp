@@ -186,7 +186,7 @@ class ItemTest < ActiveSupport::TestCase
 
   # as_indexed_json()
 
-  test 'as_indexed_json() works' do
+  test 'as_indexed_json works' do
     struct = @instance.as_indexed_json
     assert_equal @instance.full_text,
                  struct[Item::IndexFields::FULL_TEXT]
@@ -226,7 +226,7 @@ class ItemTest < ActiveSupport::TestCase
                  struct[SourceElement::RAW_INDEX_PREFIX + 'date']
     assert_equal ['value'],
                  struct[LocalElement::TEXT_INDEX_PREFIX + 'title']
-    assert_equal '2018-05-01T22:16:06Z',
+    assert_equal '2018-05-01T21:06:00Z',
                  struct[LocalElement::DATE_INDEX_PREFIX + 'date']
   end
 
