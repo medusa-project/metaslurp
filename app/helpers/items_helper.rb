@@ -58,7 +58,7 @@ module ItemsHelper
       html << link_to(title, item_uri)
 
       if item.date
-        html << '<small>'
+        html << ' <small>'
         html << item.date.year
         html << '</small>'
       end
@@ -77,49 +77,44 @@ module ItemsHelper
 
       # Info line (beneath title)
       html <<     '<span class="dl-info-line">'
+      info_parts = []
       if options[:include_type]
-        html << icon_for(item)
-        html << ' '
-        html << item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
-        html << ' | '
+        info_parts << icon_for(item) + ' ' +
+            item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       end
       ht_url = item.element(:hathiTrustURL) # only Book Tracker items will have this
       if ht_url
-        html <<       ' | '
-        html << link_to(ht_url.value) do
-          raw(" <i class=\"fas fa-external-link-alt\"></i> HathiTrust ")
+        info_parts << link_to(ht_url.value) do
+          raw('<i class="fas fa-external-link-alt"></i> HathiTrust')
         end
       end
 
       ia_url = item.element(:internetArchiveURL) # only Book Tracker items will have this
       if ia_url
-        html <<       ' | '
-        html << link_to(ia_url.value) do
-          raw(" <i class=\"fas fa-external-link-alt\"></i> Internet Archive ")
+        info_parts << link_to(ia_url.value) do
+          raw('<i class="fas fa-external-link-alt"></i> Internet Archive')
         end
       end
 
       catalog_url = item.element(:uiucCatalogURL) # only Book Tracker items will have this
       if catalog_url
-        html <<       ' | '
-        html << link_to("#{catalog_url.value.chomp('/Description')}/Description") do
-          raw(" <i class=\"fas fa-external-link-alt\"></i> Library Catalog ")
+        info_parts << link_to("#{catalog_url.value.chomp('/Description')}/Description") do
+          raw('<i class="fas fa-external-link-alt"></i> Library Catalog')
         end
       end
 
       if !ht_url and !ia_url and !catalog_url
-        html <<       " <i class=\"fas fa-database\"></i> #{item.content_service.name}"
+        info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
       end
 
       if options[:link_to_admin]
-        html << ' '
-        html << link_to(admin_item_path(item),
+        info_parts << link_to(admin_item_path(item),
                         class: 'btn btn-sm btn-light',
                         target: '_blank') do
           raw("<i class=\"fas fa-lock\"></i> Admin")
         end
       end
-
+      html <<       info_parts.join(' | ')
       html <<     '</span><br>'
       html <<     desc if desc.present?
       html <<   '</div>'
