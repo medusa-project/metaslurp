@@ -4,6 +4,18 @@ module ItemsHelper
   MAX_MEDIA_DESCRIPTION_LENGTH = 200
 
   ##
+  # @return [String]
+  #
+  def filter_field
+    html = StringIO.new
+    html << '<div class="input-group dl-filter-field">'
+    html <<   search_field_tag(:q, params[:q], class: 'form-control',
+                               placeholder: 'Filter')
+    html << '</div>'
+    raw(html.string)
+  end
+
+  ##
   # Renders the given items as a series of
   # [Bootstrap media objects](https://getbootstrap.com/docs/4.0/layout/media-object/).
   #

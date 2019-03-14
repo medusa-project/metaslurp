@@ -9,6 +9,7 @@ var DLItemsView = function() {
 
     this.init = function() {
         Application.initFacets();
+        new Application.FilterField();
         self.attachEventListeners();
     };
 
