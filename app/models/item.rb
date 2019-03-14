@@ -29,8 +29,8 @@
 # non-normalized strings, so aren't very useful. Instead, they can be indexed
 # as normalized dates by setting the data_type of the corresponding ElementDef
 # to ElementDef::DataType::DATE. When the element is indexed,
-# TimeUtils::string_date_to_time() will be used to obtain a normalized Time
-# object representing it, and that will be indexed in a date field.
+# its date/time string will be normalized into a Time object which will be
+# indexed in a date field.
 #
 # # Indexing
 #
@@ -311,8 +311,7 @@ class Item
         case e_def.data_type
         when ElementDef::DataType::DATE
           begin
-            doc[e_def.indexed_date_field] =
-                TimeUtils::string_date_to_time(value)&.iso8601
+            doc[e_def.indexed_date_field] = Marc::Dates::parse(value).first&.utc.iso8601
           rescue ArgumentError => e
             Rails.logger.warn("Item.as_indexed_json(): #{e}")
           end

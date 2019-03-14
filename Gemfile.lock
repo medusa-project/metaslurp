@@ -1,4 +1,10 @@
 GIT
+  remote: https://github.com/medusa-project/marc-dates.git
+  revision: ad78a0888cc5c346d994e404a04258e7ffba8d32
+  specs:
+    marc-dates (1.1)
+
+GIT
   remote: https://github.com/medusa-project/scars-bootstrap-theme.git
   revision: d45ac62ff5c9fa03493431c32f0ed130e1a4d93f
   specs:
@@ -212,6 +218,7 @@ DEPENDENCIES
   js_cookie_rails
   listen (>= 3.0.5, < 3.2)
   local_time
+  marc-dates!
   mini_racer
   omniauth
   omniauth-shibboleth
