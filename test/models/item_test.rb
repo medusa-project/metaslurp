@@ -6,6 +6,7 @@ class ItemTest < ActiveSupport::TestCase
     @instance = Item.new(id: 'cats',
                          harvest_key: harvests(:new).key,
                          media_type: 'image/jpeg',
+                         parent_id: 'felines',
                          service_key: content_services(:one).key,
                          source_id: 'cats',
                          source_uri: 'http://example.org/cats',
@@ -46,14 +47,15 @@ class ItemTest < ActiveSupport::TestCase
                         'uri' => 'http://example.org/cats/image-512.jpg'
                     }
                 ],
-                Item::IndexFields::FULL_TEXT => 'Lorem ipsum',
-                Item::IndexFields::HARVEST_KEY => harvests(:new).key,
+                Item::IndexFields::FULL_TEXT    => 'Lorem ipsum',
+                Item::IndexFields::HARVEST_KEY  => harvests(:new).key,
                 Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
-                Item::IndexFields::MEDIA_TYPE => 'image/jpeg',
-                Item::IndexFields::SERVICE_KEY => content_services(:one).key,
-                Item::IndexFields::SOURCE_ID => 'cats',
-                Item::IndexFields::SOURCE_URI => 'http://example.org/cats',
-                Item::IndexFields::VARIANT => Item::Variants::ITEM,
+                Item::IndexFields::MEDIA_TYPE   => 'image/jpeg',
+                Item::IndexFields::PARENT_ID    => 'felines',
+                Item::IndexFields::SERVICE_KEY  => content_services(:one).key,
+                Item::IndexFields::SOURCE_ID    => 'cats',
+                Item::IndexFields::SOURCE_URI   => 'http://example.org/cats',
+                Item::IndexFields::VARIANT      => Item::Variants::ITEM,
                 (SourceElement::RAW_INDEX_PREFIX + 'title') => [
                     'title 1',
                     'title 2'
@@ -70,6 +72,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
     assert_equal 'cats', item.id
     assert_equal 'image/jpeg', item.media_type
+    assert_equal 'felines', item.parent_id
     assert_equal content_services(:one).key, item.service_key
     assert_equal 'cats', item.source_id
     assert_equal 'http://example.org/cats', item.source_uri
@@ -106,6 +109,7 @@ class ItemTest < ActiveSupport::TestCase
             'id': 'cats',
             'harvest_key': harvests(:new).key,
             'media_type': 'image/jpeg',
+            'parent_id': 'felines',
             'service_key': content_services(:one).key,
             'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
@@ -155,7 +159,7 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'from_json() with invalid data raises an error' do
     assert_raises ArgumentError do
-      Item.from_json({ 'cats': 'cats', 'dogs': 'dogs' })
+      Item.from_json('cats': 'cats', 'dogs': 'dogs')
     end
   end
 
@@ -191,6 +195,8 @@ class ItemTest < ActiveSupport::TestCase
     assert_not_empty struct[Item::IndexFields::LAST_INDEXED]
     assert_equal @instance.media_type,
                  struct[Item::IndexFields::MEDIA_TYPE]
+    assert_equal @instance.parent_id,
+                 struct[Item::IndexFields::PARENT_ID]
     assert_equal @instance.service_key,
                  struct[Item::IndexFields::SERVICE_KEY]
     assert_equal @instance.source_id,
@@ -233,6 +239,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'Lorem ipsum', struct['full_text']
     assert_equal harvests(:new).key, struct['harvest_key']
     assert_equal 'image/jpeg', struct['media_type']
+    assert_equal 'felines', struct['parent_id']
     assert_equal content_services(:one).key, struct['service_key']
     assert_equal 'cats', struct['source_id']
     assert_equal 'http://example.org/cats', struct['source_uri']

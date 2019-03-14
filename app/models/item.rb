@@ -43,8 +43,8 @@
 # deserialized back into instances via `from_indexed_json()`.
 #
 # The index schema should use dynamic templates for as many fields as possible.
-# An index may require weeks to repopulate, so having to create a new index
-# just to support a new field is a major inconvenience.
+# It may take days to repopulate an index, so having to create a new index just
+# to support a new field is a major inconvenience.
 #
 # # Attributes
 #
@@ -54,6 +54,7 @@
 # * harvest_key:    Key of the harvest during which the item was last updated.
 # * id:             Identifier within the application.
 # * local_elements: Enumerable of LocalElements.
+# * parent_id:      Identifier of a parent item.
 # * service_key:    Key of the ContentService from which the instance was
 #                   obtained.
 # * source_id:      Identifier of the instance within its ContentService.
@@ -79,7 +80,7 @@ class Item
   ELASTICSEARCH_TYPE = 'entity'
 
   attr_accessor :full_text, :harvest_key, :id, :last_indexed, :media_type,
-                :service_key, :source_id, :source_uri, :variant
+                :parent_id, :service_key, :source_id, :source_uri, :variant
   attr_reader :access_images, :elements, :local_elements
 
   ##
@@ -91,6 +92,7 @@ class Item
     HARVEST_KEY   = 'system_keyword_harvest_key'
     ID            = '_id'
     LAST_INDEXED  = 'system_date_last_indexed'
+    PARENT_ID     = 'system_keyword_parent_id'
     MEDIA_TYPE    = 'system_keyword_media_type'
     SERVICE_KEY   = 'system_keyword_service_key'
     SOURCE_ID     = 'system_keyword_source_id'
@@ -162,6 +164,7 @@ class Item
     item.harvest_key  = jsrc[IndexFields::HARVEST_KEY]
     item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
     item.media_type   = jsrc[IndexFields::MEDIA_TYPE]
+    item.parent_id    = jsrc[IndexFields::PARENT_ID]
     item.service_key  = jsrc[IndexFields::SERVICE_KEY]
     item.source_id    = jsrc[IndexFields::SOURCE_ID]
     item.source_uri   = jsrc[IndexFields::SOURCE_URI]
@@ -214,6 +217,7 @@ class Item
     item.harvest_key = jobj['harvest_key']
     item.id          = jobj['id']
     item.media_type  = jobj['media_type']
+    item.parent_id   = jobj['parent_id']
     item.service_key = jobj['service_key']
     item.source_id   = jobj['source_id']
     item.source_uri  = jobj['source_uri']
@@ -269,6 +273,7 @@ class Item
     doc[IndexFields::HARVEST_KEY]  = self.harvest_key
     doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
     doc[IndexFields::MEDIA_TYPE]   = self.media_type
+    doc[IndexFields::PARENT_ID]    = self.parent_id
     doc[IndexFields::SERVICE_KEY]  = self.service_key
     doc[IndexFields::SOURCE_ID]    = self.source_id
     doc[IndexFields::SOURCE_URI]   = self.source_uri
@@ -339,6 +344,7 @@ class Item
     struct['harvest_key']   = self.harvest_key
     struct['id']            = self.id
     struct['media_type']    = self.media_type
+    struct['parent_id']     = self.parent_id
     struct['service_key']   = self.service_key
     struct['source_id']     = self.source_id
     struct['source_uri']    = self.source_uri

@@ -10,6 +10,7 @@ module Api
                              full_text: 'Lorem ipsum',
                              variant: Item::Variants::ITEM,
                              media_type: 'image/jpeg',
+                             parent_id: 'felines',
                              service_key: content_services(:one).key,
                              source_id: 'source-id',
                              source_uri: 'http://example.net/cats')

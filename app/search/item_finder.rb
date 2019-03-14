@@ -5,7 +5,8 @@ class ItemFinder < AbstractFinder
 
   def initialize
     super
-    @content_service = nil
+    @content_service  = nil
+    @include_children = false
     @exclude_variants = []
     @include_variants = []
   end
@@ -27,6 +28,15 @@ class ItemFinder < AbstractFinder
   #
   def exclude_variants(*variants)
     @exclude_variants = variants
+    self
+  end
+
+  ##
+  # @param bool [Boolean]
+  # @return [ItemFinder] self
+  #
+  def include_children(bool)
+    @include_children = bool
     self
   end
 
@@ -89,12 +99,19 @@ class ItemFinder < AbstractFinder
                 end
               end
 
-              if @exclude_variants.any?
+              if @exclude_variants.any? or !@include_children
                 j.must_not do
                   if @exclude_variants.any?
                     j.child! do
                       j.terms do
                         j.set! Item::IndexFields::VARIANT, @exclude_variants
+                      end
+                    end
+                  end
+                  unless @include_children
+                    j.child! do
+                      j.exists do
+                        j.field Item::IndexFields::PARENT_ID
                       end
                     end
                   end

@@ -238,6 +238,7 @@
     <td><code class="code-block">{
     "variant": "Item",
     "id": "local-item-id",
+    "parent_id": null,
     "harvest_key": "harvest-key",
     "media_type": "image/jp2",
     "source_id": "some-item",
@@ -277,8 +278,8 @@
         <tr>
           <td><code>access_images</code></td>
           <td>No</td>
-          <td>Image sizes should be powers of 2 in the range of 2<sup>8</sup>
-            through 2<sup>11</sup>.</td>
+          <td>Image sizes should be powers of 2 in the range of 2<sup>6</sup>
+            through 2<sup>12</sup>.</td>
         </tr>
         <tr>
           <td><code>variant</code></td>
@@ -317,6 +318,12 @@
           <td>Must be unique across all items in the harvesting application,
             and should be stable from harvest to harvest.
             <strong>Must not contain slashes (/) or periods (.).</strong></td>
+        </tr>
+        <tr>
+          <td><code>parent_id</code></td>
+          <td>No</td>
+          <td>ID of a parent item in the harvesting application. Must match
+          the parent item's <code>id</code>.</td>
         </tr>
         <tr>
           <td><code>media_type</code></td>
