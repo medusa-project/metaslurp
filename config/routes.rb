@@ -12,10 +12,10 @@ Rails.application.routes.draw do
   match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
 
-  resources :collections, only: :index
+  resources :collections, path: '/co', only: :index
   resources :content_services, param: :key, path: 'services', only: [:index, :show]
   resources :elements, only: :index, param: :name
-  resources :items, only: :index do
+  resources :items, path: '/it', only: :index do
     match '/image', to: 'items#image', via: :get
   end
   match '/search', to: 'search#index', via: :get
@@ -58,9 +58,10 @@ Rails.application.routes.draw do
     end
   end
 
-  # Catch-all route that overrides Rails' 404 handling.
-  #match '*any', to: 'errors#not_found', via: :all # this breaks Active Storage
-  get '*all', to: 'errors#not_found', constraints: lambda { |request|
+  # Catch-all route that handles everything else, including DLS and CONTENTdm
+  # redirects, and Rails' 404 handling.
+  match '*path', to: 'fallback#handle', via: :all, constraints: lambda { |request|
+    # Have to do this, otherwise Active Storage will break.
     request.path.exclude? 'rails/active_storage'
   }
 

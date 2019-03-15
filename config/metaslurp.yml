@@ -1,4 +1,5 @@
 default: &default
+  :dls_url: <%= ENV['DLS_URL'] %>
   :elasticsearch_endpoint: <%= ENV['ELASTICSEARCH_ENDPOINT'] %>
   :time_zone: <%= ENV['TIME_ZONE'] %>
 
