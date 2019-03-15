@@ -97,10 +97,11 @@ class ContentService < ApplicationRecord
     end
 
     # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#run_task-instance_method
-    ecs = Aws::ECS::Client.new(region: ENV['AWS_REGION'])
+    config = Configuration.instance
+    ecs = Aws::ECS::Client.new(region: config.aws_region)
     args = {
-        cluster: ENV['METASLURPER_ECS_CLUSTER'],
-        task_definition: ENV['METASLURPER_ECS_TASK_DEFINITION'],
+        cluster: config.metaslurper_ecs_cluster,
+        task_definition: config.metaslurper_ecs_task_definition,
         launch_type: 'FARGATE',
         overrides: {
             container_overrides: [
@@ -118,8 +119,8 @@ class ContentService < ApplicationRecord
         },
         network_configuration: {
             awsvpc_configuration: {
-                subnets: [ENV['METASLURPER_ECS_SUBNET']],
-                security_groups: [ENV['METASLURPER_ECS_SECURITY_GROUP']],
+                subnets: [config.metaslurper_ecs_subnet],
+                security_groups: [config.metaslurper_ecs_security_group],
                 assign_public_ip: 'ENABLED'
             },
         }
@@ -171,9 +172,9 @@ class ContentService < ApplicationRecord
     raise 'This method only works in production mode. In development, use '\
         'the items:delete_from_service rake task.' unless Rails.env.production?
 
-    sns = Aws::SNS::Resource.new(region: ENV['AWS_REGION'])
+    sns = Aws::SNS::Resource.new(Configuration.instance.aws_region)
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
-    topic = sns.topic(ENV['SNS_TOPIC_ARN'])
+    topic = sns.topic(Configuration.instance.sns_topic_arn)
     attrs = {
         message: 'purgeDocuments',
         message_attributes: {

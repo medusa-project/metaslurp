@@ -86,8 +86,9 @@ class Harvest < ApplicationRecord
   #
   def ecs_task
     if self.ecs_task_uuid
-      ecs = Aws::ECS::Client.new(region: ENV['AWS_REGION'])
-      response = ecs.describe_tasks({ cluster: ENV['METASLURPER_ECS_CLUSTER'],
+      config = Configuration.instance
+      ecs = Aws::ECS::Client.new(region: config.aws_region)
+      response = ecs.describe_tasks({ cluster: config.metaslurper_ecs_cluster,
                                       tasks: [ self.ecs_task_uuid ] })
       response.to_h[:tasks][0]
     end

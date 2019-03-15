@@ -41,8 +41,14 @@ $ cd metaslurp
 
 ## 6) Configure the application
 
-Open `config/metaslurp.yml` and `config/database.yml` and add the environment
-variables referenced within to your environment.
+Obtain the master key file from someone on the development team, and save it
+to `config/master.key`. Then:
+
+`$ EDITOR="nano or whatever" rails credentials:edit`
+
+When you save, an encrypted file will be written to
+`config/credentials.yml.enc`, which should then be committed to version
+control.
 
 ## 7) Create and seed the database
 

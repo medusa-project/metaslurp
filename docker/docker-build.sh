@@ -3,6 +3,6 @@
 source docker/env.sh
 
 docker build -f docker/Dockerfile \
-    --build-arg secret_key_base=$SECRET_KEY_BASE \
+    --build-arg time_zone=$TIME_ZONE \
     -t $APP_NAME \
     .
