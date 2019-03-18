@@ -11,7 +11,7 @@ module Metaslurp
     attr_accessor :shibboleth_host
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 5.2
 
     # Make pages embeddable within other websites.
     config.action_dispatch.default_headers =
