@@ -37,17 +37,21 @@ module ApplicationHelper
   # @return [String] HTML string
   #
   def breadcrumb(*items)
-    html = '<nav aria-label="breadcrumb">'\
-      '<ol class="breadcrumb">'
+    html = StringIO.new
+    html << '<nav aria-label="breadcrumb">'
+    html <<   '<ol class="breadcrumb">'
     items.each_with_index do |item, index|
       if index < items.length - 1
-        html += "<li class=\"breadcrumb-item\"><a href=\"#{item[:url]}\">#{item[:label]}</a></li>"
+        html << sprintf('<li class="breadcrumb-item"><a href="%s">%s</a></li>',
+                        item[:url], item[:label])
       else
-        html += "<li class=\"breadcrumb-item active\" aria-current=\"page\">#{item[:label]}</li>"
+        html << sprintf('<li class="breadcrumb-item active" aria-current="page">%s</li>',
+                        item[:label])
       end
     end
-    html += '</ol></nav>'
-    raw(html)
+    html <<   '</ol>'
+    html << '</nav>'
+    raw(html.string)
   end
 
   ##
@@ -105,11 +109,11 @@ module ApplicationHelper
   #
   def facets_as_cards(facets, permitted_params)
     return nil unless facets
-    html = ''
+    html = StringIO.new
     facets.select{ |f| f.buckets.any? }.each do |facet|
-      html += facet_card(facet, params.permit(permitted_params))
+      html << facet_card(facet, params.permit(permitted_params))
     end
-    raw(html)
+    raw(html.string)
   end
 
   ##
@@ -140,9 +144,9 @@ module ApplicationHelper
   # @return [String] Bootstrap alerts for each flash message.
   #
   def flashes
-    html = ''
+    html = StringIO.new
     flash.each do |type, message|
-      html += "<div class=\"alert alert-dismissable #{bootstrap_class_for(type)}\" role=\"alert\">
+      html << "<div class=\"alert alert-dismissable #{bootstrap_class_for(type)}\" role=\"alert\">
           <button type=\"button\" class=\"close\" data-dismiss=\"alert\"
                   aria-label=\"Close\">
             <span aria-hidden=\"true\">&times;</span>
@@ -150,7 +154,7 @@ module ApplicationHelper
           #{message}
         </div>"
     end
-    raw(html)
+    raw(html.string)
   end
 
   ##
@@ -200,13 +204,13 @@ module ApplicationHelper
   def paginate(total_entities, per_page, current_page, permitted_params,
                max_links = MAX_PAGINATION_LINKS)
     return '' if total_entities <= per_page
-    num_pages = (total_entities / per_page.to_f).ceil
+    num_pages  = (total_entities / per_page.to_f).ceil
     first_page = [1, current_page - (max_links / 2.0).floor].max
-    last_page = [first_page + max_links - 1, num_pages].min
+    last_page  = [first_page + max_links - 1, num_pages].min
     first_page = last_page - max_links + 1 if
         last_page - first_page < max_links and num_pages > max_links
-    prev_page = [1, current_page - 1].max
-    next_page = [last_page, current_page + 1].min
+    prev_page  = [1, current_page - 1].max
+    next_page  = [last_page, current_page + 1].min
     prev_start = (prev_page - 1) * per_page
     next_start = (next_page - 1) * per_page
     last_start = (num_pages - 1) * per_page
@@ -238,25 +242,37 @@ module ApplicationHelper
     end
 
     # http://getbootstrap.com/components/#pagination
-    html = '<nav>' +
-        '<ul class="pagination">' +
-          "<li class=\"page-item #{current_page == first_page ? 'disabled' : ''}\">#{first_link}</li>" +
-          "<li class=\"page-item #{current_page == prev_page ? 'disabled' : ''}\">#{prev_link}</li>"
+    html = StringIO.new
+    html << '<nav>'
+    html <<   '<ul class="pagination">'
+    html <<     sprintf('<li class="page-item %s">%s</li>',
+                        current_page == first_page ? 'disabled' : '',
+                        first_link)
+    html <<     sprintf('<li class="page-item %s">%s</li>',
+                        current_page == prev_page ? 'disabled' : '',
+                        prev_link)
+
     (first_page..last_page).each do |page|
       start = (page - 1) * per_page
       page_link = link_to((start == 0) ? permitted_params.except(:start) :
                               permitted_params.merge(start: start), class: 'page-link', remote: true) do
         raw("#{page} #{(page == current_page) ?
-            '<span class="sr-only">(current)</span>' : ''}")
+                           '<span class="sr-only">(current)</span>' : ''}")
       end
-      html += "<li class=\"page-item #{page == current_page ? 'active' : ''}\">" +
-          page_link + '</li>'
+      html << sprintf('<li class="page-item %s">%s</li>',
+                      page == current_page ? 'active' : '',
+                      page_link)
+
     end
-    html += "<li class=\"page-item #{current_page == next_page ? 'disabled' : ''}\">#{next_link}</li>" +
-        "<li class=\"page-item #{current_page == last_page ? 'disabled' : ''}\">#{last_link}</li>"
-    html += '</ul>' +
-        '</nav>'
-    raw(html)
+    html << sprintf('<li class="page-item %s">%s</li>',
+                    current_page == next_page ? 'disabled' : '',
+                    next_link)
+    html << sprintf('<li class="page-item %s">%s</li>',
+                    current_page == last_page ? 'disabled' : '',
+                    last_link)
+    html <<   '</ul>'
+    html << '</nav>'
+    raw(html.string)
   end
 
   ##
@@ -327,33 +343,41 @@ module ApplicationHelper
   # @param facet [Facet]
   #
   def facet_card(facet, permitted_params)
-    panel = "<div class=\"card dl-facet\" id=\"#{facet.field}\">
-      <h5 class=\"card-header\">
-        #{facet.name}
-      </h5>
-      <div class=\"card-body\">
-        <ul>"
-    facet.buckets.each do |bucket|
-      checked = params[:fq]&.include?(bucket.query) ? 'checked' : nil
-      checked_params = bucket.removed_from_params(permitted_params.deep_dup).except(:start)
-      unchecked_params = bucket.added_to_params(permitted_params.deep_dup).except(:start)
-      term_label = truncate(bucket.label, length: 80)
+    panel = StringIO.new
+    panel << sprintf('<div class="card dl-facet" id="%s">', facet.field)
+    panel << '<h5 class="card-header">'
+    panel <<   facet.name
+    panel << '</h5>'
+    panel << '<div class="card-body">'
+    panel << '<ul>'
 
-      panel += "<li class=\"dl-term\">"\
-               "  <div class=\"checkbox\">"\
-               "    <label>"\
-               "      <input type=\"checkbox\" name=\"fq[]\" #{checked} "\
-               "          data-query=\"#{bucket.query.gsub('"', '&quot;')}\" "\
-               "          data-checked-href=\"#{url_for(unchecked_params)}\" "\
-               "          data-unchecked-href=\"#{url_for(checked_params)}\" "\
-               "          value=\"#{bucket.query}\"> "\
-               "      #{term_label} "\
-               "      <span class=\"dl-count\">#{bucket.count}</span>"\
-               "    </label>"\
-               "  </div>"\
-               "</li>"
+    facet.buckets.each do |bucket|
+      checked          = params[:fq]&.include?(bucket.query) ? 'checked' : nil
+      checked_params   = bucket.removed_from_params(permitted_params.deep_dup).except(:start)
+      unchecked_params = bucket.added_to_params(permitted_params.deep_dup).except(:start)
+      term_label       = truncate(bucket.label, length: 80)
+
+      panel << '<li class="dl-term">'
+      panel <<   '<div class="checkbox">'
+      panel <<     '<label>'
+      panel <<       sprintf('<input type="checkbox" name="fq[]" %s '\
+                             'data-query="%s" data-checked-href="%s" '\
+                             'data-unchecked-href="%s" value="%s"> ',
+                             checked,
+                             bucket.query.gsub('"', '&quot;'),
+                             url_for(unchecked_params),
+                             url_for(checked_params),
+                             bucket.query)
+      panel <<       term_label
+      panel <<       sprintf(' <span class="dl-count">%s</span>', bucket.count)
+      panel <<     '</label>'
+      panel <<   '</div>'
+      panel << '</li>'
     end
-    raw(panel + '</ul></div></div>')
+    panel <<     '</ul>'
+    panel <<   '</div>'
+    panel << '</div>'
+    raw(panel.string)
   end
 
 end

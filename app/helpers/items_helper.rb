@@ -151,23 +151,25 @@ module ItemsHelper
   #
   def sort_menu
     sortable_elements = ElementDef.where(sortable: true).order(:name)
-    html = ''
+    html = StringIO.new
     if sortable_elements.any?
-      html += '<select name="sort" class="custom-select my-1 mr-sm-2">
-          <optgroup label="Sort by&hellip;">'
-      html += "<option value=\"\">#{params[:q].present? ? 'Relevance' : 'Default Order'}</option>"
+      html << '<select name="sort" class="custom-select my-1 mr-sm-2">'
+      html <<   '<optgroup label="Sort by&hellip;">'
+      html <<     sprintf('<option>%s</option>',
+                          params[:q].present? ? 'Relevance' : 'Default Order')
 
       # If there is an element in the ?sort= query, select it.
       selected_element = sortable_elements.
           select{ |e| e.indexed_sort_field == params[:sort] }.first
       sortable_elements.each do |e|
         selected = (e == selected_element) ? 'selected' : ''
-        html += "<option value=\"#{e.indexed_sort_field}\" #{selected}>#{e.label}</option>"
+        html << sprintf('<option value="%s" %s>%s</option>',
+                        e.indexed_sort_field, selected, e.label)
       end
-      html += '</optgroup>
-          </select>'
+      html <<   '</optgroup>'
+      html << '</select>'
     end
-    raw(html)
+    raw(html.string)
   end
 
 end
