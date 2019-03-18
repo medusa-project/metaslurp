@@ -1,7 +1,7 @@
 namespace :harvests do
 
-  desc 'Clear old harvests'
-  task :clear_older_than, [:days] => :environment do |task, args|
+  desc 'Delete old harvests'
+  task :delete_older_than, [:days] => :environment do |task, args|
     days = args[:days].to_i
     raise ArgumentError if days < 0
 
