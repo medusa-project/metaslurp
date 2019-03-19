@@ -323,7 +323,10 @@ class Item
         else
           max_length = ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH
           doc[e_def.indexed_sort_field]  << StringUtils.strip_leading_articles(value)[0..max_length]
-          doc[e_def.indexed_text_field]  << ActionView::Base.full_sanitizer.sanitize(value)
+          # We want to strip tags but not escape entities, which there is
+          # apparently no easy way to do using Rails' built-in sanititzer. For
+          # now, allowing ampersands through should be enough.
+          doc[e_def.indexed_text_field]  << ActionView::Base.full_sanitizer.sanitize(value).gsub('&amp;', '&')
           doc[e_def.indexed_facet_field] << doc[e_def.indexed_text_field][0..max_length]
         end
       end
