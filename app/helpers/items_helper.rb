@@ -33,12 +33,21 @@ module ItemsHelper
       title = raw(StringUtils.truncate(item.title, MAX_MEDIA_TITLE_LENGTH))
       desc = raw(StringUtils.truncate(item.description, MAX_MEDIA_DESCRIPTION_LENGTH))
 
+      # Get the URI to link to.
+      # If the item is from IDNC/Veridian, append the search query in order
+      # to make it appear highlighted on the page.
+      item_uri = item.source_uri
+      if item.content_service.key == 'idnc' and params[:q].present?
+        item_uri += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
+      elsif item.content_service.key == 'book'
+        item_uri = nil # we don't want to link to the Book Tracker
+      end
+
       html << '<li class="media my-4">'
       html <<   '<div class="dl-thumbnail-container">'
-      html <<     link_to(item.source_uri) do
-        thumbnail_for(item, class: 'mr-3',
-                      alt: "Thumbnail for #{item}")
-      end
+      html <<     thumbnail_for(item, class: 'mr-3',
+                                alt: "Thumbnail for #{item}")
+
       unless thumbnail_is_local?(item)
         # N.B.: this was made by https://loading.io with the following settings:
         # rolling, color: #cacaca, radius: 25, stroke width: 10, speed: 5, size: 150
@@ -47,22 +56,13 @@ module ItemsHelper
       html <<   '</div>'
       html <<   '<div class="media-body">'
       html <<     '<h5 class="mt-0">'
-
-      # If the item is from IDNC/Veridian, append the search query in order
-      # to make it appear highlighted on the page.
-      if item.content_service.key == 'idnc' and params[:q].present?
-        item_uri += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
-      else
-        item_uri = item.source_uri
-      end
-      html << link_to(title, item_uri)
-
+      html <<       title
       if item.date
-        html << ' <small>'
-        html << item.date.year
-        html << '</small>'
+        html <<     ' <small>'
+        html <<       item.date.year
+        html <<     '</small>'
       end
-      html << '</h5>'
+      html <<     '</h5>'
       # Display the currently sorted element value, if not date or title (which
       # are already visible), on its own line:
       # https://bugs.library.illinois.edu/browse/DLDS-45
@@ -104,7 +104,9 @@ module ItemsHelper
       end
 
       if !ht_url and !ia_url and !catalog_url
-        info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
+        info_parts << link_to(item_uri) do
+          raw("<i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name}")
+        end
       end
 
       if options[:link_to_admin]
