@@ -9,7 +9,17 @@
                              'aria-label': 'Search',
                              class: 'form-control form-control-lg') %>
         <div class="input-group-append">
-          <input type="submit" value="Go" class="btn btn-primary">
+          <input type="submit" value="Search" class="btn btn-primary">
+        </div>
+        <div class="input-group-append dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button"
+                  id="dl-browse-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Browse
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dl-browse-dropdown">
+            <%= link_to 'Collections', collections_path, class: 'dropdown-item' %>
+            <%= link_to 'Items', items_path, class: 'dropdown-item' %>
+          </div>
         </div>
       </div>
     <% end %>
