@@ -17,7 +17,7 @@
             Browse
           </button>
           <div class="dropdown-menu" aria-labelledby="dl-browse-dropdown">
-            <%= link_to 'Collections', collections_path, class: 'dropdown-item' %>
+            <%= link_to 'Collections', collections_path('fq[]': 'system_keyword_service_key:dls'), class: 'dropdown-item' %>
             <%= link_to 'Items', items_path, class: 'dropdown-item' %>
           </div>
         </div>
