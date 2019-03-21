@@ -311,10 +311,15 @@ module ApplicationHelper
     elsif entity == ContentService or entity.kind_of?(ContentService)
       # Check for a representative image in ActiveStorage.
       if entity.representative_image.attached?
-        return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}",
-                                                             quality: THUMBNAIL_JPEG_QUALITY,
-                                                             interlace: 'plane'),
-                         options.merge('data-location': 'local'))
+        begin
+          return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}",
+                                                               quality: THUMBNAIL_JPEG_QUALITY,
+                                                               interlace: 'plane'),
+                           options.merge('data-location': 'local'))
+        rescue => e
+          Rails.logger.error("#{e}")
+          icon = 'database'
+        end
       else
         icon = 'database'
       end
