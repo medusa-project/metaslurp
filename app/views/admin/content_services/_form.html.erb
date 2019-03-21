@@ -23,8 +23,10 @@
     <%= f.file_field :representative_image, class: 'form-control' %>
     <p class="text-info">
       <i class="fa fa-info-circle"></i>
-      Image should be as wide as possible&mdash;up to 3840 pixels.
-      It will be resized automatically, but not cropped.</p>
+      Image should be a TIFF or JPEG that is as wide as possible
+      (up to 3840 pixels for 4K displays).
+      It should be pre-cropped to the desired aspect ratio (not size).
+      It will be resized automatically.</p>
   </div>
 
   <div class="form-group">
