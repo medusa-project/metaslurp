@@ -1,0 +1,24 @@
+<% provide :title, @element.label %>
+<% provide :body_id, 'dl-admin-show-element' %>
+<% provide :active_nav, 'entities' %>
+
+<%= breadcrumb({ label: 'Home', url: admin_root_path },
+               { label: 'Elements', url: admin_element_defs_path },
+               { label: @element.label }) %>
+
+<% if @num_usages > 0 %>
+  <%= button_bar({ label: 'Usages (TSV)',
+                   icon: 'fa-file-alt',
+                   url: admin_element_def_usages_path(@element) }) %>
+<% end %>
+
+<h1><%= @element.label %> <small><code><%= @element.name %></code></small></h1>
+
+<dl>
+  <dt>Data Type</dt>
+  <dd><%= ElementDef::DataType::to_s(@element.data_type) %></dd>
+  <dt>Usages</dt>
+  <dd><%= number_with_delimiter @num_usages %></dd>
+  <dt>Description</dt>
+  <dd><%= @element.description %></dd>
+</dl>

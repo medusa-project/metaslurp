@@ -43,7 +43,9 @@ Rails.application.routes.draw do
       match '/harvest', to: 'content_services#harvest', via: :post, as: 'harvest'
       match '/purge', to: 'content_services#purge', via: :post, as: 'purge'
     end
-    resources :element_defs, path: 'elements', param: :name, except: :show
+    resources :element_defs, path: 'elements', param: :name do
+      match '/usages', to: 'element_defs#usages', via: :get, as: 'usages'
+    end
     match '/elements/import', to: 'elements#import', via: :post, as: 'element_defs_import'
     resources :harvests, param: :key, only: [:index, :show] do
       match '/abort', to: 'harvests#abort', via: :patch, as: 'abort'

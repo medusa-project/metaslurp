@@ -56,7 +56,7 @@
             <% end %>
           <% end %>
         </td>
-        <td><code><%= element.name %></code></td>
+        <td><code><%= link_to element.name, admin_element_def_path(element) %></code></td>
         <td><%= element.label %></td>
         <td><%= ElementDef::DataType::to_s(element.data_type) %></td>
         <td><%= element.description %></td>

@@ -2,11 +2,14 @@ module Admin
 
   class ElementDefsController < ControlPanelController
 
+    include ActionController::Live
+
     class ImportMode
       MERGE = 'merge'
       REPLACE = 'replace'
     end
 
+    NEWLINE = "\n"
     PERMITTED_PARAMS = [:data_type, :description, :facetable, :label, :name,
                         :searchable, :sortable]
 
@@ -110,6 +113,16 @@ module Admin
     end
 
     ##
+    # Responds to GET /admin/elements/:name
+    #
+    def show
+      @element = ElementDef.find_by_name(params[:name])
+      raise ActiveRecord::RecordNotFound unless @element
+
+      @num_usages = ElementFinder.new(@element).limit(0).count
+    end
+
+    ##
     # XHR only
     #
     def update
@@ -131,6 +144,35 @@ module Admin
         keep_flash
         render 'update' # update.js.erb will reload the page
       end
+    end
+
+    ##
+    # Responds to GET /admin/elements/:name/usages
+    #
+    def usages
+      element = ElementDef.find_by_name(params[:element_def_name])
+      raise ActiveRecord::RecordNotFound unless element
+
+      response.header['Content-Type'] = 'text/tab-separated-values'
+      response.header['Content-Disposition'] = "attachment; filename=\"#{element.name}.tsv\""
+      response.stream.write ElementFinder::TSV_HEADER
+      response.stream.write NEWLINE
+
+      offset = 0
+      limit  = 1000
+      rows   = [:placeholder]
+      while rows.any?
+        rows = ElementFinder.new(element)
+            .start(offset)
+            .limit(limit)
+            .to_a
+            .map{ |o| o.values.map{ |v| v.gsub("\t", "") }.join("\t") }
+        response.stream.write rows.join(NEWLINE)
+        response.stream.write NEWLINE
+        offset += limit
+      end
+    ensure
+      response.stream.close
     end
 
     private
