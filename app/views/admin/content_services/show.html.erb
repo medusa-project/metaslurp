@@ -75,7 +75,7 @@
                        confirm: 'Are you sure you want to clear the element mappings?' }) %>
     <% end %>
 
-    <h2>Element Mappings</h2>
+    <h2>Elements</h2>
 
     <table class="table table-striped">
       <tr>
@@ -85,12 +85,23 @@
         </th>
         <th><%= link_to 'Local Element', admin_element_defs_path, target: '_blank' %></th>
         <th>Local Element Data Type</th>
+        <th>Local Element Usages (TSV)</th>
       </tr>
       <% @content_service.element_mappings.order(:source_name).each do |mapping| %>
         <tr>
           <td><code><%= mapping.source_name %></code></td>
           <td><%= mapping.element_def&.label %></td>
           <td><%= ElementDef::DataType::to_s(mapping.element_def&.data_type) %></td>
+          <td>
+            <% element = mapping.element_def %>
+            <% if element %>
+              <% num_usages = element.num_usages(@content_service) %>
+              <% if num_usages > 0 %>
+                <%= link_to(num_usages, admin_element_def_usages_path(element,
+                                                                      content_service_key: @content_service.key)) %>
+              <% end %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </table>

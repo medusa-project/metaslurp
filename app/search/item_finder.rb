@@ -5,21 +5,9 @@ class ItemFinder < AbstractFinder
 
   def initialize
     super
-    @content_service  = nil
     @include_children = false
     @exclude_variants = []
     @include_variants = []
-  end
-
-  ##
-  # Limits the search to a particular content service.
-  #
-  # @param content_service [ContentService]
-  # @return [ItemFinder] self
-  #
-  def content_service(content_service)
-    @content_service = content_service
-    self
   end
 
   ##

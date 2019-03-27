@@ -130,6 +130,17 @@ class ElementDef < ApplicationRecord
   end
 
   ##
+  # @param content_service [ContentService]
+  # @return [Integer]
+  #
+  def num_usages(content_service)
+    ElementFinder.new(self)
+        .content_service(content_service)
+        .limit(0)
+        .count
+  end
+
+  ##
   # @return [Boolean] Whether the element is required by the system.
   #
   def system_required?
