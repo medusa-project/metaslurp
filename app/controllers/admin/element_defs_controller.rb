@@ -162,10 +162,13 @@ module Admin
       limit  = 1000
       rows   = [:placeholder]
       while rows.any?
-        rows = ElementFinder.new(element)
-            .start(offset)
-            .limit(limit)
-            .to_a
+        finder = ElementFinder.new(element)
+        if params[:content_service_key].present?
+          content_service = ContentService.find_by_key(params[:content_service_key])
+          finder = finder.content_service(content_service)
+        end
+
+        rows = finder.start(offset).limit(limit).to_a
             .map{ |o| o.values.map{ |v| v.gsub("\t", "") }.join("\t") }
         response.stream.write rows.join(NEWLINE)
         response.stream.write NEWLINE

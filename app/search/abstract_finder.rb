@@ -3,19 +3,20 @@ class AbstractFinder
   def initialize
     @client = ElasticsearchClient.instance
 
-    @aggregations = true
-    @bucket_limit = Option::integer(Option::Keys::FACET_TERM_LIMIT) || 10
-    @filters = {} # Hash<String,Object>
-    @limit = ElasticsearchClient::MAX_RESULT_WINDOW
-    @orders = [] # Array<Hash<Symbol,String>> with :field and :direction keys
-    @query = nil # Hash<Symbol,String> Hash with :field and :query keys
-    @start = 0
-    @user_roles = []
+    @aggregations    = true
+    @bucket_limit    = Option::integer(Option::Keys::FACET_TERM_LIMIT) || 10
+    @content_service = nil
+    @filters         = {} # Hash<String,Object>
+    @limit           = ElasticsearchClient::MAX_RESULT_WINDOW
+    @orders          = [] # Array<Hash<Symbol,String>> with :field and :direction keys
+    @query           = nil # Hash<Symbol,String> Hash with :field and :query keys
+    @start           = 0
+    @user_roles      = []
 
-    @loaded = false
+    @loaded          = false
 
-    @result_json = {}
-    @result_facets = []
+    @result_json     = {}
+    @result_facets   = []
   end
 
   ##
@@ -26,6 +27,17 @@ class AbstractFinder
   #
   def aggregations(boolean)
     @aggregations = boolean
+    self
+  end
+
+  ##
+  # Limits the search to a particular content service.
+  #
+  # @param content_service [ContentService]
+  # @return [ItemFinder] self
+  #
+  def content_service(content_service)
+    @content_service = content_service
     self
   end
 

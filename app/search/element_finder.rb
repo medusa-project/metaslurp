@@ -44,8 +44,22 @@ class ElementFinder < AbstractFinder
   def build_query
     Jbuilder.encode do |j|
       j.query do
-        j.wildcard do
-          j.set! @element.indexed_text_field, '*'
+        j.bool do
+          j.must do
+            j.query_string do
+              j.query "#{@element.indexed_text_field}:*"
+            end
+          end
+
+          if @content_service
+            j.filter do
+              j.child! do
+                j.term do
+                  j.set! Item::IndexFields::SERVICE_KEY, @content_service.key
+                end
+              end
+            end
+          end
         end
       end
 
