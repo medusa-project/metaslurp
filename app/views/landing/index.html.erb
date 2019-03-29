@@ -1,28 +1,32 @@
 <% provide(:body_id, 'landing') %>
 
-<div id="dl-banner" class="row justify-content-sm-center">
-  <div class="col-sm-6">
-    <%= form_tag(search_path, method: :get, enforce_utf8: false, id: 'dl-search') do %>
-      <div class="input-group mb-4">
-        <%= search_field_tag(:q, '',
-                             placeholder: raw("Search across #{number_with_delimiter(@num_items)} items&hellip;"),
-                             'aria-label': 'Search',
-                             class: 'form-control form-control-lg') %>
-        <div class="input-group-append">
-          <input type="submit" value="Search" class="btn btn-primary">
-        </div>
-        <div class="input-group-append dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button"
-                  id="dl-browse-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Browse
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dl-browse-dropdown">
-            <%= link_to 'Collections', collections_path('fq[]': 'system_keyword_service_key:dls'), class: 'dropdown-item' %>
-            <%= link_to 'Items', items_path, class: 'dropdown-item' %>
+<div id="dl-banner">
+  <h1>Digital Collections</h1>
+
+  <div class="row justify-content-sm-center">
+    <div class="col-sm-8 col-md-7 col-lg-6">
+      <%= form_tag(search_path, method: :get, enforce_utf8: false, id: 'dl-search') do %>
+        <div class="input-group mb-4">
+          <%= search_field_tag(:q, '',
+                               placeholder: raw("Search across #{number_with_delimiter(@num_items)} items&hellip;"),
+                               'aria-label': 'Search',
+                               class: 'form-control form-control-lg') %>
+          <div class="input-group-append">
+            <input type="submit" value="Search" class="btn btn-primary">
+          </div>
+          <div class="input-group-append dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                    id="dl-browse-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Browse
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dl-browse-dropdown">
+              <%= link_to 'Collections', collections_path('fq[]': 'system_keyword_service_key:dls'), class: 'dropdown-item' %>
+              <%= link_to 'Items', items_path, class: 'dropdown-item' %>
+            </div>
           </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
 </div>
 
