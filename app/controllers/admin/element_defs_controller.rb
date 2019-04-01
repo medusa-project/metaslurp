@@ -11,7 +11,7 @@ module Admin
 
     NEWLINE = "\n"
     PERMITTED_PARAMS = [:data_type, :description, :facetable, :label, :name,
-                        :searchable, :sortable]
+                        :searchable, :sortable, :weight]
 
     before_action :set_permitted_params
     before_action :require_admin, except: :index

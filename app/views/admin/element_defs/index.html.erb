@@ -32,6 +32,7 @@
       <th>Searchable</th>
       <th>Sortable</th>
       <th>Facetable</th>
+      <th>Facet Weight</th>
     </tr>
   </thead>
   <tbody>
@@ -69,6 +70,7 @@
         <td class="text-center <%= element.facetable ? 'bg-success' : 'bg-danger' %>">
           <%= boolean(element.facetable) %>
         </td>
+        <td><%= element.weight %></td>
       </tr>
     <% end %>
   </tbody>

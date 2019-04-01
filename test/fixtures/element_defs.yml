@@ -8,6 +8,7 @@ title:
   searchable: true
   sortable: true
   facetable: false
+  weight: 0
 
 date:
   name: date
@@ -17,6 +18,7 @@ date:
   searchable: true
   sortable: true
   facetable: false
+  weight: 0
 
 description:
   name: description
@@ -26,6 +28,7 @@ description:
   searchable: true
   sortable: true
   facetable: false
+  weight: 0
 
 subject:
   name: subject
@@ -35,3 +38,4 @@ subject:
   searchable: true
   sortable: false
   facetable: true
+  weight: 100

@@ -200,7 +200,7 @@ class AbstractFinder
   end
 
   def facetable_elements
-    ElementDef.where(facetable: true)
+    ElementDef.where(facetable: true).order(:weight)
   end
 
   def load

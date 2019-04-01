@@ -172,13 +172,27 @@ class ItemFinder < AbstractFinder
   # @Override
   #
   def facetable_elements
-    elements = [
-        ElementDef.new(name: Item::IndexFields::SERVICE_KEY,
-                       indexed_facet_field: Item::IndexFields::SERVICE_KEY,
-                       label: 'Service',
-                       facetable: true)
-    ]
-    elements + super.to_a
+    elements = super.to_a
+
+    # Find the index of the first >= 0-weight element.
+    index = 0
+    elements.each_with_index do |e, i|
+      if e.weight >= 0
+        index = i
+        break
+      end
+    end
+
+    # Insert a content service element with weight 0 at that index. This is
+    # the only "synthetic" facet that is backed by a fixed technical field
+    # rather than a user-defined element.
+    elements.insert(index,
+                    ElementDef.new(name: Item::IndexFields::SERVICE_KEY,
+                                   indexed_facet_field: Item::IndexFields::SERVICE_KEY,
+                                   label: 'Service',
+                                   facetable: true,
+                                   weight: 0))
+    elements
   end
 
   private
