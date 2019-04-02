@@ -14,7 +14,6 @@ gem 'faraday'
 gem 'image_processing', '~> 1.2' # rescales uploaded representative images
 gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
-gem 'js_cookie_rails'
 gem 'local_time'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
 gem 'omniauth'
