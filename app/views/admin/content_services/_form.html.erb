@@ -20,13 +20,13 @@
 
   <div class="form-group">
     <%= f.label :representative_image %>
-    <%= f.file_field :representative_image, class: 'form-control' %>
+    <br>
+    <%= f.file_field :representative_image %>
     <p class="text-info">
       <i class="fa fa-info-circle"></i>
-      Image should be a TIFF or JPEG that is as wide as possible
-      (up to 3840 pixels for 4K displays).
-      It should be pre-cropped to the desired aspect ratio (not size).
-      It will be resized automatically.</p>
+      This image will be automatically cropped and scaled to fit in its cell on the landing page.
+      It should be a TIFF or PNG that is between 1920 and 3840 pixels wide for the top cell,
+      or half that for lower cells.</p>
   </div>
 
   <div class="form-group">

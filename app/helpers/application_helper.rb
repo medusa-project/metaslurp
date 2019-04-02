@@ -312,9 +312,23 @@ module ApplicationHelper
       # Check for a representative image in ActiveStorage.
       if entity.representative_image.attached?
         begin
-          return image_tag(entity.representative_image.variant(resize: "#{CONTENT_SERVICE_THUMBNAIL_SIZE}x#{CONTENT_SERVICE_THUMBNAIL_SIZE}",
-                                                               quality: THUMBNAIL_JPEG_QUALITY,
-                                                               interlace: 'plane'),
+          opts = {
+              combine_options: {
+                  gravity: 'center',
+                  quality: THUMBNAIL_JPEG_QUALITY,
+                  interlace: 'plane',
+                  strip: true,
+                  repage: nil,
+                  '+': nil
+              }
+          }
+          if options[:crop]
+            opts[:combine_options][:thumbnail] =
+                "#{options[:crop][:width]}x#{options[:crop][:height]}^"
+            opts[:combine_options][:extent] =
+                "#{options[:crop][:width]}x#{options[:crop][:height]}"
+          end
+          return image_tag(entity.representative_image.variant(opts),
                            options.merge('data-location': 'local'))
         rescue => e
           Rails.logger.error("#{e}")
