@@ -27,9 +27,11 @@ class ApplicationController < ActionController::Base
   # @param e [Exception, String]
   #
   def handle_error(e)
-    Rails.logger.warn(e)
+    unless e.kind_of?(ActiveRecord::RecordInvalid)
+      Rails.logger.warn(e)
+      flash['error'] = "#{e}"
+    end
     response.headers['X-DL-Result'] = 'error'
-    flash['error'] = "#{e}"
   end
 
   ##
