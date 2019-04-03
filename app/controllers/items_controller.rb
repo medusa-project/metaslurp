@@ -63,6 +63,17 @@ class ItemsController < ApplicationController
     end
   end
 
+  ##
+  # Responds to GET /items/:id via JSON only.
+  #
+  def show
+    item = Item.find(params[:id])
+
+    respond_to do |format|
+      format.json { render json: item }
+    end
+  end
+
   private
 
   def set_sanitized_params
