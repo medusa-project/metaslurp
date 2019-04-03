@@ -48,11 +48,12 @@
 #
 # # Attributes
 #
-# * access_images   Set of Images.
 # * elements:       Enumerable of SourceElements.
 # * full_text:      Full text.
 # * harvest_key:    Key of the harvest during which the item was last updated.
 # * id:             Identifier within the application.
+# * images:         Set of associated Images. One of them may be a master image
+#                   (see Image class doc).
 # * local_elements: Enumerable of LocalElements.
 # * parent_id:      Identifier of a parent item.
 # * service_key:    Key of the ContentService from which the instance was
@@ -81,23 +82,23 @@ class Item
 
   attr_accessor :full_text, :harvest_key, :id, :last_indexed, :media_type,
                 :parent_id, :service_key, :source_id, :source_uri, :variant
-  attr_reader :access_images, :elements, :local_elements
+  attr_reader :elements, :images, :local_elements
 
   ##
   # These should all be dynamic fields if at all possible (see class doc).
   #
   class IndexFields
-    ACCESS_IMAGES = 'system_object_images'
-    FULL_TEXT     = 'system_text_full_text'
-    HARVEST_KEY   = 'system_keyword_harvest_key'
-    ID            = '_id'
-    LAST_INDEXED  = 'system_date_last_indexed'
-    PARENT_ID     = 'system_keyword_parent_id'
-    MEDIA_TYPE    = 'system_keyword_media_type'
-    SERVICE_KEY   = 'system_keyword_service_key'
-    SOURCE_ID     = 'system_keyword_source_id'
-    SOURCE_URI    = 'system_keyword_source_uri'
-    VARIANT       = 'system_keyword_variant'
+    FULL_TEXT    = 'system_text_full_text'
+    HARVEST_KEY  = 'system_keyword_harvest_key'
+    ID           = '_id'
+    IMAGES       = 'system_object_images'
+    LAST_INDEXED = 'system_date_last_indexed'
+    PARENT_ID    = 'system_keyword_parent_id'
+    MEDIA_TYPE   = 'system_keyword_media_type'
+    SERVICE_KEY  = 'system_keyword_service_key'
+    SOURCE_ID    = 'system_keyword_source_id'
+    SOURCE_URI   = 'system_keyword_source_uri'
+    VARIANT      = 'system_keyword_variant'
   end
 
   ##
@@ -171,10 +172,11 @@ class Item
     item.variant      = jsrc[IndexFields::VARIANT]
 
     # Read access images.
-    jsrc[IndexFields::ACCESS_IMAGES]&.each do |struct|
-      item.access_images << Image.new(size: struct['size'].to_i,
-                                      crop: struct['crop'].to_sym,
-                                      uri: struct['uri'])
+    jsrc[IndexFields::IMAGES]&.each do |struct|
+      item.images << Image.new(size: struct['size'].to_i,
+                               crop: struct['crop'].to_sym,
+                               uri: struct['uri'],
+                               master: struct['master'])
     end
 
     # Read source elements.
@@ -224,11 +226,12 @@ class Item
     item.variant     = jobj['variant']
 
     # Read access images.
-    if jobj['access_images'].respond_to?(:each)
-      jobj['access_images'].each do |struct|
-        item.access_images << Image.new(size: struct['size'].to_i,
-                                        crop: struct['crop'].to_sym,
-                                        uri: struct['uri'])
+    if jobj['images'].respond_to?(:each)
+      jobj['images'].each do |struct|
+        item.images << Image.new(size: struct['size'].to_i,
+                                 crop: struct['crop'].to_sym,
+                                 uri: struct['uri'],
+                                 master: struct['master'])
       end
     end
 
@@ -245,8 +248,8 @@ class Item
 
   def initialize(args = {})
     @elements       = Set.new
+    @images         = Set.new
     @local_elements = Set.new
-    @access_images  = Set.new
 
     args.each do |k,v|
       instance_variable_set("@#{k}", v) unless v.nil?
@@ -271,6 +274,7 @@ class Item
     doc = {}
     doc[IndexFields::FULL_TEXT]    = self.full_text
     doc[IndexFields::HARVEST_KEY]  = self.harvest_key
+    doc[IndexFields::IMAGES]       = self.images.map(&:as_json)
     doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
     doc[IndexFields::MEDIA_TYPE]   = self.media_type
     doc[IndexFields::PARENT_ID]    = self.parent_id
@@ -278,12 +282,6 @@ class Item
     doc[IndexFields::SOURCE_ID]    = self.source_id
     doc[IndexFields::SOURCE_URI]   = self.source_uri
     doc[IndexFields::VARIANT]      = self.variant
-
-    # Images
-    doc[IndexFields::ACCESS_IMAGES] = []
-    self.access_images.each do |image|
-      doc[IndexFields::ACCESS_IMAGES] << image.as_json
-    end
 
     # Elements
     self.elements.each do |src_elem|
@@ -339,17 +337,17 @@ class Item
   #
   def as_json(options = {})
     struct = super(options)
-    struct['access_images'] = self.access_images.as_json
-    struct['variant']       = self.variant
-    struct['elements']      = self.elements.map { |e| e.as_json(options) }
-    struct['full_text']     = self.full_text
-    struct['harvest_key']   = self.harvest_key
-    struct['id']            = self.id
-    struct['media_type']    = self.media_type
-    struct['parent_id']     = self.parent_id
-    struct['service_key']   = self.service_key
-    struct['source_id']     = self.source_id
-    struct['source_uri']    = self.source_uri
+    struct['images']      = self.images.as_json
+    struct['variant']     = self.variant
+    struct['elements']    = self.elements.map { |e| e.as_json(options) }
+    struct['full_text']   = self.full_text
+    struct['harvest_key'] = self.harvest_key
+    struct['id']          = self.id
+    struct['media_type']  = self.media_type
+    struct['parent_id']   = self.parent_id
+    struct['service_key'] = self.service_key
+    struct['source_id']   = self.source_id
+    struct['source_uri']  = self.source_uri
     struct
   end
 
@@ -421,7 +419,7 @@ class Item
   def thumbnail_image
     # Use the largest available access image up to MAX_THUMBNAIL_SIZE.
     # Prefer a square crop, but return a full crop if it's a better fit.
-    self.access_images
+    self.images
         .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE }
         .sort{ |a, b| [a.size, a.crop] <=> [b.size, b.crop] }
         .last

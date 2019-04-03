@@ -12,12 +12,14 @@ class ItemTest < ActiveSupport::TestCase
                          source_uri: 'http://example.org/cats',
                          full_text: 'Lorem ipsum',
                          variant: Item::Variants::ITEM)
-    @instance.access_images << Image.new(size: 256,
-                                         crop: :full,
-                                         uri: 'http://example.org/cats/image-256.jpg')
-    @instance.access_images << Image.new(size: 512,
-                                         crop: :full,
-                                         uri: 'http://example.org/cats/image-512.jpg')
+    @instance.images << Image.new(crop: :full,
+                                  size: 256,
+                                  uri: 'http://example.org/cats/image-256.jpg',
+                                  master: false)
+    @instance.images << Image.new(crop: :full,
+                                  size: :full,
+                                  uri: 'http://example.org/cats/image-512.jpg',
+                                  master: true)
     @instance.elements << SourceElement.new(name: 'title',
                                             value: 'value')
     @instance.elements << SourceElement.new(name: 'date',
@@ -35,16 +37,18 @@ class ItemTest < ActiveSupport::TestCase
         {
             Item::IndexFields::ID => 'cats',
             '_source' => {
-                Item::IndexFields::ACCESS_IMAGES => [
+                Item::IndexFields::IMAGES => [
                     {
-                        'size' => 256,
-                        'crop' => 'full',
-                        'uri' => 'http://example.org/cats/image-256.jpg'
+                        'crop'   => 'full',
+                        'size'   => 256,
+                        'uri'    => 'http://example.org/cats/image-256.jpg',
+                        'master' => false
                     },
                     {
-                        'size' => 512,
-                        'crop' => 'full',
-                        'uri' => 'http://example.org/cats/image-512.jpg'
+                        'crop'   => 'full',
+                        'size'   => 512,
+                        'uri'    => 'http://example.org/cats/image-512.jpg',
+                        'master' => true
                     }
                 ],
                 Item::IndexFields::FULL_TEXT    => 'Lorem ipsum',
@@ -80,13 +84,15 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 2, item.elements.length
 
     expected = Set.new
-    expected << Image.new(size: 256,
-                          crop: :full,
-                          uri: 'http://example.org/cats/image-256.jpg')
-    expected << Image.new(size: 512,
-                          crop: :full,
-                          uri: 'http://example.org/cats/image-512.jpg')
-    assert_equal expected, item.access_images
+    expected << Image.new(crop: :full,
+                          size: 256,
+                          uri: 'http://example.org/cats/image-256.jpg',
+                          master: false)
+    expected << Image.new(crop: :full,
+                          size: :full,
+                          uri: 'http://example.org/cats/image-512.jpg',
+                          master: true)
+    assert_equal expected, item.images
 
     src_titles = item.elements.select{ |e| e.name == 'title' }
     assert_equal 'title 1', src_titles[0].value
@@ -114,16 +120,18 @@ class ItemTest < ActiveSupport::TestCase
             'source_id': 'cats',
             'source_uri': 'http://example.org/cats',
             'full_text': 'Lorem ipsum',
-            'access_images': [
+            'images': [
                 {
-                    'size' => 256,
-                    'crop' => 'full',
-                    'uri' => 'http://example.org/cats/image-256.jpg'
+                    'crop'   => 'full',
+                    'size'   => 256,
+                    'uri'    => 'http://example.org/cats/image-256.jpg',
+                    'master' => false
                 },
                 {
-                    'size' => 512,
-                    'crop' => 'full',
-                    'uri' => 'http://example.org/cats/image-512.jpg'
+                    'crop'   => 'full',
+                    'size'   => 'full',
+                    'uri'    => 'http://example.org/cats/image-512.jpg',
+                    'master' => true
                 }
             ],
             'elements': [
@@ -144,13 +152,15 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 1, item.elements.length
 
     expected = Set.new
-    expected << Image.new(size: 256,
-                          crop: :full,
-                          uri: 'http://example.org/cats/image-256.jpg')
-    expected << Image.new(size: 512,
-                          crop: :full,
-                          uri: 'http://example.org/cats/image-512.jpg')
-    assert_equal expected, item.access_images
+    expected << Image.new(crop: :full,
+                          size: 256,
+                          uri: 'http://example.org/cats/image-256.jpg',
+                          master: false)
+    expected << Image.new(crop: :full,
+                          size: :full,
+                          uri: 'http://example.org/cats/image-512.jpg',
+                          master: true)
+    assert_equal expected, item.images
 
     element = item.elements.to_a[0]
     assert_equal 'name', element.name
@@ -208,17 +218,19 @@ class ItemTest < ActiveSupport::TestCase
 
     expected = [
         {
-            'size' => 256,
-            'crop' => 'full',
-            'uri' => 'http://example.org/cats/image-256.jpg'
+            'crop'   => 'full',
+            'size'   => 256,
+            'uri'    => 'http://example.org/cats/image-256.jpg',
+            'master' => false
         },
         {
-            'size' => 512,
-            'crop' => 'full',
-            'uri' => 'http://example.org/cats/image-512.jpg'
+            'crop'   => 'full',
+            'size'   => 0,
+            'uri'    => 'http://example.org/cats/image-512.jpg',
+            'master' => true
         }
     ]
-    assert_equal expected, struct[Item::IndexFields::ACCESS_IMAGES]
+    assert_equal expected, struct[Item::IndexFields::IMAGES]
 
     assert_equal ['value'],
                  struct[SourceElement::RAW_INDEX_PREFIX + 'title']
@@ -247,17 +259,19 @@ class ItemTest < ActiveSupport::TestCase
 
     expected = [
         {
-            'size' => 256,
-            'crop' => 'full',
-            'uri' => 'http://example.org/cats/image-256.jpg'
+            'crop'   => 'full',
+            'size'   => 256,
+            'uri'    => 'http://example.org/cats/image-256.jpg',
+            'master' => false
         },
         {
-            'size' => 512,
-            'crop' => 'full',
-            'uri' => 'http://example.org/cats/image-512.jpg'
+            'crop'   => 'full',
+            'size'   => 0,
+            'uri'    => 'http://example.org/cats/image-512.jpg',
+            'master' => true
         }
     ]
-    assert_equal expected, struct['access_images']
+    assert_equal expected, struct['images']
 
     assert_equal 'title', struct['elements'][0]['name']
     assert_equal 'value', struct['elements'][0]['value']
