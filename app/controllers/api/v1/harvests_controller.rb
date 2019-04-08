@@ -4,6 +4,8 @@ module Api
 
     class HarvestsController < ApiController
 
+      LOGGER = CustomLogger.new(HarvestsController)
+
       ##
       # Responds to POST /api/v1/harvests. Used for creating harvests.
       #
@@ -12,12 +14,12 @@ module Api
           json = request_json
           harvest = Harvest.new(user: current_user)
           harvest.update_from_json(json)
-          Rails.logger.debug("Created harvest #{harvest}")
+          LOGGER.debug('Created harvest %s', harvest)
         rescue ArgumentError, JSON::ParserError => e
-          Rails.logger.debug("Invalid: #{json}")
+          LOGGER.debug('Invalid: %s', json)
           render plain: e.message, status: :bad_request
         rescue IOError => e
-          Rails.logger.error("#{e}")
+          LOGGER.error(e)
           render plain: e.message, status: :internal_server_error
         else
           render json: {
@@ -36,12 +38,12 @@ module Api
           raise ActiveRecord::RecordNotFound unless harvest
           json = request_json
           harvest.update_from_json(json)
-          Rails.logger.debug("Updated harvest #{harvest}")
+          LOGGER.debug('Updated harvest %s', harvest)
         rescue ArgumentError, ActiveRecord::RecordInvalid, JSON::ParserError => e
-          Rails.logger.debug("Invalid: #{json}")
+          LOGGER.debug('Invalid: %s', json)
           render plain: e.message, status: :bad_request
         rescue IOError => e
-          Rails.logger.error("#{e}")
+          LOGGER.error(e)
           render plain: e.message, status: :internal_server_error
         else
           head :no_content

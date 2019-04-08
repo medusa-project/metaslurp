@@ -4,6 +4,8 @@ module Api
 
     class ItemsController < ApiController
 
+      LOGGER = CustomLogger.new(ItemsController)
+
       ##
       # Responds to PUT /api/v1/items. Used for both creating and updating
       # items.
@@ -16,21 +18,21 @@ module Api
           # Test items have example.org source URIs. Discard them without
           # raising any errors.
           if item.source_uri.start_with?('http://example.org')
-            Rails.logger.debug("Ignoring test item: #{item}")
+            LOGGER.debug('Ignoring test item: %s', item)
           else
             item.content_service.update_element_mappings(item.elements)
             item.save!
-            Rails.logger.debug("Ingested #{item}: #{json}")
+            LOGGER.debug('Ingested %s: %s', item, json)
           end
         rescue HarvestAbortedError => e
           render plain: e.message, status: e.http_status
         rescue HarvestEndedError => e
           render plain: e.message, status: e.http_status
         rescue ArgumentError, JSON::ParserError => e
-          Rails.logger.debug("Invalid: #{json}")
+          LOGGER.debug('Invalid: %s', json)
           render plain: e.message, status: :bad_request
         rescue IOError => e
-          Rails.logger.error("#{e}")
+          LOGGER.error(e)
           render plain: e.message, status: :internal_server_error
         else
           head :no_content

@@ -1,5 +1,7 @@
 module ApplicationHelper
 
+  LOGGER = CustomLogger.new(ApplicationHelper)
+
   MAX_PAGINATION_LINKS = 7
   MAX_THUMBNAIL_SIZE = 512
   CONTENT_SERVICE_THUMBNAIL_SIZE = 4096
@@ -317,7 +319,7 @@ module ApplicationHelper
                                                                interlace: 'plane'),
                            options.merge('data-location': 'local'))
         rescue => e
-          Rails.logger.error("#{e}")
+          LOGGER.error(e)
           icon = 'database'
         end
       else

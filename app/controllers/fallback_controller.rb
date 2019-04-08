@@ -3,6 +3,7 @@
 #
 class FallbackController < WebsiteController
 
+  LOGGER = CustomLogger.new(FallbackController)
   DLS_HOST = ::Configuration.instance.dls_url
 
   ##
@@ -34,7 +35,7 @@ class FallbackController < WebsiteController
   # other such silliness.
   #
   def not_found
-    Rails.logger.debug('Returning HTTP 404 for ' + request.fullpath)
+    LOGGER.debug('Returning HTTP 404 for %s', request.fullpath)
     render template: 'errors/not_found', status: 404, layout: 'application'
   end
 
