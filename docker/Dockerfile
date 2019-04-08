@@ -1,4 +1,4 @@
-FROM ruby:2.5.3
+FROM ruby:2.6.2
 
 ARG time_zone
 
@@ -24,7 +24,5 @@ COPY . ./
 RUN bin/rails assets:precompile
 
 EXPOSE 3000
-
-#ENTRYPOINT ["bin/rails", "db:migrate"]
 
 CMD ["bin/rails", "server"]
