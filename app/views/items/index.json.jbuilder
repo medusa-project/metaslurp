@@ -9,7 +9,7 @@ json.results do
     json.variant item.variant
     json.full_text item.full_text
     json.media_type item.media_type
-    json.access_images item.access_images
+    json.images item.images
     json.service_uri content_service_url(service)
     json.source_uri item.source_uri
     json.last_indexed item.last_indexed

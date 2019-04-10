@@ -244,18 +244,6 @@
     "source_id": "some-item",
     "source_uri": "http://example.org/some-item",
     "full_text": "The quick brown fox jumped over the lazy dog."
-    "access_images": {
-        {
-            "size": 128,
-            "crop": "full",
-            "uri": "http://example.org/image-full-128.jpg"
-        },
-        {
-            "size": 256,
-            "crop": "square",
-            "uri": "http://example.org/image-square-256.jpg"
-        }
-    },
     "elements" : [
         {
             "name": "some-element-name",
@@ -265,7 +253,26 @@
             "name": "some-element-name",
             "value": "some element value"
         }
-        ... more elements
+    ]
+    "images": [
+        {
+            "master": true,
+            "crop": "full",
+            "size": "full",
+            "uri": "http://example.org/image-master.tif"
+        },
+        {
+            "master": false,
+            "crop": "full",
+            "size": 128,
+            "uri": "http://example.org/image-full-128.jpg"
+        },
+        {
+            "master": false,
+            "crop": "square",
+            "size": 256,
+            "uri": "http://example.org/image-square-256.jpg"
+        }
     ]
 }</code>
 
@@ -274,12 +281,6 @@
           <th></th>
           <th>Required</th>
           <th>Description</th>
-        </tr>
-        <tr>
-          <td><code>access_images</code></td>
-          <td>No</td>
-          <td>Image sizes should be powers of 2 in the range of 2<sup>6</sup>
-            through 2<sup>12</sup>.</td>
         </tr>
         <tr>
           <td><code>variant</code></td>
@@ -300,6 +301,25 @@
               stored as dates. If the parsing fails, they will be silently discarded.
               For best compatibility, use the full ISO-8601 date format.
             </p>
+          </td>
+        </tr>
+        <tr>
+          <td><code>images</code></td>
+          <td>No</td>
+          <td>Array of image objects with <code>crop</code>, <code>size</code>,
+            <code>uri</code>, and <code>master</code> keys.
+            <ul>
+              <li>Crops may be <code>full</code> or <code>square</code>.</li>
+              <li>Sizes should be powers of 2 in the range of
+                2<sup><%= Image::MIN_POWER_OF_2_SIZE %></sup>
+                through 2<sup><%= Image::MAX_POWER_OF_2_SIZE %></sup>. There
+                may also be a <code>full</code> size.</li>
+              <li><code>uri</code> should point to an image that is suitable for
+                web delivery without further processing.</li>
+              <li>There may be one <code>master</code> image in the array.
+                This one is full-size and full-crop and not necessarily
+                web-ready.</li>
+            </ul>
           </td>
         </tr>
         <tr>

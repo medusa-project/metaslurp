@@ -11,7 +11,7 @@ Rails.application.routes.draw do
         as: 'auth' # used by omniauth
   resources :collections, path: '/co', only: :index
   resources :elements, only: :index, param: :name
-  resources :items, path: '/it', only: :index do
+  resources :items, path: '/it', only: [:index, :show] do
     match '/image', to: 'items#image', via: :get
   end
   match '/search', to: 'search#index', via: :get

@@ -16,6 +16,27 @@ module ItemsHelper
   end
 
   ##
+  # @param item [Object]
+  # @param iiif_options [Hash] IIIF Image API parameters.
+  # @option iiif_options [String] region
+  # @option iiif_options [String] size
+  # @param options [Hash] Options to pass to image_tag().
+  # @return [String] HTML <img> tag
+  #
+  def iiif_thumbnail_for(item, iiif_options = {}, options = {})
+    iiif_options.symbolize_keys!
+    iiif_options[:region] = 'square' unless iiif_options.has_key?(:region)
+    iiif_options[:size] = 'max' unless iiif_options.has_key?(:size)
+
+    uri = sprintf('%s/%s/%s/%s/0/default.jpg',
+                  Configuration.instance.iiif_endpoint,
+                  item.id,
+                  iiif_options[:region],
+                  iiif_options[:size])
+    image_tag(uri, options.merge('data-location': 'remote'))
+  end
+
+  ##
   # Renders the given items as a series of
   # [Bootstrap media objects](https://getbootstrap.com/docs/4.0/layout/media-object/).
   #
@@ -45,8 +66,14 @@ module ItemsHelper
 
       html << '<li class="media my-4">'
       html <<   '<div class="dl-thumbnail-container">'
-      html <<     thumbnail_for(item, class: 'mr-3',
-                                alt: "Thumbnail for #{item}")
+      if item.images.find(&:master).present?
+        html <<   iiif_thumbnail_for(item,
+                                     { size: '!256,256' },
+                                     { class: 'mr-3', alt: "Thumbnail for #{item}" })
+      else
+        html <<   thumbnail_for(item,
+                                class: 'mr-3', alt: "Thumbnail for #{item}")
+      end
 
       unless thumbnail_is_local?(item)
         # N.B.: this was made by https://loading.io with the following settings:

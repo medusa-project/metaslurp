@@ -16,6 +16,10 @@ module Api
                              source_uri: 'http://example.net/cats')
       @valid_item.elements << SourceElement.new(name: 'name1', value: 'value1')
       @valid_item.elements << SourceElement.new(name: 'name2', value: 'value2')
+      @valid_item.images << Image.new(crop: :full,
+                                      size: :full,
+                                      uri: 'http://example.net/image.tif',
+                                      master: true)
 
       @valid_json = @valid_item.as_json
       @valid_json['harvest_key'] = harvests(:new).key
