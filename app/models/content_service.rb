@@ -1,5 +1,7 @@
 class ContentService < ApplicationRecord
 
+  SUPPORTED_IMAGE_TYPES = %w(image/jpeg image/png image/tiff)
+
   has_many :element_mappings, inverse_of: :content_service
   has_many :harvests, inverse_of: :content_service
   has_one_attached :representative_image
@@ -10,6 +12,7 @@ class ContentService < ApplicationRecord
             uniqueness: { case_sensitive: false }
   validates_format_of :uri, with: URI.regexp,
                       message: 'is invalid', allow_blank: true
+  validate :representative_image_type
 
   after_initialize :init
 
@@ -223,6 +226,17 @@ class ContentService < ApplicationRecord
       end
     end
     self.save! rescue PG::UniqueViolation # this is OK as this method is not thread-safe
+  end
+
+  private
+
+  def representative_image_type
+    if representative_image.attached?
+      unless SUPPORTED_IMAGE_TYPES.include?(representative_image.blob.content_type)
+        representative_image.purge
+        errors[:base] << 'Representative image must be a PNG or TIFF'
+      end
+    end
   end
 
 end
