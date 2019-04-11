@@ -22,6 +22,8 @@
 #
 class ElasticsearchIndex
 
+  LOGGER = CustomLogger.new(ElasticsearchIndex)
+
   ALL_INDEX_TYPES = [ Item::ELASTICSEARCH_INDEX ]
   # Prefixed to all index names used by the application.
   INDEX_NAME_PREFIX = 'metaslurp'
@@ -32,8 +34,6 @@ class ElasticsearchIndex
   # The number in the filename is the schema version.
   #
   SCHEMAS_DIR = File.join(Rails.root, 'app', 'search', 'schemas')
-
-  @@logger = Rails.logger
 
   attr_accessor :type, :version
 
@@ -77,9 +77,8 @@ class ElasticsearchIndex
     current_ver = current_version
     latest_ver = latest_version
 
-    @@logger.info("ElasticsearchIndex.migrate_to_latest(): "\
-      "current version: #{current_ver}; "\
-      "latest version: #{latest_ver}")
+    LOGGER.info('migrate_to_latest(): [current version: %d] [latest version: %d]',
+                current_ver, latest_ver)
 
     client = ElasticsearchClient.instance
 
@@ -102,8 +101,7 @@ class ElasticsearchIndex
 
         Option.set(Option::Keys::ELASTICSEARCH_INDEX_VERSION, latest_ver)
 
-        @@logger.info("ElasticsearchIndex.migrate_to_latest(): "\
-        "now using version #{latest_ver}")
+        LOGGER.info('migrate_to_latest(): now using version %d', latest_ver)
       end
     end
   end

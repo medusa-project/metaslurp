@@ -2,6 +2,8 @@ class ElasticsearchClient
 
   include Singleton
 
+  LOGGER = CustomLogger.new(ElasticsearchClient)
+
   # Field values should be truncated to this length.
   # (32766 total / 3 bytes per character)
   MAX_KEYWORD_FIELD_LENGTH = 10922
@@ -9,8 +11,6 @@ class ElasticsearchClient
   # Default is 10,000. This should remain in sync with the same value in the
   # schema YAML.
   MAX_RESULT_WINDOW = 1000000000
-
-  @@logger = Rails.logger
 
   @@http_client = Faraday.new(url: Configuration.instance.elasticsearch_endpoint)
 
@@ -20,7 +20,7 @@ class ElasticsearchClient
   # @raises [IOError]
   #
   def create_index(index)
-    @@logger.info("ElasticsearchClient.create_index(): creating #{index.name}...")
+    LOGGER.info('create_index(): creating %s...', index.name)
     index_path = '/' + index.name
 
     response = @@http_client.put do |request|
@@ -30,7 +30,7 @@ class ElasticsearchClient
     end
 
     if response.status == 200
-      @@logger.info("ElasticsearchClient.create_index(): created #{index}")
+      LOGGER.info('create_index(): created %s', index)
     else
       raise IOError, "Got #{response.status} for PUT #{index_path}\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
@@ -61,8 +61,7 @@ class ElasticsearchClient
     end
 
     if response.status == 200
-      @@logger.info("ElasticsearchClient.create_index_alias(): "\
-          "#{alias_name} -> #{index_name}")
+      LOGGER.info('create_index_alias(): %s -> %s', alias_name, index_name)
     else
       raise IOError, "Got #{response.status}:\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
@@ -76,8 +75,8 @@ class ElasticsearchClient
   # @raises [IOError]
   #
   def delete_all_documents(index_name, type)
-    @@logger.info("ElasticsearchClient.delete_all_documents(): deleting all "\
-        "documents in index #{index_name}/#{type}...")
+    LOGGER.info('delete_all_documents(): deleting all documents in index %s/%s...',
+                index_name, type)
     path = sprintf('/%s/%s/_delete_by_query?conflicts=proceed',
                    index_name, type)
     body = {
@@ -91,8 +90,8 @@ class ElasticsearchClient
       request.headers['Content-Type'] = 'application/json'
     end
     if response.status == 200
-      @@logger.info("ElasticsearchClient.delete_all_documents(): all "\
-          "documents deleted from #{index_name}")
+      LOGGER.info('delete_all_documents(): all documents deleted from %s',
+                  index_name)
     else
       raise IOError, "Got #{response.status} for POST #{uri}\n#{response.body}"
     end
@@ -105,7 +104,7 @@ class ElasticsearchClient
   #
   def delete_by_query(index, query)
     path = sprintf('/%s/_delete_by_query?pretty', index)
-    @@logger.debug("ElasticsearchClient.delete_by_query(): #{path}\n    #{query}")
+    LOGGER.debug("delete_by_query(): %s\n    %s", path, query)
     response = @@http_client.post do |request|
       request.path = path
       request.body = query
@@ -120,10 +119,10 @@ class ElasticsearchClient
   # @raises [IOError]
   #
   def delete_index(name)
-    @@logger.info("ElasticsearchClient.delete_index(): deleting #{name}...")
+    LOGGER.info('delete_index(): deleting %s...', name)
     response = @@http_client.delete('/' + name)
     if response.status == 200
-      @@logger.info("ElasticsearchClient.delete_index(): #{name} deleted")
+      LOGGER.info('delete_index(): %s deleted', name)
     else
       raise IOError, "Got #{response.status} for #{name}"
     end
@@ -137,8 +136,7 @@ class ElasticsearchClient
     path = sprintf('/%s/_alias/%s', index_name, alias_name)
     response = @@http_client.delete(path)
     if response.status == 200
-      @@logger.info("ElasticsearchClient.delete_index_alias(): deleted "\
-          "#{alias_name}")
+      LOGGER.info('delete_index_alias(): deleted %s', alias_name)
     else
       raise IOError, "Got #{response.status} for DELETE #{path}\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
@@ -161,7 +159,7 @@ class ElasticsearchClient
   #
   def get_document(index_name, type, id)
     path = sprintf('/%s/%s/%s', index_name, type, id)
-    @@logger.debug("ElasticsearchClient.get_document(): #{index_name}/#{id}")
+    LOGGER.debug('get_document(): %s/%s', index_name, id)
     response = @@http_client.get(path)
     case response.status
       when 200
@@ -183,7 +181,7 @@ class ElasticsearchClient
   #
   def index_document(index, type, id, doc)
     path = sprintf('/%s/%s/%s', index, type, id)
-    @@logger.debug("ElasticsearchClient.index_document(): #{index}/#{id}")
+    LOGGER.debug('index_document(): %s/%s', index, id)
     response = @@http_client.put do |request|
       request.path = path
       request.body = JSON.generate(doc)
@@ -232,9 +230,10 @@ class ElasticsearchClient
       request.headers['Content-Type'] = 'application/json'
     end
 
-    @@logger.debug("ElasticsearchClient.query(): #{path.force_encoding('UTF-8')}\n"\
-        "    Request: #{query.force_encoding('UTF-8')}\n"\
-        "    Response: #{response.body.force_encoding('UTF-8')}")
+    LOGGER.debug("query(): %s\n    Request: %s\n    Response: %s",
+                 path.force_encoding('UTF-8'),
+                 query.force_encoding('UTF-8'),
+                 response.body.force_encoding('UTF-8'))
     response.body
   end
 
@@ -259,9 +258,9 @@ class ElasticsearchClient
       request.headers['Content-Type'] = 'application/json'
     end
 
-    @@logger.debug("ElasticsearchClient.reindex():\n"\
-        "    Request: #{body.force_encoding('UTF-8')}\n"\
-        "    Response: #{response.body.force_encoding('UTF-8')}")
+    LOGGER.debug("reindex():\n    Request: %s\n    Response: %s",
+                 body.force_encoding('UTF-8'),
+                 response.body.force_encoding('UTF-8'))
     response.body
   end
 

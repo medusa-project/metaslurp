@@ -77,6 +77,8 @@
 #
 class Item
 
+  LOGGER = CustomLogger.new(Item)
+
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
@@ -316,7 +318,7 @@ class Item
           begin
             doc[e_def.indexed_date_field] = Marc::Dates::parse(value).first&.utc.iso8601
           rescue ArgumentError => e
-            Rails.logger.warn("Item.as_indexed_json(): #{e}")
+            LOGGER.warn('as_indexed_json(): %s', e)
           end
         else
           max_length = ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH
