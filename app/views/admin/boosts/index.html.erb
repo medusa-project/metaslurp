@@ -12,6 +12,24 @@
 
 <h1>Boosts</h1>
 
+<div class="alert alert-info">
+  <p>A boost is a rule stating that if a particular field in an item or
+    collection's indexed document matches a particular value, that
+    item/collection should be considered more or less relevant (depending on
+    whether the boost is positive or negative), and therefore appear earlier
+    or later in results when sorting by relevance.</p>
+  <p>To add a boost:</p>
+
+  <ol>
+    <li>Log in</li>
+    <li>Navigate to an <%= link_to 'item', items_path %> or
+      <%= link_to 'collection', collections_path %> results page</li>
+    <li>Click the "Admin" button on the item you want to affect</li>
+    <li>Navigate to the "Indexed Fields" tab</li>
+    <li>Note the field name and value, and use them for the boost</li>
+  </ol>
+</div>
+
 <div id="dl-boosts">
   <%= render 'boosts' %>
 </div>

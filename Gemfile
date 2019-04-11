@@ -16,17 +16,20 @@ gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'local_time'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
+gem 'mini_racer', platforms: :ruby
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'pg'
-gem 'puma'
-gem 'rails', '~> 5.2.2.1'
+gem 'rails', '~> 5.2.3'
 gem 'sassc'
 gem 'uglifier', '>= 1.3.0'
-
-gem 'mini_racer', platforms: :ruby
 
 group :development, :test do
   #gem 'bootsnap'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'puma'
+end
+
+group :production do
+  gem 'passenger'
 end

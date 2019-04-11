@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+
+  LOGGER = CustomLogger.new(ApplicationController)
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -27,9 +30,11 @@ class ApplicationController < ActionController::Base
   # @param e [Exception, String]
   #
   def handle_error(e)
-    Rails.logger.warn(e)
+    unless e.kind_of?(ActiveRecord::RecordInvalid)
+      LOGGER.warn(e)
+      flash['error'] = "#{e}"
+    end
     response.headers['X-DL-Result'] = 'error'
-    flash['error'] = "#{e}"
   end
 
   ##
