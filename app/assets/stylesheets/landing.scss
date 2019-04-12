@@ -18,11 +18,16 @@
     justify-content: space-between;
 
     h1 {
+      span {
+        background: rgba(0, 0, 0, 0.4);
+        background-clip: padding-box;
+        padding: 6px;
+      }
       color: white;
       font-family: 'Garamond', 'Palatino', 'Book Antiqua', serif;
       font-size: 3em;
       font-weight: 200;
-      margin: 15px 0 0 15px;
+      margin: 15px 0 0 9px;
       text-shadow: 1px 1px 4px black;
     }
 
