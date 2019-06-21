@@ -55,6 +55,7 @@ class ElementDef < ApplicationRecord
   attr_accessor :indexed_facet_field
 
   has_many :element_mappings, inverse_of: :element_def
+  has_many :value_mappings, inverse_of: :element_def
 
   validates :data_type, inclusion: { in: DataType.all }, allow_blank: false
   validates :label, presence: true, uniqueness: { case_sensitive: false }

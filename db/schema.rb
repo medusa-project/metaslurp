@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_01_141226) do
+ActiveRecord::Schema.define(version: 2019_06_21_153110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,10 +132,20 @@ ActiveRecord::Schema.define(version: 2019_04_01_141226) do
     t.index ["username"], name: "index_users_on_username"
   end
 
+  create_table "value_mappings", force: :cascade do |t|
+    t.string "source_value"
+    t.string "local_value"
+    t.bigint "element_def_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["element_def_id", "source_value"], name: "index_value_mappings_on_element_def_id_and_source_value", unique: true
+  end
+
   add_foreign_key "element_mappings", "content_services", on_update: :cascade, on_delete: :cascade
   add_foreign_key "element_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
   add_foreign_key "harvests", "content_services", on_update: :cascade, on_delete: :cascade
   add_foreign_key "harvests", "users", on_update: :cascade, on_delete: :nullify
   add_foreign_key "roles_users", "roles", on_update: :cascade, on_delete: :cascade
   add_foreign_key "roles_users", "users", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "value_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
 end
