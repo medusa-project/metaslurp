@@ -24,7 +24,6 @@
   <thead>
     <tr>
       <th style="width: 1px"></th>
-      <th style="width: 1px"></th>
       <th>Name</th>
       <th>Label</th>
       <th>Data Type</th>
@@ -45,16 +44,6 @@
                     data-element-name="<%= element.name %>">
               <i class="fas fa-edit"></i> Edit
             </button>
-          <% end %>
-        </td>
-        <td>
-          <% if current_user.admin? and !element.system_required? %>
-            <%= link_to admin_element_def_path(element),
-                        class: 'btn btn-danger btn-sm', method: :delete,
-                        data: { confirm: 'Are you sure you want to delete '\
-                        'this element?' } do %>
-               <i class="fas fa-trash"></i> Delete
-            <% end %>
           <% end %>
         </td>
         <td><code><%= link_to element.name, admin_element_def_path(element) %></code></td>

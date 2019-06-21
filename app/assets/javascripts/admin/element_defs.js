@@ -3,7 +3,13 @@
  */
 var DLAdminElementDefsView = function() {
 
+    var self = this;
+
     this.init = function() {
+        self.initEditModal();
+    };
+
+    this.initEditModal = function() {
         var ROOT_URL = $('input[name="dl-root-url"]').val();
 
         $('button.dl-edit-element').on('click', function() {
@@ -18,9 +24,19 @@ var DLAdminElementDefsView = function() {
 
 };
 
+var DLAdminElementDefView = function() {
+
+    this.init = function() {
+        new DLAdminElementDefsView().initEditModal();
+    };
+
+};
+
 var ready = function() {
     if ($('body#dl-admin-elements').length) {
         new DLAdminElementDefsView().init();
+    } else if ($('body#dl-admin-show-element').length) {
+        new DLAdminElementDefView().init();
     }
 };
 

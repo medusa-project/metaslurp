@@ -17,7 +17,7 @@ module Admin
     before_action :require_admin, except: :index
 
     ##
-    # XHR only
+    # Responds to POST /admin/elements (XHR only)
     #
     def create
       @element = ElementDef.new(sanitized_params)
@@ -39,6 +39,8 @@ module Admin
       end
     end
 
+    ##
+    # Responds to DELETE /admin/elements/:name
     def destroy
       element = ElementDef.find_by_name(params[:name])
       raise ActiveRecord::RecordNotFound unless element
@@ -54,7 +56,7 @@ module Admin
     end
 
     ##
-    # XHR only
+    # Responds to GET /admin/elements/:name/edit (XHR only)
     #
     def edit
       element_def = ElementDef.find_by_name(params[:name])
@@ -96,7 +98,7 @@ module Admin
     end
 
     ##
-    # Responds to GET /elements
+    # Responds to GET /admin/elements
     #
     def index
       @elements = ElementDef.all.order(:name)
@@ -123,7 +125,7 @@ module Admin
     end
 
     ##
-    # XHR only
+    # Responds to PATCH /admin/elements/:name (XHR only)
     #
     def update
       element = ElementDef.find_by_name(params[:name])

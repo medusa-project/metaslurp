@@ -73,35 +73,43 @@ module ApplicationHelper
   # @param items [Enumerable<Hash>]
   #
   def button_bar(*items)
-    html = '<div class="btn-group float-right" role="group">'
+    html = StringIO.new
+    html << '<div class="btn-group float-right" role="group">'
 
     items.select{ |item| !item[:if] or item[:if].call }.each do |item|
-      options = {}
-      options[:class] = 'btn ' + (item[:class].present? ? item[:class] : 'btn-light')
-      item[:class] = nil
-      if item[:method].present?
-        options[:method] = item[:method]
-        item[:method] = nil
-      end
+      item.delete(:if)
+      item[:class] = 'btn ' + (item[:class].present? ? item[:class] : 'btn-light')
       if item[:confirm].present?
-        options[:data] = { confirm: item[:confirm] }
-        item[:confirm] = nil
+        item[:'data-confirm'] = item[:confirm]
+        item.delete(:confirm)
+      end
+      if item[:target].present?
+        item[:'data-target'] = item[:target]
+        item[:'data-toggle'] = 'modal'
+        item.delete(:target)
       end
 
       if item[:type] == 'button'
-        html += "<button type=\"button\" class=\"#{options[:class]}\" #{item.map{ |k,v| "#{k}=\"#{v}\"" }.join(' ')}>" +
-            raw((item[:icon].present? ? "<i class=\"fas #{item[:icon]}\"></i> " : ' ')) +
-            item[:label] + '</button>'
+        html << "<button type=\"button\" #{item.map{ |k,v| "#{k}=\"#{v}\"" }.join(' ')}>"
+        if item[:icon].present?
+          html << "<i class=\"fas #{item[:icon]}\"></i> "
+        end
+        html <<   item[:label]
+        html << '</button>'
       else
-        html += link_to(item[:url], options) do
+        attrs = item.dup
+        attrs.delete(:url)
+        attrs.delete(:icon)
+        attrs.delete(:label)
+        html << link_to(item[:url], attrs) do
           raw((item[:icon].present? ? "<i class=\"fas #{item[:icon]}\"></i> " : ' ')) +
-          item[:label]
+              item[:label]
         end
       end
     end
 
-    html += '</div>'
-    raw(html)
+    html << '</div>'
+    raw(html.string)
   end
 
   ##

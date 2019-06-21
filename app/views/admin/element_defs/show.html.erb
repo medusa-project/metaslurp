@@ -7,9 +7,29 @@
                { label: @element.label }) %>
 
 <% if @num_usages > 0 %>
-  <%= button_bar({ label: 'Usages (TSV)',
-                   icon: 'fa-file-alt',
-                   url: admin_element_def_usages_path(@element) }) %>
+  <%= button_bar({
+                     label: 'Usages (TSV)',
+                     icon: 'fa-file-alt',
+                     url: admin_element_def_usages_path(@element)
+                 },
+                 {
+                     label: 'Edit',
+                     icon: 'fa-edit',
+                     class: 'dl-edit-element',
+                     'data-element-name': @element.name,
+                     type: 'button',
+                     target: '#dl-edit-element-modal',
+                     if: -> { current_user.admin? }
+                 },
+                 {
+                     label: 'Delete',
+                     icon: 'fa-trash',
+                     class: 'btn-danger',
+                     url: admin_element_def_path(@element),
+                     method: :delete,
+                     confirm: 'Are you sure you want to delete this element?',
+                     if: -> { current_user.admin? and !@element.system_required? }
+                 }) %>
 <% end %>
 
 <h1><%= @element.label %> <small><code><%= @element.name %></code></small></h1>
@@ -22,3 +42,5 @@
   <dt>Description</dt>
   <dd><%= @element.description %></dd>
 </dl>
+
+<%= render partial: 'edit_modal' %>
