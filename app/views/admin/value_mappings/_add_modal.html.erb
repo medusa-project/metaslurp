@@ -1,0 +1,27 @@
+<%
+# Requires the following locals:
+#
+# element_def [ElementDef]
+#
+%>
+
+<!-- Add-value-mapping modal -->
+<div class="modal fade" id="dl-add-value-mapping-modal" tabindex="-1" role="dialog"
+     aria-labelledby="dl-add-value-mapping-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dl-add-value-mapping-modal-label">Add Value Mapping</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= render partial: 'admin/value_mappings/form', locals: {
+            value_mapping: ValueMapping.new(element_def: element_def),
+            context: :new
+        } %>
+      </div>
+    </div>
+  </div>
+</div>

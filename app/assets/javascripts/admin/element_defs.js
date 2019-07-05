@@ -26,8 +26,25 @@ var DLAdminElementDefsView = function() {
 
 var DLAdminElementDefView = function() {
 
+    var self = this;
+
     this.init = function() {
         new DLAdminElementDefsView().initEditModal();
+        self.initEditValueMappingModal();
+    };
+
+    this.initEditValueMappingModal = function() {
+        var ROOT_URL     = $('input[name="dl-root-url"]').val();
+        var element_name = $('[name=dl-element-name]').val();
+        var panel        = $('#dl-edit-value-mapping-modal');
+
+        $('button.dl-edit-value-mapping').on('click', function() {
+            var url = ROOT_URL + '/admin/elements/' + element_name +
+                '/value-mappings/' + $(this).data('value-mapping-id') + '/edit';
+            $.get(url, function(html) {
+                panel.find('.modal-body').html(html);
+            });
+        });
     };
 
 };

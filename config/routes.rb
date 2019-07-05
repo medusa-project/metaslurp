@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       match '/purge', to: 'content_services#purge', via: :post, as: 'purge'
     end
     resources :element_defs, path: 'elements', param: :name do
+      resources :value_mappings, path: 'value-mappings'
       match '/usages', to: 'element_defs#usages', via: :get, as: 'usages'
     end
     match '/elements/import', to: 'elements#import', via: :post, as: 'element_defs_import'

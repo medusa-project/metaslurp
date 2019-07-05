@@ -1,15 +1,25 @@
-<% if object.errors.any? %>
+<% if object.respond_to?(:errors) %>
+  <% if object.errors.any? %>
+    <div class="card text-white bg-danger mb-3">
+      <div class="card-header">Validation Error</div>
+      <div class="card-body">
+        <h5 class="card-title">
+          <%= pluralize(object.errors.count, 'error') %>
+          prevented this <%= object.class.to_s.underscore.humanize.downcase %>
+          from being saved:</h5>
+        <ul class="card-text">
+          <% object.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+<% else %>
   <div class="card text-white bg-danger mb-3">
     <div class="card-header">Validation Error</div>
     <div class="card-body">
-      <h5 class="card-title"><%= pluralize(object.errors.count, 'error') %>
-        prevented this <%= object.class.to_s.underscore.humanize.downcase %>
-        from being saved:</h5>
-      <ul class="card-text">
-        <% object.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
+      <%= object %>
     </div>
   </div>
 <% end %>

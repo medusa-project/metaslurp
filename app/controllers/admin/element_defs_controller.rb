@@ -41,6 +41,7 @@ module Admin
 
     ##
     # Responds to DELETE /admin/elements/:name
+    #
     def destroy
       element = ElementDef.find_by_name(params[:name])
       raise ActiveRecord::RecordNotFound unless element
@@ -121,6 +122,7 @@ module Admin
       @element = ElementDef.find_by_name(params[:name])
       raise ActiveRecord::RecordNotFound unless @element
 
+      @value_mappings = @element.value_mappings.order(:source_value)
       @num_usages = ElementFinder.new(@element).limit(0).count
     end
 
