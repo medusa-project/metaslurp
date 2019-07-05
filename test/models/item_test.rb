@@ -242,6 +242,18 @@ class ItemTest < ActiveSupport::TestCase
                  struct[LocalElement::DATE_INDEX_PREFIX + 'date']
   end
 
+  test 'as_indexed_json respects value mappings' do
+    e_def = element_defs(:title)
+    mapping = e_def.value_mappings.build(element_def: e_def,
+                                         source_value: 'value',
+                                         local_value: 'the new value')
+    mapping.save!
+
+    struct = @instance.as_indexed_json
+    assert_equal ['the new value'],
+                 struct[LocalElement::TEXT_INDEX_PREFIX + 'title']
+  end
+
   # as_json()
 
   test 'as_json() works' do

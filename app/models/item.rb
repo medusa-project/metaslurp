@@ -321,6 +321,12 @@ class Item
             LOGGER.warn('as_indexed_json(): %s', e)
           end
         else
+          # If the ElementDef has a matching ValueMapping, convert the source
+          # value to the local value.
+          mapping = e_def.value_mappings.where(source_value: value).first
+          if mapping
+            value = mapping.local_value
+          end
           max_length = ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH
           doc[e_def.indexed_sort_field]  << StringUtils.strip_leading_articles(value)[0..max_length]
           # We want to strip tags but not escape entities, which there is
