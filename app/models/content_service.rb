@@ -69,7 +69,7 @@ class ContentService < ApplicationRecord
   #                        harvest hasn't been completed yet.
   #
   def harvest_items_async(harvest)
-    unless Rails.env.production?
+    unless Rails.env.production? or Rails.env.demo?
       raise 'This feature only works in production. '\
         'In development, invoke the harvester from the command line instead.'
     end
@@ -172,8 +172,10 @@ class ContentService < ApplicationRecord
   # @raises [RuntimeError] if not called in the production environment.
   #
   def send_delete_all_items_sns
-    raise 'This method only works in production mode. In development, use '\
-        'the items:delete_from_service rake task.' unless Rails.env.production?
+    unless Rails.env.production? or Rails.env.demo?
+      raise 'This method only works in production mode. In development, use '\
+          'the items:delete_from_service rake task.'
+    end
 
     sns = Aws::SNS::Resource.new(Configuration.instance.aws_region)
     # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
