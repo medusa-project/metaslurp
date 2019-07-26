@@ -39,105 +39,115 @@
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <div class="card bg-dark text-white">
-      <%= thumbnail_for(@services[:dls],
-                        crop: row1_crop,
-                        class: 'card-img-top d-none d-lg-block',
-                        alt: "Thumbnail for #{@services[:dls]}") %>
-      <%= thumbnail_for(@services[:dls],
-                        crop: { width: row1_crop[:width] / 2.0, height: row1_crop[:height] },
-                        class: 'card-img-top d-lg-none',
-                        alt: "Thumbnail for #{@services[:dls]}") %>
-      <div class="card-img-overlay d-flex flex-column justify-content-end">
-        <div class="dl-card-text-backdrop">
-          <h5 class="card-title">
-            <%= link_to 'Digital Special Collections', @services[:dls].uri %>
-          </h5>
-          <p class="card-text d-none d-sm-block">
-            <%= @services[:dls].description %>
-          </p>
+  <% if @services[:dls] %>
+    <div class="col-md-12">
+      <div class="card bg-dark text-white">
+        <%= thumbnail_for(@services[:dls],
+                          crop: row1_crop,
+                          class: 'card-img-top d-none d-lg-block',
+                          alt: "Thumbnail for #{@services[:dls]}") %>
+        <%= thumbnail_for(@services[:dls],
+                          crop: { width: row1_crop[:width] / 2.0, height: row1_crop[:height] },
+                          class: 'card-img-top d-lg-none',
+                          alt: "Thumbnail for #{@services[:dls]}") %>
+        <div class="card-img-overlay d-flex flex-column justify-content-end">
+          <div class="dl-card-text-backdrop">
+            <h5 class="card-title">
+              <%= link_to 'Digital Special Collections', @services[:dls].uri %>
+            </h5>
+            <p class="card-text d-none d-sm-block">
+              <%= @services[:dls].description %>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
 
 <div class="row">
-  <div class="col-lg-6">
-    <div class="card bg-dark text-white">
-      <%= thumbnail_for(@services[:ideals],
-                        crop: rown_crop,
-                        class: 'card-img-top',
-                        alt: "Thumbnail for #{@services[:ideals]}") %>
-      <div class="card-img-overlay d-flex flex-column justify-content-end">
-        <div class="dl-card-text-backdrop">
-          <h5 class="card-title">
-            <%= link_to 'Scholarship', @services[:ideals].uri %>
-          </h5>
-          <p class="card-text d-none d-sm-block">
-            <%= @services[:ideals].description %>
-          </p>
+  <% if @services[:ideals] %>
+    <div class="col-lg-6">
+      <div class="card bg-dark text-white">
+        <%= thumbnail_for(@services[:ideals],
+                          crop: rown_crop,
+                          class: 'card-img-top',
+                          alt: "Thumbnail for #{@services[:ideals]}") %>
+        <div class="card-img-overlay d-flex flex-column justify-content-end">
+          <div class="dl-card-text-backdrop">
+            <h5 class="card-title">
+              <%= link_to 'Scholarship', @services[:ideals].uri %>
+            </h5>
+            <p class="card-text d-none d-sm-block">
+              <%= @services[:ideals].description %>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="card bg-dark text-white">
-      <%= thumbnail_for(@services[:book],
-                        crop: rown_crop,
-                        class: 'card-img-top',
-                        alt: "Thumbnail for #{@services[:book]}") %>
-      <div class="card-img-overlay d-flex flex-column justify-content-end">
-        <div class="dl-card-text-backdrop">
-          <h5 class="card-title">
-            <%= link_to 'Digitized Books',
-                        items_path('fq[]': 'system_keyword_service_key:book') %>
-          </h5>
-          <p class="card-text d-none d-sm-block">
-            <%= @services[:book].description %>
-          </p>
+  <% end %>
+  <% if @services[:book] %>
+    <div class="col-lg-6">
+      <div class="card bg-dark text-white">
+        <%= thumbnail_for(@services[:book],
+                          crop: rown_crop,
+                          class: 'card-img-top',
+                          alt: "Thumbnail for #{@services[:book]}") %>
+        <div class="card-img-overlay d-flex flex-column justify-content-end">
+          <div class="dl-card-text-backdrop">
+            <h5 class="card-title">
+              <%= link_to 'Digitized Books',
+                          items_path('fq[]': 'system_keyword_service_key:book') %>
+            </h5>
+            <p class="card-text d-none d-sm-block">
+              <%= @services[:book].description %>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
 
 <div class="row">
-  <div class="col-lg-6">
-    <div class="card bg-dark text-white">
-      <%= thumbnail_for(@services[:databank],
-                        crop: rown_crop,
-                        class: 'card-img-top',
-                        alt: "Thumbnail for #{@services[:databank]}") %>
-      <div class="card-img-overlay d-flex flex-column justify-content-end">
-        <div class="dl-card-text-backdrop">
-          <h5 class="card-title">
-            <%= link_to 'Research Data', @services[:databank].uri %>
-          </h5>
-          <p class="card-text d-none d-sm-block">
-            <%= @services[:databank].description %>
-          </p>
+  <% if @services[:databank] %>
+    <div class="col-lg-6">
+      <div class="card bg-dark text-white">
+        <%= thumbnail_for(@services[:databank],
+                          crop: rown_crop,
+                          class: 'card-img-top',
+                          alt: "Thumbnail for #{@services[:databank]}") %>
+        <div class="card-img-overlay d-flex flex-column justify-content-end">
+          <div class="dl-card-text-backdrop">
+            <h5 class="card-title">
+              <%= link_to 'Research Data', @services[:databank].uri %>
+            </h5>
+            <p class="card-text d-none d-sm-block">
+              <%= @services[:databank].description %>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="card bg-dark text-white">
-      <%= thumbnail_for(@services[:idnc],
-                        crop: rown_crop,
-                        class: 'card-img-top',
-                        alt: "Thumbnail for #{@services[:idnc]}") %>
-      <div class="card-img-overlay d-flex flex-column justify-content-end">
-        <div class="dl-card-text-backdrop">
-          <h5 class="card-title">
-            <%= link_to 'Digitized Newspapers', @services[:idnc].uri %>
-          </h5>
-          <p class="card-text d-none d-sm-block">
-            <%= @services[:idnc].description %>
-          </p>
+  <% end %>
+  <% if @services[:idnc] %>
+    <div class="col-lg-6">
+      <div class="card bg-dark text-white">
+        <%= thumbnail_for(@services[:idnc],
+                          crop: rown_crop,
+                          class: 'card-img-top',
+                          alt: "Thumbnail for #{@services[:idnc]}") %>
+        <div class="card-img-overlay d-flex flex-column justify-content-end">
+          <div class="dl-card-text-backdrop">
+            <h5 class="card-title">
+              <%= link_to 'Digitized Newspapers', @services[:idnc].uri %>
+            </h5>
+            <p class="card-text d-none d-sm-block">
+              <%= @services[:idnc].description %>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
