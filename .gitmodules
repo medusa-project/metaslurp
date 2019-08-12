@@ -1,0 +1,3 @@
+[submodule "rails-container-scripts"]
+	path = rails-container-scripts
+	url = git@github.com:medusa-project/rails-container-scripts.git

@@ -1,12 +1,9 @@
 FROM ruby:2.6.2
 
-ARG time_zone
-
 ENV RAILS_ENV=production
 ENV RAILS_LOG_TO_STDOUT=true
 ENV RAILS_MAX_THREADS=5
 ENV RAILS_SERVE_STATIC_FILES=false
-ENV TIME_ZONE=$time_zone
 
 RUN mkdir app
 WORKDIR app

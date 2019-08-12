@@ -14,11 +14,15 @@ This is a basic getting-started guide for developers.
 
 # Installation
 
-## 1) Install RVM:
+## 1) Install rbenv:
 
-`$ \curl -sSL https://get.rvm.io | bash -s stable`
-
-`$ source ~/.bash_profile`
+```bash
+$ brew install rbenv
+$ brew install ruby-build
+$ brew install rbenv-gemset --HEAD
+$ rbenv init
+$ rbenv rehash
+```
 
 ## 2) Clone the repository:
 
@@ -29,7 +33,7 @@ $ cd metaslurp
 
 ## 3) Install Ruby
 
-`$ rvm install "$(< .ruby-version)" --autolibs=0`
+`$ rbenv install "$(< .ruby-version)"`
 
 ## 4) Install Bundler
 

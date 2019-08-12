@@ -1,7 +1,9 @@
 # Load the Rails application.
 require_relative 'application'
 
-Rails.logger = ActiveSupport::Logger.new(STDOUT) unless Rails.env.production?
+if Rails.env.development? or Rails.env.test?
+  Rails.logger = ActiveSupport::Logger.new(STDOUT)
+end
 
 # Initialize the Rails application.
 Rails.application.initialize!
