@@ -47,7 +47,7 @@ Rails.application.routes.draw do
     resources :element_defs, path: 'elements', param: :name do
       match '/usages', to: 'element_defs#usages', via: :get, as: 'usages'
     end
-    match '/elements/import', to: 'elements#import', via: :post, as: 'element_defs_import'
+    match '/elements/import', to: 'element_defs#import', via: :post, as: 'element_defs_import'
     resources :harvests, param: :key, only: [:index, :show] do
       match '/abort', to: 'harvests#abort', via: :patch, as: 'abort'
     end
