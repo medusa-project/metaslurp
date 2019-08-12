@@ -56,6 +56,52 @@ class ElementDefTest < ActiveSupport::TestCase
     assert_equal 'title', @instance.to_s
   end
 
+  # update_from_json_struct()
+
+  test 'update_from_json_struct works with string keys' do
+    struct = {
+        'name'        => @instance.name, # name can't be changed
+        'label'       => 'Test Label',
+        'description' => 'A test label',
+        'searchable'  => true,
+        'sortable'    => true,
+        'facetable'   => true,
+        'data_type'   => ElementDef::DataType::STRING,
+        'weight'      => 5
+    }
+    @instance.update_from_json_struct(struct)
+    assert_equal struct['name'], @instance.name
+    assert_equal struct['label'], @instance.label
+    assert_equal struct['description'], @instance.description
+    assert_equal struct['searchable'], @instance.searchable
+    assert_equal struct['sortable'], @instance.sortable
+    assert_equal struct['facetable'], @instance.facetable
+    assert_equal struct['data_type'], @instance.data_type
+    assert_equal struct['weight'], @instance.weight
+  end
+
+  test 'update_from_json_struct works with symbol keys' do
+    struct = {
+        name:        @instance.name, # name can't be changed
+        label:       'Test Label',
+        description: 'A test label',
+        searchable:  true,
+        sortable:    true,
+        facetable:   true,
+        data_type:   ElementDef::DataType::STRING,
+        weight:      5
+    }
+    @instance.update_from_json_struct(struct)
+    assert_equal struct[:name], @instance.name
+    assert_equal struct[:label], @instance.label
+    assert_equal struct[:description], @instance.description
+    assert_equal struct[:searchable], @instance.searchable
+    assert_equal struct[:sortable], @instance.sortable
+    assert_equal struct[:facetable], @instance.facetable
+    assert_equal struct[:data_type], @instance.data_type
+    assert_equal struct[:weight], @instance.weight
+  end
+
   # validate()
 
   test 'validate() restricts name changes' do
