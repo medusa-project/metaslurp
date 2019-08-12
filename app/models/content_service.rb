@@ -113,6 +113,18 @@ class ContentService < ApplicationRecord
                     command: command,
                     environment: [ # this is an additive override
                         {
+                            name: 'SERVICE_SINK_METASLURP_ENDPOINT',
+                            value: config.root_url
+                        },
+                        {
+                            name: 'SERVICE_SINK_METASLURP_USERNAME',
+                            value: 'machine_user'
+                        },
+                        {
+                            name: 'SERVICE_SINK_METASLURP_SECRET',
+                            value: User.find_by_username('machine_user').api_key
+                        },
+                        {
                             name: 'SERVICE_SINK_METASLURP_HARVEST_KEY',
                             value: harvest.key
                         }
