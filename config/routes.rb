@@ -3,9 +3,6 @@
 
 Rails.application.routes.draw do
 
-  match '/', to: redirect(Configuration.instance.dls_url, status: 301),
-        via: :all, as: 'root'
-
   ######################## Public website routes ############################
 
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
@@ -59,5 +56,10 @@ Rails.application.routes.draw do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'
     end
   end
+
+  ############################## Root route ##################################
+
+  match '/', to: redirect(Configuration.instance.dls_url, status: 301),
+        via: :all, as: 'root'
 
 end
