@@ -43,13 +43,6 @@
 
 <div class="row">
   <div class="col-sm-4">
-    <% if @content_service.representative_image.attached? %>
-      <% begin %>
-        <%= image_tag(@content_service.representative_image.variant(resize: "600x400", quality: 60, interlace: 'plane'), class: 'img-fluid') %>
-      <% rescue => e %>
-        <% Rails.logger.error("#{e}") %>
-      <% end %>
-    <% end %>
     <dl>
       <dt>URI</dt>
       <dd><%= @content_service.uri.present? ?
