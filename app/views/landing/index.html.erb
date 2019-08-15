@@ -33,11 +33,6 @@
   </div>
 </div>
 
-<div id="dl-description">
-  <%= sanitize(Option::string(Option::Keys::WEBSITE_INTRO_TEXT)&.gsub("\n", '<br>'),
-               tags: %w(p br), attributes: %w()) %>
-</div>
-
 <div class="row">
   <% if @services[:dls] %>
     <div class="col-md-12">
