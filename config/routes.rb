@@ -3,7 +3,8 @@
 
 Rails.application.routes.draw do
 
-  root 'landing#index'
+  match '/', to: redirect(Configuration.instance.dls_url, status: 301),
+        via: :all, as: 'root'
 
   ######################## Public website routes ############################
 
