@@ -4,7 +4,6 @@ class ContentService < ApplicationRecord
 
   has_many :element_mappings, inverse_of: :content_service
   has_many :harvests, inverse_of: :content_service
-  has_one_attached :representative_image
 
   validates :key, presence: true, length: { maximum: 20 },
             uniqueness: { case_sensitive: false }
@@ -12,7 +11,6 @@ class ContentService < ApplicationRecord
             uniqueness: { case_sensitive: false }
   validates_format_of :uri, with: URI.regexp,
                       message: 'is invalid', allow_blank: true
-  validate :representative_image_type
 
   after_initialize :init
 
@@ -112,6 +110,18 @@ class ContentService < ApplicationRecord
                     name: 'metaslurper',
                     command: command,
                     environment: [ # this is an additive override
+                        {
+                            name: 'SERVICE_SINK_METASLURP_ENDPOINT',
+                            value: config.root_url
+                        },
+                        {
+                            name: 'SERVICE_SINK_METASLURP_USERNAME',
+                            value: 'machine_user'
+                        },
+                        {
+                            name: 'SERVICE_SINK_METASLURP_SECRET',
+                            value: User.find_by_username('machine_user').api_key
+                        },
                         {
                             name: 'SERVICE_SINK_METASLURP_HARVEST_KEY',
                             value: harvest.key
@@ -228,17 +238,6 @@ class ContentService < ApplicationRecord
       end
     end
     self.save! rescue PG::UniqueViolation # this is OK as this method is not thread-safe
-  end
-
-  private
-
-  def representative_image_type
-    if representative_image.attached?
-      unless SUPPORTED_IMAGE_TYPES.include?(representative_image.blob.content_type)
-        representative_image.purge
-        errors[:base] << 'Representative image must be a PNG or TIFF'
-      end
-    end
   end
 
 end

@@ -3,16 +3,17 @@
 
 Rails.application.routes.draw do
 
-  root 'landing#index'
+  match '/', to: redirect(Configuration.instance.dls_url, status: 301),
+        via: :all, as: 'root'
 
   ######################## Public website routes ############################
 
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
         as: 'auth' # used by omniauth
-  resources :collections, path: '/co', only: :index
+  resources :collections, only: :index
   resources :elements, only: :index, param: :name
   match '/health', to: 'health#index', via: :get
-  resources :items, path: '/it', only: [:index, :show] do
+  resources :items, only: [:index, :show] do
     match '/image', to: 'items#image', via: :get
   end
   match '/search', to: 'search#index', via: :get
@@ -48,7 +49,7 @@ Rails.application.routes.draw do
       resources :value_mappings, path: 'value-mappings'
       match '/usages', to: 'element_defs#usages', via: :get, as: 'usages'
     end
-    match '/elements/import', to: 'elements#import', via: :post, as: 'element_defs_import'
+    match '/elements/import', to: 'element_defs#import', via: :post, as: 'element_defs_import'
     resources :harvests, param: :key, only: [:index, :show] do
       match '/abort', to: 'harvests#abort', via: :patch, as: 'abort'
     end
@@ -59,12 +60,5 @@ Rails.application.routes.draw do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'
     end
   end
-
-  # Catch-all route that handles everything else, including DLS and CONTENTdm
-  # redirects, and Rails' 404 handling.
-  match '*path', to: 'fallback#handle', via: :all, constraints: lambda { |request|
-    # Have to do this, otherwise Active Storage will break.
-    request.path.exclude? 'rails/active_storage'
-  }
 
 end

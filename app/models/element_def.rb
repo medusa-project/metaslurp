@@ -156,10 +156,20 @@ class ElementDef < ApplicationRecord
     "#{name}"
   end
 
+  ##
+  # @param struct [Hash]
+  # @return [void]
+  #
   def update_from_json_struct(struct)
-    self.name = struct['name']
-    self.label = struct['label']
+    struct = struct.stringify_keys
+    self.name        = struct['name']
+    self.label       = struct['label']
     self.description = struct['description']
+    self.searchable  = struct['searchable']
+    self.sortable    = struct['sortable']
+    self.facetable   = struct['facetable']
+    self.data_type   = struct['data_type']
+    self.weight      = struct['weight']
     self.save!
   end
 

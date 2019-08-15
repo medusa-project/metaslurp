@@ -10,7 +10,6 @@ This is a basic getting-started guide for developers.
 * Elasticsearch 6.x
     * The [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
       is also required
-* ImageMagick 6.x or later
 
 # Installation
 
