@@ -103,8 +103,10 @@ class Harvest < ApplicationRecord
       nil
     elsif self.progress == 1.0
       now
-    else
+    elsif self.items_per_second > 0
       Time.zone.at(now + ((self.num_items - self.num_succeeded - self.num_failed) / self.items_per_second))
+    else
+      nil
     end
   end
 
