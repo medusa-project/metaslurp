@@ -24,6 +24,14 @@ class ContentServiceTest < ActiveSupport::TestCase
     assert_not_equal @instance, @instance.key
   end
 
+  # delete_all_items_async()
+
+  test 'delete_all_items_async raises an error in the test environment' do
+    assert_raises RuntimeError do
+      @instance.delete_all_items_async
+    end
+  end
+
   # element_def_for_element()
 
   test 'element_def_for_element() with existing mapping' do
@@ -36,18 +44,6 @@ class ContentServiceTest < ActiveSupport::TestCase
     src_elem = SourceElement.new
     src_elem.name = 'bogus'
     assert_nil @instance.element_def_for_element(src_elem)
-  end
-
-  # send_delete_all_items_sns()
-
-  test 'send_delete_all_items_sns raises an error' do
-    assert_raises RuntimeError do
-      @instance.send_delete_all_items_sns
-    end
-  end
-
-  test 'send_delete_all_items_sns works' do
-    # TODO: write this
   end
 
   # update_element_mappings()
