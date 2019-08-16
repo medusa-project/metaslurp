@@ -26,7 +26,7 @@ class ContentService < ApplicationRecord
   # Deletes all items associated with the service from the index.
   #
   # @return [void]
-  # @see send_delete_all_items_sns()
+  # @see delete_all_items_async()
   #
   def delete_all_items
     query = {
@@ -45,6 +45,45 @@ class ContentService < ApplicationRecord
     ElasticsearchClient.instance.delete_by_query(
         ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX),
         JSON.generate(query))
+  end
+
+  ##
+  # Invokes an ECS task to delete all items.
+  #
+  # @return [void]
+  # @see delete_all_items()
+  # @raises [RuntimeError] if not called in the production environment.
+  #
+  def delete_all_items_async
+    unless Rails.env.production? or Rails.env.demo?
+      raise "This method only works in production mode. In development, use "\
+          "the items:delete_from_service rake task."
+    end
+
+    # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#run_task-instance_method
+    config = Configuration.instance
+    ecs = Aws::ECS::Client.new(region: config.aws_region)
+    args = {
+        cluster: config.ecs_cluster,
+        task_definition: config.metaslurp_ecs_task_definition,
+        launch_type: "FARGATE",
+        overrides: {
+            container_overrides: [
+                {
+                    name: config.metaslurp_ecs_task_container,
+                    command: ["bin/rails", "items:delete_from_service[#{self.key}]"]
+                },
+            ]
+        },
+        network_configuration: {
+            awsvpc_configuration: {
+                subnets: [config.ecs_subnet],
+                security_groups: [config.ecs_security_group],
+                assign_public_ip: "ENABLED"
+            },
+        }
+    }
+    ecs.run_task(args)
   end
 
   ##
@@ -101,7 +140,7 @@ class ContentService < ApplicationRecord
     config = Configuration.instance
     ecs = Aws::ECS::Client.new(region: config.aws_region)
     args = {
-        cluster: config.metaslurper_ecs_cluster,
+        cluster: config.ecs_cluster,
         task_definition: config.metaslurper_ecs_task_definition,
         launch_type: 'FARGATE',
         overrides: {
@@ -132,8 +171,8 @@ class ContentService < ApplicationRecord
         },
         network_configuration: {
             awsvpc_configuration: {
-                subnets: [config.metaslurper_ecs_subnet],
-                security_groups: [config.metaslurper_ecs_security_group],
+                subnets: [config.ecs_subnet],
+                security_groups: [config.ecs_security_group],
                 assign_public_ip: 'ENABLED'
             },
         }
@@ -171,43 +210,6 @@ class ContentService < ApplicationRecord
           count
     end
     @num_items
-  end
-
-  ##
-  # Sends an SNS message to delete all items, which will be picked up by an
-  # AWS Lambda function.
-  #
-  # @return [void]
-  # @see delete_all_items()
-  # @raises [RuntimeError] if not called in the production environment.
-  #
-  def send_delete_all_items_sns
-    unless Rails.env.production? or Rails.env.demo?
-      raise 'This method only works in production mode. In development, use '\
-          'the items:delete_from_service rake task.'
-    end
-
-    sns = Aws::SNS::Resource.new(Configuration.instance.aws_region)
-    # https://docs.aws.amazon.com/sdkforruby/api/Aws/SNS/Topic.html#publish-instance_method
-    topic = sns.topic(Configuration.instance.sns_topic_arn)
-    attrs = {
-        message: 'purgeDocuments',
-        message_attributes: {
-            'IndexName' => {
-                data_type: 'String',
-                string_value: ElasticsearchIndex::current(Item::ELASTICSEARCH_INDEX).name
-            },
-            'FieldName' => {
-                data_type: 'String',
-                string_value: Item::IndexFields::SERVICE_KEY
-            },
-            'FieldValue' => {
-                data_type: 'String',
-                string_value: self.key
-            }
-        }
-    }
-    topic.publish(attrs)
   end
 
   def to_param
