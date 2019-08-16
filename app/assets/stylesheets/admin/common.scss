@@ -1,15 +1,19 @@
 body.dl-admin {
   nav.navbar {
-    margin-bottom: 1em;
+    .label {
+      text-transform: uppercase;
+    }
     .navbar-nav > li > a {
       font-size: 0.9em;
       letter-spacing: 1.1px;
       text-transform: uppercase;
     }
   }
-
-  .label {
-    text-transform: uppercase;
+  nav.navbar:nth-child(1) {
+    background-color: #282828;
+  }
+  nav.navbar:nth-child(2) {
+    margin-bottom: 1em;
   }
 
   code {

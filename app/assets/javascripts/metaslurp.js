@@ -43,7 +43,7 @@ var Application = {
         });
 
         // make the active nav bar nav active
-        $('.navbar-nav li').removeClass('active');
+        $('nav:last-child .navbar-nav li').removeClass('active');
         $('.navbar-nav li#' + $('body').attr('data-nav') + '-nav')
             .addClass('active');
 
