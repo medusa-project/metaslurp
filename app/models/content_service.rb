@@ -177,6 +177,16 @@ class ContentService < ApplicationRecord
             },
         }
     }
+
+    # This is a hack to harvest from the demo DLS when running in demo.
+    # DLS is the only content service that requires such an exception.
+    if Rails.env.demo?
+      args[:overrides][:container_overrides][0][:environment] << {
+          name: 'SERVICE_SOURCE_DLS_ENDPOINT',
+          value: config.dls_url
+      }
+    end
+
     response = ecs.run_task(args)
     uuid = response.to_h[:tasks][0][:task_arn].split('/').last
     harvest.update!(ecs_task_uuid: uuid)
