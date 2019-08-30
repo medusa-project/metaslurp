@@ -49,9 +49,6 @@
                   link_to(@content_service.uri, @content_service.uri) : 'None' %></dd>
       <dt>Key</dt>
       <dd><code><%= @content_service.key %></code></dd>
-      <dt>Description</dt>
-      <dd><%= @content_service.description.present? ?
-                  @content_service.description : 'None' %></dd>
       <% if @harvests.any? %>
         <dt>Last <%= Admin::ContentServicesController::HARVEST_WINDOW_SIZE %> Harvests</dt>
         <dd>

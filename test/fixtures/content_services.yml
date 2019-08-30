@@ -4,4 +4,3 @@ one:
   name: ContentServiceOne
   key: one
   uri: http://example.org/1
-  description: A content service.

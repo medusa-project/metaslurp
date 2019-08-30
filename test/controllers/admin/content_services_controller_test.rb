@@ -11,8 +11,7 @@ class ContentServicesControllerTest < ActionDispatch::IntegrationTest
         params: {
             content_service: {
                 name: 'Cats Cats Cats',
-                key: 'cats',
-                description: 'Cats'
+                key: 'cats'
             }
         }
     }
