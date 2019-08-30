@@ -60,7 +60,7 @@ Rails.application.routes.draw do
 
   ############################## Root route ##################################
 
-  match '/', to: redirect(Configuration.instance.dls_url, status: 301),
+  match '/', to: redirect(Configuration.instance.dls_url, status: 303),
         via: :all, as: 'root'
 
 end
