@@ -27,9 +27,15 @@ var DLItemsView = function() {
             });
         });
 
-        $('.dl-thumbnail-container img[data-location="remote"]').on('load', function() {
+        $('.dl-thumbnail-container img[data-location="remote"]').one('load', function() {
             $(this).next('.dl-load-indicator').remove();
             $(this).fadeIn(300);
+        }).on('error', function() {
+            $(this).next('.dl-load-indicator').remove();
+        }).each(function() {
+            if (this.complete) {
+                $(this).trigger('load');
+            }
         });
 
         $('.pagination:eq(1) a').on('click', function() {
