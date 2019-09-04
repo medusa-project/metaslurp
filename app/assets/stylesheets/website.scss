@@ -45,7 +45,7 @@
       max-width: 150px;
     }
     img[data-location="remote"] {
-      display: none; // will be displayed onload via JS
+      opacity: 0; // will be displayed onload via JS
     }
     img[data-type="svg"] {
       opacity: 0.4;
@@ -56,7 +56,6 @@
     .mt-0 {
       margin-bottom: 0.25em;
     }
-
     .dl-info-line {
       color: gray;
       a {
