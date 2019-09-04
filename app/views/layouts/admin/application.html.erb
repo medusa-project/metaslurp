@@ -29,9 +29,6 @@
   <div class="container-fluid">
     <%= flashes %>
 
-    <% # It would be better to use the config.force_ssl config option here,
-       # but this causes problems with the Elastic Beanstalk health check, which
-       # doesn't send an X-Forwarded-Proto header. %>
     <%= hidden_field_tag('dl-root-url', root_url(protocol: (Rails.env.production? or Rails.env.demo?) ? :https : :http)) %>
     <%= hidden_field_tag('dl-root-path', root_path) %>
     <%= hidden_field_tag('dl-current-path', request.fullpath) %>

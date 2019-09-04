@@ -28,10 +28,10 @@ var DLItemsView = function() {
         });
 
         $('.dl-thumbnail-container img[data-location="remote"]').one('load', function() {
-            $(this).next('.dl-load-indicator').remove();
-            $(this).fadeIn(300);
+            $(this).next('.dl-load-indicator').hide();
+            $(this).animate({'opacity': 1}, 300);
         }).on('error', function() {
-            $(this).next('.dl-load-indicator').remove();
+            $(this).next('.dl-load-indicator').hide();
         }).each(function() {
             if (this.complete) {
                 $(this).trigger('load');
