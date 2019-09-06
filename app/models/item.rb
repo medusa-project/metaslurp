@@ -422,6 +422,7 @@ class Item
     # Use the largest available access image up to MAX_THUMBNAIL_SIZE.
     # Prefer a square crop, but return a full crop if it's a better fit.
     self.images
+        .reject{ |im| im.uri.end_with?('.mpg') } # ugly hack; see similar technique in ItemsHelper.items_as_media()
         .select{ |im| im.size <= ApplicationHelper::MAX_THUMBNAIL_SIZE }
         .sort{ |a, b| [a.size, a.crop] <=> [b.size, b.crop] }
         .last
