@@ -66,7 +66,11 @@ module ItemsHelper
 
       html << '<li class="media my-4">'
       html <<   '<div class="dl-thumbnail-container">'
-      if item.images.find(&:master).present?
+      # N.B.: In the DLS, there is a hack to use UI MediaSpace (Kaltura) to
+      # serve video thumbnails, but this application doesn't know anything
+      # about Kaltura, and also can't serve video thumbnails, so we have to
+      # add this `reject` block to screen them out.
+      if item.images.reject{ |im| im.uri.end_with?('.mpg') }.find(&:master).present?
         html <<   iiif_thumbnail_for(item,
                                      { size: '!256,256' },
                                      { class: 'mr-3', alt: "Thumbnail for #{item}" })
