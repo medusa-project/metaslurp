@@ -22,4 +22,4 @@ RUN bin/rails assets:precompile
 
 EXPOSE 3000
 
-CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--max-pool-size=32", "--min-instances=32"]
+CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--max-pool-size=32", "--min-instances=32", "--log-file=/dev/stdout"]
