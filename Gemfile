@@ -6,7 +6,6 @@ git_source(:github) do |repo_name|
 end
 
 gem 'aws-sdk-ecs', '~> 1' # used to trigger harvests
-gem 'aws-sdk-sns', '~> 1' # used to send SNS messages to trigger Lambda functions
 gem 'bootstrap', '~> 4.3'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme'
 gem 'faraday'

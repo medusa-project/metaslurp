@@ -55,28 +55,40 @@ module ItemsHelper
       desc = raw(StringUtils.truncate(item.description, MAX_MEDIA_DESCRIPTION_LENGTH))
 
       # Get the URI to link to.
-      # If the item is from IDNC/Veridian, append the search query in order
-      # to make it appear highlighted on the page.
-      item_uri = item.source_uri
-      if item.content_service.key == 'idnc' and params[:q].present?
-        item_uri += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
-      elsif item.content_service.key == 'book'
-        item_uri = nil # we don't want to link to the Book Tracker
+      ht_url      = item.element(:hathiTrustURL)&.value      # only Book Tracker items will have this
+      ia_url      = item.element(:internetArchiveURL)&.value # ditto
+      catalog_url = item.element(:uiucCatalogURL)&.value     # ditto
+      if ht_url.present?
+        item_url = ht_url
+      elsif ia_url.present?
+        item_url = ia_url
+      elsif catalog_url.present?
+        item_url = catalog_url
+      else
+        # If the item is from IDNC/Veridian, append the search query in order
+        # to make it appear highlighted on the page.
+        item_url = item.source_uri
+        if item.content_service.key == 'idnc' and params[:q].present?
+          item_url += "&e=-------en-20--1--txt-txIN-#{CGI::escape(params[:q])}-------"
+        end
       end
 
       html << '<li class="media my-4">'
       html <<   '<div class="dl-thumbnail-container">'
       # N.B.: In the DLS, there is a hack to use UI MediaSpace (Kaltura) to
       # serve video thumbnails, but this application doesn't know anything
-      # about Kaltura, and also can't serve video thumbnails, so we have to
-      # add this `reject` block to screen them out.
+      # about Kaltura, and also can't serve video thumbnails either, so we use
+      # the `reject` method to screen them out.
       if item.images.reject{ |im| im.uri.end_with?('.mpg') }.find(&:master).present?
-        html <<   iiif_thumbnail_for(item,
-                                     { size: '!256,256' },
-                                     { class: 'mr-3', alt: "Thumbnail for #{item}" })
+        html << link_to(item_url) do
+          iiif_thumbnail_for(item,
+                             { size: '!256,256' },
+                             { class: 'mr-3', alt: "Thumbnail for #{item}" })
+        end
       else
-        html <<   thumbnail_for(item,
-                                class: 'mr-3', alt: "Thumbnail for #{item}")
+        html << link_to(item_url) do
+          thumbnail_for(item, class: 'mr-3', alt: "Thumbnail for #{item}")
+        end
       end
 
       unless thumbnail_is_local?(item)
@@ -87,7 +99,7 @@ module ItemsHelper
       html <<   '</div>'
       html <<   '<div class="media-body">'
       html <<     '<h5 class="mt-0">'
-      html <<       title
+      html <<       link_to(title, item_url)
       if item.date
         html <<     ' <small>'
         html <<       item.date.year
@@ -113,29 +125,24 @@ module ItemsHelper
         info_parts << icon_for(item) + ' ' +
             item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       end
-      ht_url = item.element(:hathiTrustURL) # only Book Tracker items will have this
-      if ht_url
-        info_parts << link_to(ht_url.value) do
+
+      if ht_url.present?
+        info_parts << link_to(ht_url) do
           raw('<i class="fas fa-external-link-alt"></i> HathiTrust')
         end
       end
-
-      ia_url = item.element(:internetArchiveURL) # only Book Tracker items will have this
-      if ia_url
-        info_parts << link_to(ia_url.value) do
+      if ia_url.present?
+        info_parts << link_to(ia_url) do
           raw('<i class="fas fa-external-link-alt"></i> Internet Archive')
         end
       end
-
-      catalog_url = item.element(:uiucCatalogURL) # only Book Tracker items will have this
-      if catalog_url
-        info_parts << link_to("#{catalog_url.value.chomp('/Description')}/Description") do
+      if catalog_url.present?
+        info_parts << link_to("#{catalog_url.chomp('/Description')}/Description") do
           raw('<i class="fas fa-external-link-alt"></i> Library Catalog')
         end
       end
-
-      if !ht_url and !ia_url and !catalog_url
-        info_parts << link_to(item_uri) do
+      if ht_url.blank? and ia_url.blank? and catalog_url.blank?
+        info_parts << link_to(item_url) do
           raw("<i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name}")
         end
       end
