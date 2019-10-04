@@ -13,8 +13,6 @@ Option.set(Option::Keys::COPYRIGHT_STATEMENT,
 Option.set(Option::Keys::DEFAULT_RESULT_WINDOW, 30)
 Option.set(Option::Keys::FACET_TERM_LIMIT, 10)
 Option.set(Option::Keys::ORGANIZATION_NAME, 'My Great Organization')
-Option.set(Option::Keys::WEBSITE_INTRO_TEXT,
-           'Welcome to our great Metadata Gateway.')
 Option.set(Option::Keys::WEBSITE_NAME,
            'My Great Organization Metadata Gateway')
 

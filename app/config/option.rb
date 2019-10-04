@@ -20,7 +20,6 @@ class Option < ApplicationRecord
     ORGANIZATION_NAME = 'organization.name'
     SERVER_STATUS = 'status'
     SERVER_STATUS_MESSAGE = 'status_message'
-    WEBSITE_INTRO_TEXT = 'website.intro_text'
     WEBSITE_NAME = 'website.name'
   end
 
