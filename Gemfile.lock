@@ -67,9 +67,6 @@ GEM
     aws-sdk-ecs (1.30.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
-    aws-sdk-sns (1.9.0)
-      aws-sdk-core (~> 3, >= 3.39.0)
-      aws-sigv4 (~> 1.0)
     aws-sigv4 (1.0.3)
     bootstrap (4.3.1)
       autoprefixer-rails (>= 9.1.0)
@@ -196,7 +193,6 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-ecs (~> 1)
-  aws-sdk-sns (~> 1)
   bootstrap (~> 4.3)
   faraday
   jbuilder (~> 2.5)
