@@ -1,7 +1,7 @@
 module ItemsHelper
 
   MAX_MEDIA_TITLE_LENGTH = 120
-  MAX_MEDIA_DESCRIPTION_LENGTH = 200
+  MAX_MEDIA_DESCRIPTION_LENGTH = 160
 
   ##
   # @return [String]
@@ -100,11 +100,6 @@ module ItemsHelper
       html <<   '<div class="media-body">'
       html <<     '<h5 class="mt-0">'
       html <<       link_to(title, item_url)
-      if item.date
-        html <<     ' <small>'
-        html <<       item.date.year
-        html <<     '</small>'
-      end
       html <<     '</h5>'
       # Display the currently sorted element value, if not date or title (which
       # are already visible), on its own line:
@@ -118,44 +113,54 @@ module ItemsHelper
         html <<   "#{sorted_element.label}: #{el.value}<br>" if el
       end
 
-      # Info line (beneath title)
-      html <<     '<span class="dl-info-line">'
-      info_parts = []
+      # Info line 1
+      html <<     '<span class="dl-info-line dl-info-line-1">'
+      info_1_parts = []
       if options[:include_type]
-        info_parts << icon_for(item) + ' ' +
+        info_1_parts << icon_for(item) + ' ' +
             item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       end
+      if item.element(:creator)
+        info_1_parts << "<i class=\"fas fa-user\"></i> #{item.element(:creator)}"
+      end
+      if item.date
+        info_1_parts << "<i class=\"far fa-calendar-alt\"></i> #{item.date.year}"
+      end
+      if options[:link_to_admin]
+        info_1_parts << link_to(admin_item_path(item), target: '_blank') do
+          raw("<i class=\"fas fa-lock\"></i> Admin")
+        end
+      end
+      html <<       info_1_parts.join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
+      html <<     '</span>'
 
+      # Info line 2
+      html <<     '<span class="dl-info-line dl-info-line-2">'
+      info_2_parts = []
       if ht_url.present?
-        info_parts << link_to(ht_url) do
+        info_2_parts << link_to(ht_url) do
           raw('<i class="fas fa-external-link-alt"></i> HathiTrust')
         end
       end
       if ia_url.present?
-        info_parts << link_to(ia_url) do
+        info_2_parts << link_to(ia_url) do
           raw('<i class="fas fa-external-link-alt"></i> Internet Archive')
         end
       end
       if catalog_url.present?
-        info_parts << link_to("#{catalog_url.chomp('/Description')}/Description") do
+        info_2_parts << link_to("#{catalog_url.chomp('/Description')}/Description") do
           raw('<i class="fas fa-external-link-alt"></i> Library Catalog')
         end
       end
       if ht_url.blank? and ia_url.blank? and catalog_url.blank?
-        info_parts << link_to(item_url) do
-          raw("<i class=\"fas fa-external-link-alt\"></i> #{item.content_service.name}")
+        info_2_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
+        info_2_parts << link_to("#") do
+          raw('<i class="fas fa-folder-open"></i> Collection Name')
         end
       end
 
-      if options[:link_to_admin]
-        info_parts << link_to(admin_item_path(item),
-                        class: 'btn btn-sm btn-light',
-                        target: '_blank') do
-          raw("<i class=\"fas fa-lock\"></i> Admin")
-        end
-      end
-      html <<       info_parts.join(' | ')
-      html <<     '</span><br>'
+      html <<       info_2_parts.join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
+      html <<     '</span>'
       html <<     desc if desc.present?
       html <<   '</div>'
       html << '</li>'
