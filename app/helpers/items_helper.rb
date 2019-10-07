@@ -100,11 +100,6 @@ module ItemsHelper
       html <<   '<div class="media-body">'
       html <<     '<h5 class="mt-0">'
       html <<       link_to(title, item_url)
-      if item.date
-        html <<     ' <small>'
-        html <<       item.date.year
-        html <<     '</small>'
-      end
       html <<     '</h5>'
       # Display the currently sorted element value, if not date or title (which
       # are already visible), on its own line:
@@ -125,7 +120,9 @@ module ItemsHelper
         info_parts << icon_for(item) + ' ' +
             item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
       end
-
+      if item.date
+        info_parts << "<i class=\"far fa-calendar-alt\"></i> #{item.date.year}"
+      end
       if ht_url.present?
         info_parts << link_to(ht_url) do
           raw('<i class="fas fa-external-link-alt"></i> HathiTrust')
