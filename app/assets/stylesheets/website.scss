@@ -38,11 +38,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 160px;
-    height: 150px;
+    width: 190px;
+    height: 180px;
     img {
-      max-height: 150px;
-      max-width: 150px;
+      max-height: 180px;
+      max-width: 180px;
     }
     img[data-location="remote"] {
       opacity: 0; // will be displayed onload via JS
@@ -58,6 +58,9 @@
     }
     .dl-info-line {
       color: gray;
+      display: block;
+      font-size: 0.9em;
+      padding: 0.4em;
       a {
         color: gray;
         text-decoration: none;
@@ -65,6 +68,12 @@
       a:hover {
         text-decoration: underline;
       }
+    }
+    .dl-info-line-1 {
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+    .dl-info-line-2 {
+      background-color: rgba(0, 0, 0, 0.06);
     }
   }
 }
