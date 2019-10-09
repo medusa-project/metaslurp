@@ -1,7 +1,6 @@
 module ItemsHelper
 
   MAX_MEDIA_TITLE_LENGTH = 120
-  MAX_MEDIA_DESCRIPTION_LENGTH = 160
 
   ##
   # @return [String]
@@ -50,9 +49,8 @@ module ItemsHelper
     html = StringIO.new
     html << '<ul class="list-unstyled">'
 
-    items.each do |item|
+    items.each_with_index do |item, index|
       title = raw(StringUtils.truncate(item.title, MAX_MEDIA_TITLE_LENGTH))
-      desc = raw(StringUtils.truncate(item.description, MAX_MEDIA_DESCRIPTION_LENGTH))
 
       # Get the URI to link to.
       ht_url      = item.element(:hathiTrustURL)&.value      # only Book Tracker items will have this
@@ -113,55 +111,79 @@ module ItemsHelper
         html <<   "#{sorted_element.label}: #{el.value}<br>" if el
       end
 
-      # Info line 1
-      html <<     '<span class="dl-info-line dl-info-line-1">'
-      info_1_parts = []
-      if options[:include_type]
-        info_1_parts << icon_for(item) + ' ' +
-            item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
-      end
-      if item.element(:creator)
-        info_1_parts << "<i class=\"fas fa-user\"></i> #{item.element(:creator)}"
-      end
-      if item.date
-        info_1_parts << "<i class=\"far fa-calendar-alt\"></i> #{item.date.year}"
-      end
-      if options[:link_to_admin]
-        info_1_parts << link_to(admin_item_path(item), target: '_blank') do
-          raw("<i class=\"fas fa-lock\"></i> Admin")
-        end
-      end
-      html <<       info_1_parts.join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
-      html <<     '</span>'
-
       # Info line 2
-      html <<     '<span class="dl-info-line dl-info-line-2">'
-      info_2_parts = []
+      html <<     '<span class="dl-info-line">'
+      info_parts = []
       if ht_url.present?
-        info_2_parts << link_to(ht_url) do
+        info_parts << link_to(ht_url) do
           raw('<i class="fas fa-external-link-alt"></i> HathiTrust')
         end
       end
       if ia_url.present?
-        info_2_parts << link_to(ia_url) do
+        info_parts << link_to(ia_url) do
           raw('<i class="fas fa-external-link-alt"></i> Internet Archive')
         end
       end
       if catalog_url.present?
-        info_2_parts << link_to("#{catalog_url.chomp('/Description')}/Description") do
+        info_parts << link_to("#{catalog_url.chomp('/Description')}/Description") do
           raw('<i class="fas fa-external-link-alt"></i> Library Catalog')
         end
       end
       if ht_url.blank? and ia_url.blank? and catalog_url.blank?
-        info_2_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
-        info_2_parts << link_to("#") do
-          raw('<i class="fas fa-folder-open"></i> Collection Name')
+        if true # TODO: if collection
+          info_parts << link_to("#") do
+            raw("<i class=\"fas fa-folder-open\"></i> Collection Name")
+          end
+        end
+        info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
+      end
+
+      html <<       info_parts.join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
+      html <<     '</span>'
+
+      # "More Info" button
+      html <<   "<a class=\"btn btn-light btn-sm\" data-toggle=\"collapse\" "\
+                    "href=\"#result-collapse-#{index}\" role=\"button\" "\
+                    "aria-expanded=\"false\" aria-controls=\"result-collapse-#{index}\">"
+      html <<     '<i class="fa fa-plus"></i> More info&hellip;'
+      html <<   '</a>'
+
+      if options[:link_to_admin]
+        html << link_to(admin_item_path(item),
+                        class: 'btn btn-sm btn-light', target: '_blank') do
+          raw("<i class=\"fas fa-lock\"></i> Admin")
         end
       end
 
-      html <<       info_2_parts.join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
-      html <<     '</span>'
-      html <<     desc if desc.present?
+      # "More Info" collapser
+      html <<   "<div class=\"collapse\" id=\"result-collapse-#{index}\">"
+      html <<     '<dl>'
+      if options[:include_type]
+        html <<     '<dt>Type</dt>'
+        html <<     '<dd>'
+        html <<       icon_for(item) + ' ' +
+            item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
+        html <<     '</dd>'
+      end
+      if item.element(:creator)
+        html <<     '<dt>Creator</dt>'
+        html <<     '<dd>'
+        html <<       item.element(:creator)
+        html <<     '</dd>'
+      end
+      if item.date
+        html <<     '<dt>Date</dt>'
+        html <<     '<dd>'
+        html <<       item.date.year
+        html <<     '</dd>'
+      end
+      if item.description.present?
+        html <<     '<dt>Description</dt>'
+        html <<     '<dd>'
+        html <<       item.description
+        html <<     '</dd>'
+      end
+      html <<     '</dl>'
       html <<   '</div>'
       html << '</li>'
     end

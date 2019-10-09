@@ -60,7 +60,7 @@
       color: gray;
       display: block;
       font-size: 0.9em;
-      padding: 0.4em;
+      padding: 0.2em 0.2em 0.8em 0;
       a {
         color: gray;
         text-decoration: none;
@@ -69,11 +69,9 @@
         text-decoration: underline;
       }
     }
-    .dl-info-line-1 {
-      background-color: rgba(0, 0, 0, 0.06);
-    }
-    .dl-info-line-2 {
-      background-color: rgba(0, 0, 0, 0.06);
+    .collapse, .collapsing {
+      font-size: 0.9em;
+      padding-top: 0.4em;
     }
   }
 }
