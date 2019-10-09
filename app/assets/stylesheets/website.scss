@@ -72,6 +72,13 @@
     .collapse, .collapsing {
       font-size: 0.9em;
       padding-top: 0.4em;
+      dd {
+        ul {
+          margin-left: 0.5em;
+          padding-left: 0.5em;
+          list-style-type: disc;
+        }
+      }
     }
   }
 }

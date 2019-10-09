@@ -19,9 +19,7 @@
   </div>
 </div>
 
-<%= items_as_media(@items,
-                   include_type: true,
-                   link_to_admin: !current_user.nil?) %>
+<%= items_as_media(@items, link_to_admin: !current_user.nil?) %>
 
 <div class="row justify-content-md-center">
   <div class="col-md-auto">
