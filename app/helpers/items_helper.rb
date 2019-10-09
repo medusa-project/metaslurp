@@ -42,7 +42,6 @@ module ItemsHelper
   # @param items [Enumerable<Item>]
   # @param options [Hash]
   # @option options [Boolean] :link_to_admin
-  # @option options [Boolean] :include_type
   # @return [String] HTML string
   #
   def items_as_media(items, options = {})
@@ -158,13 +157,6 @@ module ItemsHelper
       # "More Info" collapser
       html <<   "<div class=\"collapse\" id=\"result-collapse-#{index}\">"
       html <<     '<dl>'
-      if options[:include_type]
-        html <<     '<dt>Type</dt>'
-        html <<     '<dd>'
-        html <<       icon_for(item) + ' ' +
-            item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
-        html <<     '</dd>'
-      end
       creators = item.local_elements.select{ |e| e.name == 'creator' }
       if creators.any?
         html <<     '<dt>Creator</dt>'
