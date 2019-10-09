@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <%= render partial: 'layouts/google_analytics' %>
+
     <title><%= yield(:title).present? ? "#{yield(:title)} | " : '' %>
       <%= Option.string(Option::Keys::WEBSITE_NAME) %></title>
 
