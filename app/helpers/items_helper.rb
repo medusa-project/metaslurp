@@ -165,10 +165,21 @@ module ItemsHelper
             item.variant.underscore.humanize.split(' ').map(&:capitalize).join(' ')
         html <<     '</dd>'
       end
-      if item.element(:creator)
+      creators = item.local_elements.select{ |e| e.name == 'creator' }
+      if creators.any?
         html <<     '<dt>Creator</dt>'
         html <<     '<dd>'
-        html <<       item.element(:creator)
+        if creators.length == 1
+          html <<     creators.first
+        else
+          html <<     '<ul>'
+          creators.each do |creator|
+            html <<     '<li>'
+            html <<       creator
+            html <<     '</li>'
+          end
+          html <<     '</ul>'
+        end
         html <<     '</dd>'
       end
       if item.date
