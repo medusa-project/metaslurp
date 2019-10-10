@@ -340,10 +340,18 @@
             <strong>Must not contain slashes (/) or periods (.).</strong></td>
         </tr>
         <tr>
+          <td><code>container_id</code></td>
+          <td>No</td>
+          <td>ID of a container item in the harvesting application, which
+            typically has a <code>variant</code> of
+            <code><%= Item::Variants::COLLECTION %></code>.
+            Must match the container item's <code>id</code>.</td>
+        </tr>
+        <tr>
           <td><code>parent_id</code></td>
           <td>No</td>
-          <td>ID of a parent item in the harvesting application. Must match
-          the parent item's <code>id</code>.</td>
+          <td>ID of a parent (not container) item in the harvesting
+            application. Must match the parent item's <code>id</code>.</td>
         </tr>
         <tr>
           <td><code>media_type</code></td>

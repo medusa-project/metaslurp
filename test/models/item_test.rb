@@ -4,6 +4,7 @@ class ItemTest < ActiveSupport::TestCase
 
   setup do
     @instance = Item.new(id: 'cats',
+                         container_id: 'container_id',
                          harvest_key: harvests(:new).key,
                          media_type: 'image/jpeg',
                          parent_id: 'felines',
@@ -51,6 +52,7 @@ class ItemTest < ActiveSupport::TestCase
                         'master' => true
                     }
                 ],
+                Item::IndexFields::CONTAINER_ID => 'container_id',
                 Item::IndexFields::FULL_TEXT    => 'Lorem ipsum',
                 Item::IndexFields::HARVEST_KEY  => harvests(:new).key,
                 Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
@@ -71,6 +73,7 @@ class ItemTest < ActiveSupport::TestCase
                 (LocalElement::DATE_INDEX_PREFIX + 'date') => '1987-01-01T00:00:00Z'
             }
         })
+    assert_equal 'container_id', item.container_id
     assert_equal 'Lorem ipsum', item.full_text
     assert_equal harvests(:new).key, item.harvest_key
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
@@ -113,6 +116,7 @@ class ItemTest < ActiveSupport::TestCase
         {
             'variant': Item::Variants::ITEM,
             'id': 'cats',
+            'container_id': 'container_id',
             'harvest_key': harvests(:new).key,
             'media_type': 'image/jpeg',
             'parent_id': 'felines',
@@ -143,6 +147,7 @@ class ItemTest < ActiveSupport::TestCase
         })
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.id
+    assert_equal 'container_id', item.container_id
     assert_equal 'Lorem ipsum', item.full_text
     assert_equal harvests(:new).key, item.harvest_key
     assert_equal 'image/jpeg', item.media_type
@@ -198,6 +203,8 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'as_indexed_json works' do
     struct = @instance.as_indexed_json
+    assert_equal @instance.container_id,
+                 struct[Item::IndexFields::CONTAINER_ID]
     assert_equal @instance.full_text,
                  struct[Item::IndexFields::FULL_TEXT]
     assert_equal @instance.harvest_key,
@@ -248,6 +255,7 @@ class ItemTest < ActiveSupport::TestCase
     struct = @instance.as_json
     assert_equal Item::Variants::ITEM, struct['variant']
     assert_equal 'cats', struct['id']
+    assert_equal 'container_id', struct['container_id']
     assert_equal 'Lorem ipsum', struct['full_text']
     assert_equal harvests(:new).key, struct['harvest_key']
     assert_equal 'image/jpeg', struct['media_type']
@@ -275,6 +283,25 @@ class ItemTest < ActiveSupport::TestCase
 
     assert_equal 'title', struct['elements'][0]['name']
     assert_equal 'value', struct['elements'][0]['value']
+  end
+
+  # container()
+
+  test 'container() returns the container item' do
+    @instance.container_id = @instance.id
+    @instance.save!
+    assert_equal 'cats', @instance.container.id
+  end
+
+  test 'container() raises an error when the container item does not exist' do
+    assert_raises ActiveRecord::RecordNotFound do
+      @instance.container
+    end
+  end
+
+  test 'container() returns nil when there is no container item' do
+    @instance.container_id = nil
+    assert_nil @instance.container
   end
 
   # content_service()
