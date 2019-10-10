@@ -110,7 +110,7 @@ module ItemsHelper
         html <<   "#{sorted_element.label}: #{el.value}<br>" if el
       end
 
-      # Info line 2
+      # Info line
       html <<     '<span class="dl-info-line">'
       info_parts = []
       if ht_url.present?
@@ -129,9 +129,9 @@ module ItemsHelper
         end
       end
       if ht_url.blank? and ia_url.blank? and catalog_url.blank?
-        if true # TODO: if collection
-          info_parts << link_to("#") do
-            raw("<i class=\"fas fa-folder-open\"></i> Collection Name")
+        if item.container
+          info_parts << link_to(item.container.source_uri) do
+            raw("<i class=\"fas fa-folder-open\"></i> #{item.container.title}")
           end
         end
         info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
@@ -140,13 +140,20 @@ module ItemsHelper
       html <<       info_parts.join('&nbsp;&nbsp;&middot;&nbsp;&nbsp;')
       html <<     '</span>'
 
-      # "More Info" button
-      html <<   "<a class=\"btn btn-light btn-sm\" data-toggle=\"collapse\" "\
-                    "href=\"#result-collapse-#{index}\" role=\"button\" "\
-                    "aria-expanded=\"false\" aria-controls=\"result-collapse-#{index}\">"
-      html <<     '<i class="fa fa-plus"></i> More info&hellip;'
-      html <<   '</a>'
+      # Buttons
 
+      creators = item.local_elements.select{ |e| e.name == 'creator' }
+
+      # "More Info" button
+      if creators.any? or item.date or item.description.present?
+        html <<   "<a class=\"btn btn-light btn-sm\" data-toggle=\"collapse\" "\
+                      "href=\"#result-collapse-#{index}\" role=\"button\" "\
+                      "aria-expanded=\"false\" aria-controls=\"result-collapse-#{index}\">"
+        html <<     '<i class="fa fa-plus"></i> More info&hellip;'
+        html <<   '</a>'
+      end
+
+      # Admin button
       if options[:link_to_admin]
         html << link_to(admin_item_path(item),
                         class: 'btn btn-sm btn-light', target: '_blank') do
@@ -157,7 +164,6 @@ module ItemsHelper
       # "More Info" collapser
       html <<   "<div class=\"collapse\" id=\"result-collapse-#{index}\">"
       html <<     '<dl>'
-      creators = item.local_elements.select{ |e| e.name == 'creator' }
       if creators.any?
         html <<     '<dt>Creator</dt>'
         html <<     '<dd>'

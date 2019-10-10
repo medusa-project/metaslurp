@@ -48,6 +48,8 @@
 #
 # # Attributes
 #
+# * container_id:   Identifier of a container (not parent) item--which would
+#                   typically be one with a collection variant.
 # * elements:       Enumerable of SourceElements.
 # * full_text:      Full text.
 # * harvest_key:    Key of the harvest during which the item was last updated.
@@ -55,7 +57,7 @@
 # * images:         Set of associated Images. One of them may be a master image
 #                   (see Image class doc).
 # * local_elements: Enumerable of LocalElements.
-# * parent_id:      Identifier of a parent item.
+# * parent_id:      Identifier of a parent (not container) item.
 # * service_key:    Key of the ContentService from which the instance was
 #                   obtained.
 # * source_id:      Identifier of the instance within its ContentService.
@@ -82,14 +84,16 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :full_text, :harvest_key, :id, :last_indexed, :media_type,
-                :parent_id, :service_key, :source_id, :source_uri, :variant
+  attr_accessor :container_id, :full_text, :harvest_key, :id, :last_indexed,
+                :media_type, :parent_id, :service_key, :source_id, :source_uri,
+                :variant
   attr_reader :elements, :images, :local_elements
 
   ##
   # These should all be dynamic fields if at all possible (see class doc).
   #
   class IndexFields
+    CONTAINER_ID = 'system_keyword_container_id'
     FULL_TEXT    = 'system_text_full_text'
     HARVEST_KEY  = 'system_keyword_harvest_key'
     ID           = '_id'
@@ -163,6 +167,7 @@ class Item
     item.id = jobj[IndexFields::ID]
 
     jsrc              = jobj['_source']
+    item.container_id = jsrc[IndexFields::CONTAINER_ID]
     item.full_text    = jsrc[IndexFields::FULL_TEXT]
     item.harvest_key  = jsrc[IndexFields::HARVEST_KEY]
     item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
@@ -217,15 +222,16 @@ class Item
   def self.from_json(jobj)
     jobj = jobj.stringify_keys
     item = Item.new
-    item.full_text   = jobj['full_text']
-    item.harvest_key = jobj['harvest_key']
-    item.id          = jobj['id']
-    item.media_type  = jobj['media_type']
-    item.parent_id   = jobj['parent_id']
-    item.service_key = jobj['service_key']
-    item.source_id   = jobj['source_id']
-    item.source_uri  = jobj['source_uri']
-    item.variant     = jobj['variant']
+    item.container_id = jobj['container_id']
+    item.full_text    = jobj['full_text']
+    item.harvest_key  = jobj['harvest_key']
+    item.id           = jobj['id']
+    item.media_type   = jobj['media_type']
+    item.parent_id    = jobj['parent_id']
+    item.service_key  = jobj['service_key']
+    item.source_id    = jobj['source_id']
+    item.source_uri   = jobj['source_uri']
+    item.variant      = jobj['variant']
 
     # Read access images.
     if jobj['images'].respond_to?(:each)
@@ -274,6 +280,7 @@ class Item
   #
   def as_indexed_json
     doc = {}
+    doc[IndexFields::CONTAINER_ID] = self.container_id
     doc[IndexFields::FULL_TEXT]    = self.full_text
     doc[IndexFields::HARVEST_KEY]  = self.harvest_key
     doc[IndexFields::IMAGES]       = self.images.map(&:as_json)
@@ -345,18 +352,26 @@ class Item
   #
   def as_json(options = {})
     struct = super(options)
-    struct['images']      = self.images.as_json
-    struct['variant']     = self.variant
-    struct['elements']    = self.elements.map { |e| e.as_json(options) }
-    struct['full_text']   = self.full_text
-    struct['harvest_key'] = self.harvest_key
-    struct['id']          = self.id
-    struct['media_type']  = self.media_type
-    struct['parent_id']   = self.parent_id
-    struct['service_key'] = self.service_key
-    struct['source_id']   = self.source_id
-    struct['source_uri']  = self.source_uri
+    struct['container_id'] = self.container_id
+    struct['images']       = self.images.as_json
+    struct['variant']      = self.variant
+    struct['elements']     = self.elements.map { |e| e.as_json(options) }
+    struct['full_text']    = self.full_text
+    struct['harvest_key']  = self.harvest_key
+    struct['id']           = self.id
+    struct['media_type']   = self.media_type
+    struct['parent_id']    = self.parent_id
+    struct['service_key']  = self.service_key
+    struct['source_id']    = self.source_id
+    struct['source_uri']   = self.source_uri
     struct
+  end
+
+  ##
+  # @return [Item]
+  #
+  def container
+    self.container_id.present? ? Item.find(self.container_id) : nil
   end
 
   ##
