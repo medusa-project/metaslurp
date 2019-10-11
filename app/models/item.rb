@@ -323,7 +323,15 @@ class Item
         case e_def.data_type
         when ElementDef::DataType::DATE
           begin
-            doc[e_def.indexed_date_field] = Marc::Dates::parse(value).first&.utc.iso8601
+            date = Marc::Dates::parse(value).first&.utc
+            # Marc::Dates treats five-digit years as valid, but Elasticsearch
+            # doesn't accept them in date fields. Here we discard
+            # distant-future years.
+            if date.year < 2050
+              doc[e_def.indexed_date_field] = date.iso8601
+            else
+              raise ArgumentError, "Invalid date: #{date}"
+            end
           rescue ArgumentError => e
             LOGGER.warn('as_indexed_json(): %s', e)
           end
