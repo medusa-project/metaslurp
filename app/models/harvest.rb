@@ -81,16 +81,20 @@ class Harvest < ApplicationRecord
   before_save :update_ended_at
 
   ##
-  # @return [Hash] See:
-  #         https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#describe_tasks-instance_method
+  # @return [String] ECS task URI within the AWS web console.
   #
-  def ecs_task
+  def ecs_task_uri
     if self.ecs_task_uuid
+      # See: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#describe_tasks-instance_method
       config = Configuration.instance
       ecs = Aws::ECS::Client.new(region: config.aws_region)
       response = ecs.describe_tasks({ cluster: config.ecs_cluster,
                                       tasks: [ self.ecs_task_uuid ] })
-      response.to_h[:tasks][0]
+      task_arn = response.to_h[:tasks][0][:task_arn]
+
+      sprintf('https://%s.console.aws.amazon.com/ecs/home?region=%s#/clusters/%s/tasks/%s/details',
+              config.aws_region, config.aws_region, config.ecs_cluster,
+              task_arn.scan(/[a-f0-9-]+$/).last)
     end
   end
 
