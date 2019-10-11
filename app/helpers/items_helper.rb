@@ -146,7 +146,7 @@ module ItemsHelper
 
       # "More Info" button
       if creators.any? or item.date or item.description.present?
-        html <<   "<a class=\"btn btn-light btn-sm\" data-toggle=\"collapse\" "\
+        html <<   "<a class=\"btn btn-light btn-sm result-collapse\" data-toggle=\"collapse\" "\
                       "href=\"#result-collapse-#{index}\" role=\"button\" "\
                       "aria-expanded=\"false\" aria-controls=\"result-collapse-#{index}\">"
         html <<     '<i class="fa fa-plus"></i> More info&hellip;'
@@ -162,7 +162,7 @@ module ItemsHelper
       end
 
       # "More Info" collapser
-      html <<   "<div class=\"collapse\" id=\"result-collapse-#{index}\">"
+      html <<   "<div class=\"collapse result-collapse\" id=\"result-collapse-#{index}\">"
       html <<     '<dl>'
       if creators.any?
         html <<     '<dt>Creator</dt>'
