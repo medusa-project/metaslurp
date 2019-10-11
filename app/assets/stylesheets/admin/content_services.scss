@@ -17,6 +17,9 @@ body#dl-admin-content-service {
       text-transform: uppercase;
     }
   }
+  table .btn-danger, table code {
+    white-space: nowrap;
+  }
 }
 
 body#dl-admin-edit-content-service, body#dl-admin-new-content-service {

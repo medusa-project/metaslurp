@@ -16,8 +16,14 @@
       </dd>
       <dt>Key</dt>
       <dd><code><%= @harvest.key %></code></dd>
-      <dt>ECS Task UUID</dt>
-      <dd><%= @harvest.ecs_task_uuid %></dd>
+      <dt>ECS Task</dt>
+      <dd>
+        <% if @harvest.ecs_task_uuid %>
+          <%= link_to(@harvest.ecs_task_uuid, @harvest.ecs_task_uri, target: '_blank') %>
+        <% else %>
+          None
+        <% end %>
+      </dd>
       <dt>Created</dt>
       <dd><%= local_time @harvest.created_at %></dd>
       <dt>Last Updated</dt>
@@ -78,13 +84,6 @@
     </dl>
   </div>
 </div>
-
-<% ecs_task = @harvest.ecs_task %>
-<% if ecs_task %>
-  <hr>
-  <h2>ECS Task</h2>
-  <pre><%= JSON.pretty_generate(ecs_task) %></pre>
-<% end %>
 
 <% if @harvest.message.present? %>
   <hr>
