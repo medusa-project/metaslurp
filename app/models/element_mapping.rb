@@ -9,7 +9,7 @@ class ElementMapping < ApplicationRecord
   validates :source_name, presence: true, length: { maximum: 200 }
 
   def to_s
-    "#{self.source_name} -> #{self.element_def&.name}"
+    "#{self.source_name} -> #{self.element_def&.name || '(unmapped)'}"
   end
 
 end
