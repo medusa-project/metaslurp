@@ -37,8 +37,9 @@ Rails.application.routes.draw do
     match '/configuration', to: 'configuration#index', via: :get
     match '/configuration', to: 'configuration#update', via: :patch
     resources :content_services, param: :key, path: 'content-services' do
-      match '/element-mappings', to: 'content_services#clear_element_mappings',
-            via: :delete, as: 'element_mappings'
+      resources :element_mappings, path: 'element-mappings'
+      match '/clear-element-mappings', to: 'content_services#clear_element_mappings',
+            via: :delete, as: 'clear_element_mappings'
       match '/harvest', to: 'content_services#harvest', via: :post, as: 'harvest'
       match '/purge', to: 'content_services#purge', via: :post, as: 'purge'
     end
