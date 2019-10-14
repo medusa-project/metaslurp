@@ -2,7 +2,20 @@
 
 <div class="card" id="dl-search-status">
   <div class="card-body">
-    <%= search_status(@count, @start, @num_results_shown, 'collection') %>
+    <div class="dl-results-position">
+      <%= search_status(@count, @start, @num_results_shown, 'collection') %>
+    </div>
+    <div class="dl-result-controls form-inline">
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-sm btn-light active">
+          <input type="radio" name="dl-results-style" value="less" autocomplete="off" checked> Less
+        </label>
+        <label class="btn btn-sm btn-light">
+          <input type="radio" name="dl-results-style" value="more" autocomplete="off"> More
+        </label>
+      </div>
+      <%= sort_menu %>
+    </div>
   </div>
 </div>
 
