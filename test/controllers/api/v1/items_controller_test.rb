@@ -8,6 +8,7 @@ module Api
     setup do
       @valid_item = Item.new(id: 'cats',
                              container_id: 'container_id',
+                             container_name: 'Some Container',
                              full_text: 'Lorem ipsum',
                              variant: Item::Variants::ITEM,
                              media_type: 'image/jpeg',

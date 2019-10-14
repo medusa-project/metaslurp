@@ -50,6 +50,8 @@
 #
 # * container_id:   Identifier of a container (not parent) item--which would
 #                   typically be one with a collection variant.
+# * container_name: Name of a container (not parent). Used as a fallback to
+#                   `container_id` when the container is not an Item.
 # * elements:       Enumerable of SourceElements.
 # * full_text:      Full text.
 # * harvest_key:    Key of the harvest during which the item was last updated.
@@ -84,27 +86,28 @@ class Item
   ELASTICSEARCH_INDEX = 'entities'
   ELASTICSEARCH_TYPE = 'entity'
 
-  attr_accessor :container_id, :full_text, :harvest_key, :id, :last_indexed,
-                :media_type, :parent_id, :service_key, :source_id, :source_uri,
-                :variant
+  attr_accessor :container_id, :container_name, :full_text, :harvest_key, :id,
+                :last_indexed, :media_type, :parent_id, :service_key,
+                :source_id, :source_uri, :variant
   attr_reader :elements, :images, :local_elements
 
   ##
   # These should all be dynamic fields if at all possible (see class doc).
   #
   class IndexFields
-    CONTAINER_ID = 'system_keyword_container_id'
-    FULL_TEXT    = 'system_text_full_text'
-    HARVEST_KEY  = 'system_keyword_harvest_key'
-    ID           = '_id'
-    IMAGES       = 'system_object_images'
-    LAST_INDEXED = 'system_date_last_indexed'
-    PARENT_ID    = 'system_keyword_parent_id'
-    MEDIA_TYPE   = 'system_keyword_media_type'
-    SERVICE_KEY  = 'system_keyword_service_key'
-    SOURCE_ID    = 'system_keyword_source_id'
-    SOURCE_URI   = 'system_keyword_source_uri'
-    VARIANT      = 'system_keyword_variant'
+    CONTAINER_ID   = 'system_keyword_container_id'
+    CONTAINER_NAME = 'system_keyword_container_name'
+    FULL_TEXT      = 'system_text_full_text'
+    HARVEST_KEY    = 'system_keyword_harvest_key'
+    ID             = '_id'
+    IMAGES         = 'system_object_images'
+    LAST_INDEXED   = 'system_date_last_indexed'
+    PARENT_ID      = 'system_keyword_parent_id'
+    MEDIA_TYPE     = 'system_keyword_media_type'
+    SERVICE_KEY    = 'system_keyword_service_key'
+    SOURCE_ID      = 'system_keyword_source_id'
+    SOURCE_URI     = 'system_keyword_source_uri'
+    VARIANT        = 'system_keyword_variant'
   end
 
   ##
@@ -166,17 +169,18 @@ class Item
     item = Item.new
     item.id = jobj[IndexFields::ID]
 
-    jsrc              = jobj['_source']
-    item.container_id = jsrc[IndexFields::CONTAINER_ID]
-    item.full_text    = jsrc[IndexFields::FULL_TEXT]
-    item.harvest_key  = jsrc[IndexFields::HARVEST_KEY]
-    item.last_indexed = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
-    item.media_type   = jsrc[IndexFields::MEDIA_TYPE]
-    item.parent_id    = jsrc[IndexFields::PARENT_ID]
-    item.service_key  = jsrc[IndexFields::SERVICE_KEY]
-    item.source_id    = jsrc[IndexFields::SOURCE_ID]
-    item.source_uri   = jsrc[IndexFields::SOURCE_URI]
-    item.variant      = jsrc[IndexFields::VARIANT]
+    jsrc                = jobj['_source']
+    item.container_id   = jsrc[IndexFields::CONTAINER_ID]
+    item.container_name = jsrc[IndexFields::CONTAINER_NAME]
+    item.full_text      = jsrc[IndexFields::FULL_TEXT]
+    item.harvest_key    = jsrc[IndexFields::HARVEST_KEY]
+    item.last_indexed   = Time.iso8601(jsrc[IndexFields::LAST_INDEXED]) rescue nil
+    item.media_type     = jsrc[IndexFields::MEDIA_TYPE]
+    item.parent_id      = jsrc[IndexFields::PARENT_ID]
+    item.service_key    = jsrc[IndexFields::SERVICE_KEY]
+    item.source_id      = jsrc[IndexFields::SOURCE_ID]
+    item.source_uri     = jsrc[IndexFields::SOURCE_URI]
+    item.variant        = jsrc[IndexFields::VARIANT]
 
     # Read access images.
     jsrc[IndexFields::IMAGES]&.each do |struct|
@@ -222,16 +226,17 @@ class Item
   def self.from_json(jobj)
     jobj = jobj.stringify_keys
     item = Item.new
-    item.container_id = jobj['container_id']
-    item.full_text    = jobj['full_text']
-    item.harvest_key  = jobj['harvest_key']
-    item.id           = jobj['id']
-    item.media_type   = jobj['media_type']
-    item.parent_id    = jobj['parent_id']
-    item.service_key  = jobj['service_key']
-    item.source_id    = jobj['source_id']
-    item.source_uri   = jobj['source_uri']
-    item.variant      = jobj['variant']
+    item.container_id   = jobj['container_id']
+    item.container_name = jobj['container_name']
+    item.full_text      = jobj['full_text']
+    item.harvest_key    = jobj['harvest_key']
+    item.id             = jobj['id']
+    item.media_type     = jobj['media_type']
+    item.parent_id      = jobj['parent_id']
+    item.service_key    = jobj['service_key']
+    item.source_id      = jobj['source_id']
+    item.source_uri     = jobj['source_uri']
+    item.variant        = jobj['variant']
 
     # Read access images.
     if jobj['images'].respond_to?(:each)
@@ -280,17 +285,18 @@ class Item
   #
   def as_indexed_json
     doc = {}
-    doc[IndexFields::CONTAINER_ID] = self.container_id
-    doc[IndexFields::FULL_TEXT]    = self.full_text
-    doc[IndexFields::HARVEST_KEY]  = self.harvest_key
-    doc[IndexFields::IMAGES]       = self.images.map(&:as_json)
-    doc[IndexFields::LAST_INDEXED] = Time.now.utc.iso8601
-    doc[IndexFields::MEDIA_TYPE]   = self.media_type
-    doc[IndexFields::PARENT_ID]    = self.parent_id
-    doc[IndexFields::SERVICE_KEY]  = self.service_key
-    doc[IndexFields::SOURCE_ID]    = self.source_id
-    doc[IndexFields::SOURCE_URI]   = self.source_uri
-    doc[IndexFields::VARIANT]      = self.variant
+    doc[IndexFields::CONTAINER_ID]   = self.container_id
+    doc[IndexFields::CONTAINER_NAME] = self.container_name
+    doc[IndexFields::FULL_TEXT]      = self.full_text
+    doc[IndexFields::HARVEST_KEY]    = self.harvest_key
+    doc[IndexFields::IMAGES]         = self.images.map(&:as_json)
+    doc[IndexFields::LAST_INDEXED]   = Time.now.utc.iso8601
+    doc[IndexFields::MEDIA_TYPE]     = self.media_type
+    doc[IndexFields::PARENT_ID]      = self.parent_id
+    doc[IndexFields::SERVICE_KEY]    = self.service_key
+    doc[IndexFields::SOURCE_ID]      = self.source_id
+    doc[IndexFields::SOURCE_URI]     = self.source_uri
+    doc[IndexFields::VARIANT]        = self.variant
 
     # Elements
     self.elements.each do |src_elem|
@@ -354,23 +360,25 @@ class Item
   #
   def as_json(options = {})
     struct = super(options)
-    struct['container_id'] = self.container_id
-    struct['images']       = self.images.as_json
-    struct['variant']      = self.variant
-    struct['elements']     = self.elements.map { |e| e.as_json(options) }
-    struct['full_text']    = self.full_text
-    struct['harvest_key']  = self.harvest_key
-    struct['id']           = self.id
-    struct['media_type']   = self.media_type
-    struct['parent_id']    = self.parent_id
-    struct['service_key']  = self.service_key
-    struct['source_id']    = self.source_id
-    struct['source_uri']   = self.source_uri
+    struct['container_id']   = self.container_id
+    struct['container_name'] = self.container_name
+    struct['images']         = self.images.as_json
+    struct['variant']        = self.variant
+    struct['elements']       = self.elements.map { |e| e.as_json(options) }
+    struct['full_text']      = self.full_text
+    struct['harvest_key']    = self.harvest_key
+    struct['id']             = self.id
+    struct['media_type']     = self.media_type
+    struct['parent_id']      = self.parent_id
+    struct['service_key']    = self.service_key
+    struct['source_id']      = self.source_id
+    struct['source_uri']     = self.source_uri
     struct
   end
 
   ##
-  # @return [Item]
+  # @return [Item] The containing Item, which may be nil, in which case
+  #                `container_name()` should be used instead.
   #
   def container
     self.container_id.present? ? Item.find(self.container_id) : nil
