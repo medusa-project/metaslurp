@@ -5,6 +5,7 @@ class ItemTest < ActiveSupport::TestCase
   setup do
     @instance = Item.new(id: 'cats',
                          container_id: 'container_id',
+                         container_name: 'Some Container',
                          harvest_key: harvests(:new).key,
                          media_type: 'image/jpeg',
                          parent_id: 'felines',
@@ -52,16 +53,17 @@ class ItemTest < ActiveSupport::TestCase
                         'master' => true
                     }
                 ],
-                Item::IndexFields::CONTAINER_ID => 'container_id',
-                Item::IndexFields::FULL_TEXT    => 'Lorem ipsum',
-                Item::IndexFields::HARVEST_KEY  => harvests(:new).key,
-                Item::IndexFields::LAST_INDEXED => '2018-03-21T22:54:27Z',
-                Item::IndexFields::MEDIA_TYPE   => 'image/jpeg',
-                Item::IndexFields::PARENT_ID    => 'felines',
-                Item::IndexFields::SERVICE_KEY  => content_services(:one).key,
-                Item::IndexFields::SOURCE_ID    => 'cats',
-                Item::IndexFields::SOURCE_URI   => 'http://example.org/cats',
-                Item::IndexFields::VARIANT      => Item::Variants::ITEM,
+                Item::IndexFields::CONTAINER_ID   => 'container_id',
+                Item::IndexFields::CONTAINER_NAME => 'Some Container',
+                Item::IndexFields::FULL_TEXT      => 'Lorem ipsum',
+                Item::IndexFields::HARVEST_KEY    => harvests(:new).key,
+                Item::IndexFields::LAST_INDEXED   => '2018-03-21T22:54:27Z',
+                Item::IndexFields::MEDIA_TYPE     => 'image/jpeg',
+                Item::IndexFields::PARENT_ID      => 'felines',
+                Item::IndexFields::SERVICE_KEY    => content_services(:one).key,
+                Item::IndexFields::SOURCE_ID      => 'cats',
+                Item::IndexFields::SOURCE_URI     => 'http://example.org/cats',
+                Item::IndexFields::VARIANT        => Item::Variants::ITEM,
                 (SourceElement::RAW_INDEX_PREFIX + 'title') => [
                     'title 1',
                     'title 2'
@@ -74,6 +76,7 @@ class ItemTest < ActiveSupport::TestCase
             }
         })
     assert_equal 'container_id', item.container_id
+    assert_equal 'Some Container', item.container_name
     assert_equal 'Lorem ipsum', item.full_text
     assert_equal harvests(:new).key, item.harvest_key
     assert_equal Time.iso8601('2018-03-21T22:54:27Z'), item.last_indexed
@@ -117,6 +120,7 @@ class ItemTest < ActiveSupport::TestCase
             'variant': Item::Variants::ITEM,
             'id': 'cats',
             'container_id': 'container_id',
+            'container_name': 'Some Container',
             'harvest_key': harvests(:new).key,
             'media_type': 'image/jpeg',
             'parent_id': 'felines',
@@ -148,6 +152,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Item::Variants::ITEM, item.variant
     assert_equal 'cats', item.id
     assert_equal 'container_id', item.container_id
+    assert_equal 'Some Container', item.container_name
     assert_equal 'Lorem ipsum', item.full_text
     assert_equal harvests(:new).key, item.harvest_key
     assert_equal 'image/jpeg', item.media_type
@@ -205,6 +210,8 @@ class ItemTest < ActiveSupport::TestCase
     struct = @instance.as_indexed_json
     assert_equal @instance.container_id,
                  struct[Item::IndexFields::CONTAINER_ID]
+    assert_equal @instance.container_name,
+                 struct[Item::IndexFields::CONTAINER_NAME]
     assert_equal @instance.full_text,
                  struct[Item::IndexFields::FULL_TEXT]
     assert_equal @instance.harvest_key,
@@ -268,6 +275,7 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal Item::Variants::ITEM, struct['variant']
     assert_equal 'cats', struct['id']
     assert_equal 'container_id', struct['container_id']
+    assert_equal 'Some Container', struct['container_name']
     assert_equal 'Lorem ipsum', struct['full_text']
     assert_equal harvests(:new).key, struct['harvest_key']
     assert_equal 'image/jpeg', struct['media_type']

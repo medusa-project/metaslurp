@@ -133,6 +133,8 @@ module ItemsHelper
           info_parts << link_to(item.container.source_uri) do
             raw("<i class=\"fas fa-folder-open\"></i> #{item.container.title}")
           end
+        elsif item.container_name.present?
+          info_parts << "<i class=\"far fa-building\"></i> #{item.container_name}"
         end
         info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
       end
