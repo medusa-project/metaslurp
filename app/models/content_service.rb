@@ -116,11 +116,17 @@ class ContentService < ApplicationRecord
     end
 
     # https://github.com/medusa-project/metaslurper
+    # N.B.: Multi-threaded harvesting is one of metaslurper's features, but
+    # having more than four or so threads (across all concurrent harvests)
+    # POSTing data back to the application at once can lead to write-block
+    # exceptions in Elasticsearch. The number of threads here is minimized in
+    # order to go easy on our computing resources and increase the number of
+    # possible concurrent harvests.
     command = ['java', '-jar', 'metaslurper.jar',
                '-source', self.key,
                '-sink', 'metaslurp',
                '-log_level', 'info',
-               '-threads', '2']
+               '-threads', '1']
     # If the harvest is incremental, and this service has already been
     # harvested successfully, send the -incremental argument to the harvester
     # with the last successful harvest's ending epoch time.
