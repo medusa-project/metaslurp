@@ -30,9 +30,13 @@
         </td>
         <td><%= harvest_status_badge harvest.status %></td>
         <td><%= (harvest.progress * 100).round(2).to_s + '%' %></td>
-        <td><%= (harvest.usable? and harvest.estimated_completion) ?
-                    time_ago_in_words(harvest.estimated_completion) :
-                    'Unknown' %></td>
+        <td>
+          <% if harvest.usable? %>
+            <%= harvest.estimated_completion ?
+                time_ago_in_words(harvest.estimated_completion) :
+                'Unknown' %>
+          <% end %>
+        </td>
         <td>
           <% if harvest.num_succeeded > 0 %>
             <span class="badge badge-pill badge-success">
