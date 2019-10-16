@@ -1,8 +1,15 @@
 body#dl-admin-item {
+  #nav-descriptive-info {
+    table {
+      td:first-child {
+        white-space: nowrap;
+      }
+    }
+  }
   #nav-indexed-fields {
     table {
-      th:first-child {
-        min-width: 30%;
+      td:first-child {
+        width: 30%;
       }
     }
   }
