@@ -97,7 +97,7 @@ var Application = {
     FilterField: function() {
         var INPUT_DELAY_MSEC = 500;
 
-        $('form.dl-filter').off().submit(function () {
+        $('form.dl-filter').submit(function () {
             $.get(this.action, $(this).serialize(), null, 'script');
             $(this).nextAll('input').addClass('active');
             return false;
@@ -117,7 +117,7 @@ var Application = {
 
         var input_timer;
         // When text is typed in the filter field...
-        $('form.dl-filter input').off().on('keyup', function () {
+        $('form.dl-filter input').off('keyup').on('keyup', function () {
             // Reset the typing-delay counter.
             clearTimeout(input_timer);
 
@@ -129,7 +129,7 @@ var Application = {
         // When form controls accompanying the filter field are changed,
         // resubmit the form via AJAX.
         $('form.dl-filter select, ' +
-            'form.dl-filter input[type=radio]').off().on('change', function() {
+            'form.dl-filter input[type=radio]').off('change').on('change', function() {
             submitForm();
         });
     }
