@@ -49,8 +49,8 @@
         <% if @item.harvest %>
           <%= link_to harvest_title(@item.harvest),
                       admin_harvest_path(@item.harvest) %>
-        <% else %>
-          Unknown
+        <% elsif @item.last_indexed %>
+          <%= local_time(@item.last_indexed) %>
         <% end %>
       </dd>
     </dl>
