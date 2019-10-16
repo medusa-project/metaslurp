@@ -78,13 +78,11 @@ module ItemsHelper
       # the `reject` method to screen them out.
       if item.images.reject{ |im| im.uri.end_with?('.mpg') }.find(&:master).present?
         html << link_to(item_url) do
-          iiif_thumbnail_for(item,
-                             { size: '!256,256' },
-                             { class: 'mr-3', alt: "Thumbnail for #{item}" })
+          iiif_thumbnail_for(item, { size: '!256,256' }, { class: 'mr-3' })
         end
       else
         html << link_to(item_url) do
-          thumbnail_for(item, class: 'mr-3', alt: "Thumbnail for #{item}")
+          thumbnail_for(item, class: 'mr-3')
         end
       end
 
