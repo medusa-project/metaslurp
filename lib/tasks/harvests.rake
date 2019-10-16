@@ -1,5 +1,10 @@
 namespace :harvests do
 
+  desc 'Delete a harvest'
+  task :delete, [:key] => :environment do |task, args|
+    Harvest.find_by_key(args[:key]).destroy!
+  end
+
   desc 'Delete old harvests'
   task :delete_older_than, [:days] => :environment do |task, args|
     days = args[:days].to_i
