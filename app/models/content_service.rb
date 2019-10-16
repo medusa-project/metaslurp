@@ -87,6 +87,39 @@ class ContentService < ApplicationRecord
   end
 
   ##
+  # Deletes items associated with the service from the index if they are older
+  # than the given age in days.
+  #
+  # @param days [Integer]
+  # @return [void]
+  #
+  def delete_items_older_than(days)
+    query = {
+        query: {
+            bool: {
+                must: [
+                    {
+                        term: {
+                            Item::IndexFields::SERVICE_KEY => self.key
+                        }
+                    },
+                    {
+                        range: {
+                            Item::IndexFields::LAST_INDEXED => {
+                                lte: days.days.ago.iso8601
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+    ElasticsearchClient.instance.delete_by_query(
+        ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX),
+        JSON.generate(query))
+  end
+
+  ##
   # @param element [Element]
   # @return [ElementDef]
   #
