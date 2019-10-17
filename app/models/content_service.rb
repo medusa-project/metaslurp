@@ -159,7 +159,7 @@ class ContentService < ApplicationRecord
                '-source', self.key,
                '-sink', 'metaslurp',
                '-log_level', 'info',
-               '-threads', '1']
+               '-threads', '2']
     # If the harvest is incremental, and this service has already been
     # harvested successfully, send the -incremental argument to the harvester
     # with the last successful harvest's ending epoch time.
