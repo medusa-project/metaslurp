@@ -187,7 +187,13 @@ class ContentService < ApplicationRecord
                 {
                     name: 'metaslurper',
                     command: command,
-                    environment: [ # this is an additive override
+                    # Additive environment variable overrides to pass to
+                    # metaslurper.
+                    # Technically these aren't needed because the same info
+                    # is already present in the task definition. It might be
+                    # better to move all of that into this application's
+                    # credentials, but that can wait for a rainy day.
+                    environment: [
                         {
                             name: 'SERVICE_SINK_METASLURP_ENDPOINT',
                             value: config.root_url
@@ -216,21 +222,6 @@ class ContentService < ApplicationRecord
             },
         }
     }
-
-    # This is a hack to harvest from the demo DLS when running in demo.
-    # DLS is the only content service that requires such an exception.
-    # TODO: separate demo & prod metaslurpers
-    if Rails.env.demo?
-      args[:overrides][:container_overrides][0][:environment] << {
-          name: 'SERVICE_SOURCE_DLS_ENDPOINT',
-          value: config.dls_url
-      }
-      args[:overrides][:container_overrides][0][:environment] << {
-          name: 'SERVICE_SOURCE_DLS_SECRET',
-          value: config.dls_secret
-      }
-    end
-
     response = ecs.run_task(args)
     uuid = response.to_h[:tasks][0][:task_arn].split('/').last
     harvest.update!(ecs_task_uuid: uuid)
