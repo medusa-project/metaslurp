@@ -231,7 +231,7 @@ module ItemsHelper
     if sortable_elements.any?
       html << '<select name="sort" class="custom-select my-1 mr-sm-2">'
       html <<   '<optgroup label="Sort by&hellip;">'
-      html <<     sprintf('<option>%s</option>',
+      html <<     sprintf('<option value="">%s</option>',
                           params[:q].present? ? 'Relevance' : 'Default Order')
 
       # If there is an element in the ?sort= query, select it.
