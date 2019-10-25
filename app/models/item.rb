@@ -60,6 +60,7 @@
 #                   (see Image class doc).
 # * local_elements: Enumerable of LocalElements.
 # * parent_id:      Identifier of a parent (not container) item.
+# * score:          Relevance score assigned by Elasticsearch.
 # * service_key:    Key of the ContentService from which the instance was
 #                   obtained.
 # * source_id:      Identifier of the instance within its ContentService.
@@ -87,7 +88,7 @@ class Item
   ELASTICSEARCH_TYPE = 'entity'
 
   attr_accessor :container_id, :container_name, :full_text, :harvest_key, :id,
-                :last_indexed, :media_type, :parent_id, :service_key,
+                :last_indexed, :media_type, :parent_id, :score, :service_key,
                 :source_id, :source_uri, :variant
   attr_reader :elements, :images, :local_elements
 
@@ -168,6 +169,7 @@ class Item
   def self.from_indexed_json(jobj)
     item = Item.new
     item.id = jobj[IndexFields::ID]
+    item.score = jobj['_score'] || 0
 
     jsrc                = jobj['_source']
     item.container_id   = jsrc[IndexFields::CONTAINER_ID]

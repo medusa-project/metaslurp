@@ -1,5 +1,7 @@
 class AbstractFinder
 
+  attr_reader :request_json, :response_json
+
   def initialize
     @client = ElasticsearchClient.instance
 
@@ -15,7 +17,8 @@ class AbstractFinder
 
     @loaded          = false
 
-    @result_json     = {}
+    @request_json    = {}
+    @response_json   = {}
     @result_facets   = []
   end
 
@@ -46,7 +49,7 @@ class AbstractFinder
   #
   def count
     load
-    @result_json['hits']['total']
+    @response_json['hits']['total']
   end
 
   ##
@@ -185,7 +188,7 @@ class AbstractFinder
   #
   def to_a
     load
-    @result_json['hits']['hits'].map{ |r| Item.from_indexed_json(r) }
+    @response_json['hits']['hits'].map{ |r| Item.from_indexed_json(r) }
   end
 
   protected
@@ -206,13 +209,13 @@ class AbstractFinder
   def load
     return if @loaded
 
-    @result_json = get_response
+    @response_json = get_response
 
-    raise IOError, @result_json['error'] if @result_json['error']
+    raise IOError, @response_json['error'] if @response_json['error']
 
     # Assemble the response aggregations into Facets.
     facetable_elements.each do |element|
-      @result_json['aggregations']&.each do |key, agg|
+      @response_json['aggregations']&.each do |key, agg|
         if key == element.indexed_facet_field
           facet = Facet.new
           facet.name = element.label
@@ -242,7 +245,8 @@ class AbstractFinder
 
   def get_response
     index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
-    result = @client.query(index.name, build_query)
+    @request_json = build_query
+    result = @client.query(index.name, @request_json)
     JSON.parse(result)
   end
 

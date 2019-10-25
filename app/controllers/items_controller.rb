@@ -1,3 +1,9 @@
+##
+# Searches items of non-Collection variant.
+#
+# @see CollectionsController
+# @see SearchController
+#
 class ItemsController < ApplicationController
 
   PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start]
@@ -50,11 +56,13 @@ class ItemsController < ApplicationController
         order(params[:sort]).
         start(@start).
         limit(@limit)
-    @items = finder.to_a
-    @facets = finder.facets
-    @count = finder.count
-    @current_page = finder.page
+    @items             = finder.to_a
+    @facets            = finder.facets
+    @count             = finder.count
+    @current_page      = finder.page
     @num_results_shown = [@limit, @count].min
+    @es_request_json   = finder.request_json
+    @es_response_json  = finder.response_json
 
     respond_to do |format|
       format.html

@@ -1,6 +1,9 @@
 ##
 # Searches across items of all variants, a.k.a. everything.
 #
+# @see ItemsController
+# @see CollectionsController
+#
 class SearchController < ApplicationController
 
   PERMITTED_PARAMS = [{ fq: [] }, :q, :sort, :start, :utf8]
@@ -17,11 +20,13 @@ class SearchController < ApplicationController
         order(params[:sort]).
         start(@start).
         limit(@limit)
-    @items = finder.to_a
-    @facets = finder.facets
-    @count = finder.count
-    @current_page = finder.page
+    @items             = finder.to_a
+    @facets            = finder.facets
+    @count             = finder.count
+    @current_page      = finder.page
     @num_results_shown = [@limit, @count].min
+    @es_request_json   = finder.request_json
+    @es_response_json  = finder.response_json
 
     respond_to do |format|
       format.html { render 'items/index' }

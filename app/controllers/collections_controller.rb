@@ -1,3 +1,9 @@
+##
+# Searches items of Collection variant.
+#
+# @see ItemsController
+# @see SearchController
+#
 class CollectionsController < ApplicationController
 
   PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start]
@@ -12,14 +18,16 @@ class CollectionsController < ApplicationController
         query_all(params[:q]).
         facet_filters(params[:fq]).
         include_variants(Item::Variants::COLLECTION).
-        order(ElementDef.new(name: 'title').indexed_sort_field). # TODO: this is ugly
+        order(ElementDef.new(name: 'title').indexed_sort_field).
         start(@start).
         limit(@limit)
-    @items = finder.to_a
-    @facets = finder.facets
-    @count = finder.count
-    @current_page = finder.page
+    @items             = finder.to_a
+    @facets            = finder.facets
+    @count             = finder.count
+    @current_page      = finder.page
     @num_results_shown = [@limit, @count].min
+    @es_request_json   = finder.request_json
+    @es_response_json  = finder.response_json
   end
 
   def show
