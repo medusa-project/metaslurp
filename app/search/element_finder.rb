@@ -22,7 +22,7 @@ class ElementFinder < AbstractFinder
     load
     arr = []
     field = @element.indexed_text_field
-    @result_json['hits']['hits'].each do |r|
+    @response_json['hits']['hits'].each do |r|
       source = r['_source']
       source[field].each do |v|
         arr << {
