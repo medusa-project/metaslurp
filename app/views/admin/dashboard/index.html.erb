@@ -1,3 +1,23 @@
 <% provide(:title, 'Dashboard') %>
 
 <h1>Dashboard</h1>
+
+<table class="table">
+  <thead>
+    <th>Content Service</th>
+    <th>Last Completed Harvest</th>
+  </thead>
+  <tbody>
+    <% ContentService.all.order(:name).each do |service| %>
+      <tr>
+        <td><%= link_to service.name, admin_content_service_path(service) %></td>
+        <td>
+          <% harvest = service.last_completed_harvest %>
+          <% if harvest %>
+            <%= link_to(local_time_ago(harvest.updated_at), admin_harvest_path(harvest)) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
