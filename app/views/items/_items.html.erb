@@ -32,3 +32,9 @@
     <%= @pagination_links %>
   </div>
 </div>
+
+<% if Rails.env.development? %>
+  <%= render partial: 'shared/results_debug', locals: {
+      es_request: @es_request_json,
+      es_response: @es_response_json } %>
+<% end %>

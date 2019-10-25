@@ -1,5 +1,7 @@
 class AbstractFinder
 
+  attr_reader :request_json, :response_json
+
   def initialize
     @client = ElasticsearchClient.instance
 
@@ -15,6 +17,7 @@ class AbstractFinder
 
     @loaded          = false
 
+    @request_json    = {}
     @response_json   = {}
     @result_facets   = []
   end
@@ -242,7 +245,8 @@ class AbstractFinder
 
   def get_response
     index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
-    result = @client.query(index.name, build_query)
+    @request_json = build_query
+    result = @client.query(index.name, @request_json)
     JSON.parse(result)
   end
 
