@@ -65,6 +65,12 @@ namespace :elasticsearch do
       end
     end
 
+    desc 'Rollback the index version'
+    task :rollback => :environment do
+      Option.set(Option::Keys::ELASTICSEARCH_INDEX_VERSION,
+                 ElasticsearchIndex.current_version - 1)
+    end
+
     desc 'Print schema versions'
     task :versions => :environment do |task, args|
       puts "Current: #{ElasticsearchIndex.current_version}"
