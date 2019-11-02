@@ -102,7 +102,7 @@ module Admin
     # Responds to GET /admin/elements
     #
     def index
-      @elements = ElementDef.all.order(:name)
+      @elements = ElementDef.all.order(params[:sort] || :name)
 
       respond_to do |format|
         format.html do
