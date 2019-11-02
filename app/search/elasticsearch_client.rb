@@ -103,7 +103,8 @@ class ElasticsearchClient
   # @return [String] Response body.
   #
   def delete_by_query(index, query)
-    path = sprintf('/%s/_delete_by_query?pretty', index)
+    path = sprintf('/%s/_delete_by_query?pretty&conflicts=proceed&refresh',
+                   index)
     LOGGER.debug("delete_by_query(): %s\n    %s", path, query)
     response = @@http_client.post do |request|
       request.path = path
