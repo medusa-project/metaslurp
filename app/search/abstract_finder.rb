@@ -49,7 +49,11 @@ class AbstractFinder
   #
   def count
     load
-    @response_json['hits']['total']
+    count = @response_json['hits']['total'] # ES 6.x
+    if count.respond_to?(:keys)
+      count = count['value'] # ES 7.x
+    end
+    count
   end
 
   ##

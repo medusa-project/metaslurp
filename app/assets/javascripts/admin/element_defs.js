@@ -7,6 +7,10 @@ var DLAdminElementDefsView = function() {
 
     this.init = function() {
         self.initEditModal();
+
+        $('#dl-sort').on('change', function() {
+            $(this).closest('form').submit();
+        });
     };
 
     this.initEditModal = function() {

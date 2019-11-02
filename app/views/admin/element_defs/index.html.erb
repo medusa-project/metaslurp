@@ -20,6 +20,14 @@
 
 <h1>Elements</h1>
 
+<form class="form-inline">
+  <label for="dl-sort">Sort by:</label>&nbsp;
+  <select class="custom-select mr-sm-2" name="sort" id="dl-sort">
+    <option value="name">Name</option>
+    <option value="weight" <%= params[:sort] == 'weight' ? 'selected' : '' %>>Facet Weight</option>
+  </select>
+</form>
+
 <table class="table">
   <thead>
     <tr>
