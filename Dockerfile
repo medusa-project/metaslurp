@@ -1,9 +1,14 @@
-FROM ruby:2.6.2
+FROM ruby:2.6.2-slim
 
 ENV RAILS_ENV=production
 ENV RAILS_LOG_TO_STDOUT=true
 ENV RAILS_MAX_THREADS=5
 ENV RAILS_SERVE_STATIC_FILES=false
+
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  libpq-dev \
+  git
 
 RUN mkdir app
 WORKDIR app
