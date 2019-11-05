@@ -29,4 +29,5 @@ EXPOSE 3000
 
 # N.B.: --engine=builtin works around an issue with the embedded nginx where
 # large POST requests cause HTTP 5xx errors.
-CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--engine=builtin", "--max-pool-size=32", "--min-instances=32", "--log-file=/dev/stdout"]
+# Also see: https://www.phusionpassenger.com/library/config/standalone/optimization/
+CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--engine=builtin", "--max-pool-size=16", "--min-instances=16", "--log-file=/dev/stdout"]
