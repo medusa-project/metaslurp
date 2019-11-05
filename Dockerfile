@@ -1,9 +1,14 @@
-FROM ruby:2.6.2
+FROM ruby:2.6.2-slim
 
 ENV RAILS_ENV=production
 ENV RAILS_LOG_TO_STDOUT=true
 ENV RAILS_MAX_THREADS=5
 ENV RAILS_SERVE_STATIC_FILES=false
+
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  libpq-dev \
+  git
 
 RUN mkdir app
 WORKDIR app
@@ -24,4 +29,5 @@ EXPOSE 3000
 
 # N.B.: --engine=builtin works around an issue with the embedded nginx where
 # large POST requests cause HTTP 5xx errors.
-CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--engine=builtin", "--max-pool-size=32", "--min-instances=32", "--log-file=/dev/stdout"]
+# Also see: https://www.phusionpassenger.com/library/config/standalone/optimization/
+CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--engine=builtin", "--max-pool-size=16", "--min-instances=16", "--log-file=/dev/stdout"]
