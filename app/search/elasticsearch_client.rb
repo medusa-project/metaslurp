@@ -16,16 +16,20 @@ class ElasticsearchClient
 
   ##
   # @param index [ElasticsearchIndex]
+  # @param num_shards [Integer] Supply a nonzero value to override the default.
   # @return [Boolean]
   # @raises [IOError]
   #
-  def create_index(index)
+  def create_index(index, num_shards = 0)
     LOGGER.info('create_index(): creating %s...', index.name)
     index_path = '/' + index.name
 
+    schema = index.schema
+    schema['settings']['number_of_shards'] = num_shards if num_shards > 0
+
     response = @@http_client.put do |request|
       request.path = index_path
-      request.body = JSON.generate(index.schema)
+      request.body = JSON.generate(schema)
       request.headers['Content-Type'] = 'application/json'
     end
 

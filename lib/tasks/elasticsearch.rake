@@ -3,9 +3,9 @@ namespace :elasticsearch do
   namespace :indexes do
 
     desc 'Create all latest indexes'
-    task :create_latest => :environment do |task, args|
+    task :create_latest, [:num_shards] => :environment do |task, args|
       ElasticsearchIndex::ALL_INDEX_TYPES.each do |type|
-        create_latest_index(type)
+        create_latest_index(type, args[:num_shards].to_i)
       end
     end
 
@@ -94,19 +94,14 @@ namespace :elasticsearch do
     puts 'cURL equivalent: ' + curl_cmd
   end
 
-  def create_current_index(type)
-    index = ElasticsearchIndex.current(type)
-    ElasticsearchClient.instance.create_index(index)
-  end
-
   def delete_current_index(type)
     index = ElasticsearchIndex.current(type)
     ElasticsearchClient.instance.delete_index(index.name)
   end
 
-  def create_latest_index(type)
+  def create_latest_index(type, num_shards)
     index = ElasticsearchIndex.latest(type)
-    ElasticsearchClient.instance.create_index(index)
+    ElasticsearchClient.instance.create_index(index, num_shards)
   end
 
   def delete_latest_index(type)
