@@ -8,6 +8,7 @@ ENV RAILS_SERVE_STATIC_FILES=false
 RUN apt-get update && apt-get install -y \
   build-essential \
   libpq-dev \
+  curl \
   git
 
 RUN mkdir app
