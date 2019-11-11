@@ -7,7 +7,7 @@ gem 'aws-sdk-ecs', '~> 1' # used to trigger harvests
 gem 'bootstrap', '~> 4.3'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme'
 gem 'faraday'
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder'
 gem 'jquery-rails'
 gem 'js_cookie_rails'
 gem 'local_time'
@@ -16,7 +16,7 @@ gem 'mini_racer', platforms: :ruby
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'pg'
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 6.0.1'
 gem 'sassc'
 gem 'uglifier', '>= 1.3.0'
 
