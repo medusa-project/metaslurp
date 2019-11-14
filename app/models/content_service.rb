@@ -175,6 +175,11 @@ class ContentService < ApplicationRecord
       end
     end
 
+    if harvest.max_num_items.to_i > 0
+      command << '-max_entities'
+      command << harvest.max_num_items.to_s
+    end
+
     # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ECS/Client.html#run_task-instance_method
     config = Configuration.instance
     ecs = Aws::ECS::Client.new(region: config.aws_region)

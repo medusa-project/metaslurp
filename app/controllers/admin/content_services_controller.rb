@@ -73,7 +73,8 @@ module Admin
       begin
         harvest = Harvest.create!(content_service: @content_service,
                                   user: current_user,
-                                  incremental: (params[:harvest_type] == 'incremental'))
+                                  incremental: (params[:harvest_type] == 'incremental'),
+                                  max_num_items: ::Configuration.instance.max_items_to_harvest)
         @content_service.harvest_items_async(harvest)
 
         flash['success'] = 'Harvesting will begin shortly.'

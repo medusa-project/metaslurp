@@ -19,6 +19,13 @@ last_completed = content_service.last_completed_harvest
           </button>
         </div>
         <div class="modal-body">
+          <% if Configuration.instance.max_items_to_harvest > 0 %>
+            <div class="alert alert-info">
+              <i class="fa fa-info-circle"></i> Only up to
+              <%= number_with_delimiter(Configuration.instance.max_items_to_harvest) %>
+              entities will be harvested in this environment.
+            </div>
+          <% end %>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="harvest_type"
                    id="harvest-full" value="full" <%= last_completed ? '' : 'checked' %>>
@@ -26,20 +33,17 @@ last_completed = content_service.last_completed_harvest
               Full
             </label>
           </div>
-
-
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="harvest_type"
-                     id="harvest-incremental" value="incremental" <%= last_completed ? 'checked' : 'disabled' %>>
-              <label class="form-check-label" for="harvest-incremental">
-                <% if last_completed %>
-                  Changes since <%= local_time last_completed.created_at %>
-                <% else %>
-                  Incremental (must complete a full harvest first)
-                <% end %>
-              </label>
-            </div>
-
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="harvest_type"
+                   id="harvest-incremental" value="incremental" <%= last_completed ? 'checked' : 'disabled' %>>
+            <label class="form-check-label" for="harvest-incremental">
+              <% if last_completed %>
+                Changes since <%= local_time last_completed.created_at %>
+              <% else %>
+                Incremental (must complete a full harvest first)
+              <% end %>
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

@@ -1,29 +1,44 @@
 ##
-# Represents a process of harvesting one or more records from a source service
-# into the application.
+# Represents a process of harvesting one or more records from a
+# {ContentService} into the application.
 #
-# Harvests are created by a harvester as a first step of harvesting content.
-# A harvest key is associated with each record ingested during the harvest.
-# When the harvest succeeds, fails, or is aborted, the harvester marks it as
-# such via the HTTP API.
+# Harvest instances are created by a harvester as a first step of a harvesting
+# process. A harvest key is associated with each record ingested during the
+# harvest. When the harvest finally succeeds, fails, or is aborted, the
+# harvester marks it as such via the HTTP API.
+#
+# The harvester is a separate application called
+# [metaslurper](https://github.com/medusa-project/metaslurper).
+#
+# # Limiting Harvest Sizes
+#
+# Some {ContentServices} take a long time to harvest fully. The
+# `max_items_to_harvest` configuration key can be used to limit the number of
+# items that get harvested. Effectively this just adds a `-max_entities`
+# argument to the metaslurper invocation.
 #
 # # Attributes
 #
-# * content_service_id:  ID of the ContentService into which content is being
+# * `content_service_id` ID of the {ContentService} into which content is being
 #                        harvested.
-# * created_at:          Managed by Rails.
-# * ended_at:            Time the harvest ended.
-# * key:                 Identifier external to the application.
-# * id:                  Identifier within the application.
-# * message:             Contains arbitrary information from the harvester.
-#                        If num_failed is greater than 0, this may contain
-#                        info about the failures.
-# * num_items:           Total number of items that will be harvested.
-# * num_failed:          Number of items that failed to ingest.
-# * num_succeeded:       Number of items successfully ingested.
-# * status:              One of the Harvest::Status constant values.
-# * updated_at:          Managed by Rails.
-# * user_id:             ID of the User who triggered the harvest.
+# * `created_at`         Managed by Rails.
+# * `ended_at`           Time the harvest ended.
+# * `key`                Identifier external to the application.
+# * `id`                 Identifier within the application.
+# * `max_num_items`      Maximum number of items to harvest, regardless of how
+#                        many are actually contained in the {ContentService}
+#                        (see `num_items`).
+# * `message`            Contains arbitrary information from the harvester.
+#                        If `num_failed` is greater than 0, this may contain
+#                        information about the failures.
+# * `num_items`          Number of items available in the {ContentService}.
+#                        This may be larger than the number of items that will
+#                        actually be harvested (see `max_items`).
+# * `num_failed`         Number of items that failed to ingest.
+# * `num_succeeded`      Number of items successfully ingested.
+# * `status`             One of the {Harvest::Status} constant values.
+# * `updated_at`         Managed by Rails.
+# * `user_id`            ID of the {User} who triggered the harvest.
 #
 class Harvest < ApplicationRecord
 
@@ -31,15 +46,15 @@ class Harvest < ApplicationRecord
   # To add a status:
   #
   # 1. Add it here
-  # 2. Add it to AdminHelper::harvest_status_badge()
-  # 3. Update usable?()
+  # 2. Add it to {AdminHelper#harvest_status_badge}
+  # 3. Update {usable?}
   #
   class Status
-    NEW = 0
-    RUNNING = 1
-    ABORTED = 2
+    NEW       = 0
+    RUNNING   = 1
+    ABORTED   = 2
     SUCCEEDED = 3
-    FAILED = 4
+    FAILED    = 4
 
     ##
     # @return [Enumerable<Integer>] Integer values of all statuses.
@@ -49,7 +64,7 @@ class Harvest < ApplicationRecord
     end
 
     ##
-    # @param status One of the Status constants
+    # @param status One of the {Status} constants
     # @return Human-readable status
     #
     def self.to_s(status)
@@ -79,6 +94,14 @@ class Harvest < ApplicationRecord
   after_initialize :populate_key
   before_validation :restrict_key_changes, :restrict_status_changes
   before_save :update_ended_at
+
+  ##
+  # @return [Integer] Total number of items to harvest, taking into account
+  #                   {num_items} and {max_num_items}.
+  #
+  def canonical_num_items
+    (max_num_items.to_i > 0) ? [max_num_items, num_items].min : num_items
+  end
 
   ##
   # @return [String] ECS task URI within the AWS web console.
