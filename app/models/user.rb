@@ -1,5 +1,7 @@
 class User < ApplicationRecord
 
+  DEVELOPMENT_ADMIN_USERNAME = 'admin'
+
   has_many :harvests, inverse_of: :user
 
   validates :username, presence: true, length: { maximum: 50 },
@@ -8,7 +10,11 @@ class User < ApplicationRecord
   before_create :reset_api_key
 
   def admin?
-    true
+    if Rails.env.development? or Rails.env.test?
+      return self.username == DEVELOPMENT_ADMIN_USERNAME
+    end
+    group = Configuration.instance.medusa_admins_group
+    LdapQuery.new.is_member_of?(group, self.username)
   end
 
   def reset_api_key

@@ -36,32 +36,25 @@
 
 <h1><%= @user.username %></h1>
 
-<div class="row">
-
-  <div class="col-sm-3">
-    <dl>
-      <dt>Type</dt>
-      <dd><%= @user.human ? 'Human' : 'Non-Human' %></dd>
-      <dt>API Key</dt>
-      <dd>
-        <% if @user == current_user %>
-          <% if @user.api_key.present? %>
-            <code><%= @user.api_key %></code>
-          <% else %>
-            None
-          <% end %>
-        <% else %>
-          <% if @user.human %>
-            Only visible to <%= @user %>
-          <% elsif current_user.admin? %>
-            <code><%= @user.api_key %></code>
-          <% else %>
-            Only visible to <%= @user %> and administrators
-          <% end %>
-        <% end %>
-      </dd>
-      <dt>Account Created</dt>
-      <dd><%= local_time_ago(@user.created_at) %></dd>
-    </dl>
-  </div>
-</div>
+<dl>
+  <dt>Type</dt>
+  <dd><%= @user.human ? 'Human' : 'Non-Human' %></dd>
+  <dt>API Key</dt>
+  <dd>
+    <% if @user == current_user %>
+      <% if @user.api_key.present? %>
+        <code><%= @user.api_key %></code>
+      <% else %>
+        None
+      <% end %>
+    <% else %>
+      <% if @user.human %>
+        Only visible to <%= @user %>
+      <% elsif current_user.admin? %>
+        <code><%= @user.api_key %></code>
+      <% else %>
+        Only visible to <%= @user %> and administrators
+      <% end %>
+    <% end %>
+  </dd>
+</dl>

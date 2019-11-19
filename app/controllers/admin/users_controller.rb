@@ -50,8 +50,8 @@ module Admin
     # Responds to GET /admin/users
     #
     def index
-      q = "%#{params[:q]}%"
-      @users = User.where('users.username LIKE ?', q).order('username')
+      @human_users     = User.where(human: true).order(:username)
+      @non_human_users = User.where(human: false).order(:username)
     end
 
     ##

@@ -8,16 +8,6 @@
                      disabled: (context == :edit) %>
   </div>
 
-  <% if current_user.admin? %>
-    <div class="form-group">
-      <div class="checkbox">
-        <label>
-          <%= f.check_box(:human) %> Human
-        </label>
-      </div>
-    </div>
-  <% end %>
-
   <div class="float-right">
     <%= f.submit(context == :new ? 'Create User' : 'Save Changes',
                  class: 'btn btn-primary') %>
