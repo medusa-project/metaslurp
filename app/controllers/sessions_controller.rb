@@ -11,7 +11,7 @@ class SessionsController < WebsiteController
     if auth_hash and auth_hash[:uid]
       username = auth_hash[:uid].split('@').first
       user = User.find_or_create_by!(username: username)
-      if user.admin?
+      if user.medusa_admin?
         return_url = clear_and_return_return_path
         sign_in user
         # We can access other information via auth_hash[:extra][:raw_info][key]

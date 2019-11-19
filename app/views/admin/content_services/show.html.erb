@@ -6,7 +6,7 @@
     { label: 'Content Services', url: admin_content_services_path },
     { label: @content_service.name }) %>
 
-<% if current_user.admin? %>
+<% if current_user.medusa_admin? %>
   <div class="btn-group float-right" role="group">
     <div class="btn-group" role="group">
       <button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle"
@@ -63,7 +63,7 @@
     </dl>
   </div>
   <div class="col-sm-8">
-    <% if current_user.admin? %>
+    <% if current_user.medusa_admin? %>
       <%= button_bar({ label: 'Clear Element Mappings',
                        icon: 'fa-times',
                        url: admin_content_service_clear_element_mappings_path(@content_service),
@@ -88,7 +88,7 @@
       <% @content_service.element_mappings.order(:source_name).each do |mapping| %>
         <tr>
           <td>
-            <% if current_user.admin? %>
+            <% if current_user.medusa_admin? %>
               <%= link_to admin_content_service_element_mapping_path(@content_service, mapping),
                           class: 'btn btn-danger btn-sm', method: :delete,
                           data: { confirm: 'Are you sure you want to delete '\

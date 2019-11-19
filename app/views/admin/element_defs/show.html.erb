@@ -21,7 +21,7 @@
                      'data-element-name': @element.name,
                      type: 'button',
                      target: '#dl-edit-element-modal',
-                     if: -> { current_user.admin? }
+                     if: -> { current_user.medusa_admin? }
                  },
                  {
                      label: 'Delete',
@@ -30,7 +30,7 @@
                      url: admin_element_def_path(@element),
                      method: :delete,
                      confirm: 'Are you sure you want to delete this element?',
-                     if: -> { current_user.admin? and !@element.system_required? }
+                     if: -> { current_user.medusa_admin? and !@element.system_required? }
                  }) %>
 <% end %>
 
@@ -52,7 +52,7 @@
                    icon: 'fa-plus',
                    type: 'button',
                    target: '#dl-add-value-mapping-modal',
-                   if: -> { current_user.admin? }
+                   if: -> { current_user.medusa_admin? }
                }) %>
 
 <h2>Value Mappings</h2>
@@ -61,7 +61,7 @@
   <tbody>
     <% @value_mappings.each do |mapping| %>
       <tr>
-        <% if current_user.admin? %>
+        <% if current_user.medusa_admin? %>
           <td style="width:1px">
             <button type="button" class="btn btn-light btn-sm dl-edit-value-mapping"
                     data-toggle="modal" data-target="#dl-edit-value-mapping-modal"
@@ -70,7 +70,7 @@
             </button>
           </td>
         <% end %>
-        <% if current_user.admin? %>
+        <% if current_user.medusa_admin? %>
           <td style="width:1px">
             <%= link_to admin_element_def_value_mapping_path(@element, mapping),
                         class: 'btn btn-danger btn-sm', method: :delete,

@@ -2,7 +2,7 @@
 <% provide :body_id, 'dl-admin-elements' %>
 <% provide :active_nav, 'elements' %>
 
-<% if current_user.admin? %>
+<% if current_user.medusa_admin? %>
   <%= button_bar({ type: 'button',
                    label: 'Add Element',
                    'data-toggle': 'modal',
@@ -46,7 +46,7 @@
     <% @elements.each do |element| %>
       <tr>
         <td>
-          <% if current_user.admin? %>
+          <% if current_user.medusa_admin? %>
             <button type="button" class="btn btn-light btn-sm dl-edit-element"
                     data-toggle="modal" data-target="#dl-edit-element-modal"
                     data-element-name="<%= element.name %>">

@@ -2,7 +2,7 @@
 <% provide :body_id, 'dl-admin-content-services' %>
 <% provide :active_nav, 'content-services' %>
 
-<% if current_user.admin? %>
+<% if current_user.medusa_admin? %>
   <%= button_bar({ label: 'New Content Service',
                    url: new_admin_content_service_path,
                    icon: 'fa-plus' }) %>

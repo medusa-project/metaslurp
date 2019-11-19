@@ -12,7 +12,7 @@
     <% @boosts.each do |boost| %>
       <tr>
         <td style="width: 1px">
-          <% if current_user.admin? %>
+          <% if current_user.medusa_admin? %>
             <button type="button" class="btn btn-light btn-sm dl-edit-boost"
                     data-toggle="modal" data-target="#dl-edit-boost-modal"
                     data-boost-id="<%= boost.id %>">
@@ -21,7 +21,7 @@
           <% end %>
         </td>
         <td style="width: 1px">
-          <% if current_user.admin? %>
+          <% if current_user.medusa_admin? %>
             <%= link_to admin_boost_path(boost),
                         class: 'btn btn-danger btn-sm', method: :delete,
                         data: { confirm: 'Are you sure you want to delete '\

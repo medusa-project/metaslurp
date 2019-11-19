@@ -2,7 +2,7 @@
 <% provide :body_id, 'dl-admin-boosts' %>
 <% provide :active_nav, 'server' %>
 
-<% if current_user.admin? %>
+<% if current_user.medusa_admin? %>
   <%= button_bar({ type: 'button',
                    label: 'Add Boost',
                    'data-toggle': 'modal',

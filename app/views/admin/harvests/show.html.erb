@@ -6,7 +6,7 @@
                { label: 'Harvests', url: admin_harvests_path },
                { label: harvest_title(@harvest) }) %>
 
-<% if current_user.admin? and @harvest.usable? %>
+<% if current_user.medusa_admin? and @harvest.usable? %>
   <div class="float-right">
     <%= link_to admin_harvest_abort_path(@harvest),
                 class: 'btn btn-danger', method: 'patch',

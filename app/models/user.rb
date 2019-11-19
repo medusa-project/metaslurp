@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   before_create :reset_api_key
 
-  def admin?
+  def medusa_admin?
     if Rails.env.development? or Rails.env.test?
       return self.username == DEVELOPMENT_ADMIN_USERNAME
     end

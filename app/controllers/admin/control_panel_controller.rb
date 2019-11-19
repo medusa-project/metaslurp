@@ -10,7 +10,7 @@ module Admin
     protected
 
     def require_admin
-      unless current_user.admin?
+      unless current_user.medusa_admin?
         flash['error'] = 'You are not authorized to access this resource.'
         redirect_to admin_root_url
       end

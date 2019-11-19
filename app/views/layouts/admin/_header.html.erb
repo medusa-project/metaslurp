@@ -46,7 +46,7 @@
         <%= link_to 'Harvests', admin_harvests_path, class: 'nav-link' %>
       </li>
 
-      <% if current_user.admin? %>
+      <% if current_user.medusa_admin? %>
         <li class="nav-item dropdown" id="server-nav">
           <a class="nav-link dropdown-toggle" id="dl-server-menu-toggle"
              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">

@@ -1,6 +1,6 @@
 <%= button_bar({ label: 'New Non-Human User',
                  icon: 'fa-plus',
-                 if: lambda { current_user.admin? },
+                 if: lambda { current_user.medusa_admin? },
                  url: new_admin_user_path }) %>
 
 <h2>Non-Human Users
