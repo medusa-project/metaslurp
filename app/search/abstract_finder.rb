@@ -13,7 +13,6 @@ class AbstractFinder
     @orders          = [] # Array<Hash<Symbol,String>> with :field and :direction keys
     @query           = nil # Hash<Symbol,String> Hash with :field and :query keys
     @start           = 0
-    @user_roles      = []
 
     @loaded          = false
 

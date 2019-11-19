@@ -40,18 +40,6 @@
 
   <div class="col-sm-3">
     <dl>
-      <dt>Roles</dt>
-      <dd>
-        <% if @user.roles.any? %>
-          <ul>
-            <% @user.roles.each do |role| %>
-              <li><%= link_to role.name, admin_role_path(role) %></li>
-            <% end %>
-          </ul>
-        <% else %>
-          None
-        <% end %>
-      </dd>
       <dt>Type</dt>
       <dd><%= @user.human ? 'Human' : 'Non-Human' %></dd>
       <dt>API Key</dt>
