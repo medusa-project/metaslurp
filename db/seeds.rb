@@ -16,13 +16,8 @@ Option.set(Option::Keys::ORGANIZATION_NAME, 'My Great Organization')
 Option.set(Option::Keys::WEBSITE_NAME,
            'My Great Organization Metadata Gateway')
 
-# Roles
-admin_role = Role.create!(key: 'admin', name: 'Administrators')
-
 # Users
-admin = User.new(username: 'admin')
-admin.roles << admin_role
-admin.save!
+User.create!(username: 'admin')
 
 # Elements
 ElementDef.create!(index: 0, name: 'title', label: 'Title',

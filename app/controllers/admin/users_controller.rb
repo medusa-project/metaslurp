@@ -44,7 +44,6 @@ module Admin
     def edit
       @user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless @user
-      @roles = Role.all.order(:name)
     end
 
     ##
@@ -60,7 +59,6 @@ module Admin
     #
     def new
       @user = User.new
-      @roles = Role.all.order(:name)
     end
 
     ##
@@ -100,7 +98,6 @@ module Admin
       begin
         @user.update_attributes!(sanitized_params)
       rescue => e
-        @roles = Role.all.order(:name)
         handle_error(e)
         render 'edit'
       else
@@ -112,7 +109,7 @@ module Admin
     private
 
     def sanitized_params
-      params.require(:user).permit(:human, :username, role_ids: [])
+      params.require(:user).permit(:human, :username)
     end
 
   end

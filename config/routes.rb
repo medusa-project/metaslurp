@@ -52,7 +52,6 @@ Rails.application.routes.draw do
       match '/abort', to: 'harvests#abort', via: :patch, as: 'abort'
     end
     resources :items, only: :show
-    resources :roles, param: :key
     resources :users, param: :username do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'
     end

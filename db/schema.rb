@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_14_204809) do
+ActiveRecord::Schema.define(version: 2019_11_19_185724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,19 +89,6 @@ ActiveRecord::Schema.define(version: 2019_11_14_204809) do
     t.index ["key"], name: "index_options_on_key"
   end
 
-  create_table "roles", force: :cascade do |t|
-    t.string "key"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["key"], name: "index_roles_on_key"
-  end
-
-  create_table "roles_users", id: false, force: :cascade do |t|
-    t.bigint "role_id", null: false
-    t.bigint "user_id", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.datetime "created_at", null: false
@@ -124,7 +111,5 @@ ActiveRecord::Schema.define(version: 2019_11_14_204809) do
   add_foreign_key "element_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
   add_foreign_key "harvests", "content_services", on_update: :cascade, on_delete: :cascade
   add_foreign_key "harvests", "users", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "roles_users", "roles", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "roles_users", "users", on_update: :cascade, on_delete: :cascade
   add_foreign_key "value_mappings", "element_defs", on_update: :cascade, on_delete: :cascade
 end

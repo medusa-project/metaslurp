@@ -46,17 +46,6 @@
         <%= link_to 'Harvests', admin_harvests_path, class: 'nav-link' %>
       </li>
 
-      <li class="nav-item dropdown" id="access-nav">
-        <a class="nav-link dropdown-toggle" id="dl-access-menu-toggle"
-           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-          Access
-        </a>
-        <div class="dropdown-menu" aria-labelledby="dl-access-menu-toggle">
-          <%= link_to 'Roles', admin_roles_path, class: 'dropdown-item' %>
-          <%= link_to 'Users', admin_users_path, class: 'dropdown-item' %>
-        </div>
-      </li>
-
       <% if current_user.admin? %>
         <li class="nav-item dropdown" id="server-nav">
           <a class="nav-link dropdown-toggle" id="dl-server-menu-toggle"
@@ -66,6 +55,7 @@
           <div class="dropdown-menu" aria-labelledby="dl-server-menu-toggle">
             <%= link_to 'Configuration', admin_configuration_path, class: 'dropdown-item' %>
             <%= link_to 'Boosts', admin_boosts_path, class: 'dropdown-item' %>
+            <%= link_to 'Users', admin_users_path, class: 'dropdown-item' %>
           </div>
         </li>
       <% end %>
