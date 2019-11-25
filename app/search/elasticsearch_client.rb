@@ -203,6 +203,20 @@ class ElasticsearchClient
   end
 
   ##
+  # Refreshes an index.
+  #
+  # @param index [String]
+  # @return [void]
+  #
+  def refresh(index)
+    path = sprintf('/%s/_refresh?pretty', index)
+    @http_client.post do |request|
+      request.path = path
+      request.headers['Content-Type'] = 'application/json'
+    end
+  end
+
+  ##
   # @param from_index [String]
   # @param to_index [String]
   #

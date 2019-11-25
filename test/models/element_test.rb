@@ -51,23 +51,6 @@ class ElementTest < ActiveSupport::TestCase
     end
   end
 
-  test 'validate() raises error for invalid name' do
-    @instance.name = 'a_3'
-    assert_raises ArgumentError do
-      @instance.validate
-    end
-
-    @instance.name = 'a/3'
-    assert_raises ArgumentError do
-      @instance.validate
-    end
-
-    @instance.name = 'a.3'
-    assert_raises ArgumentError do
-      @instance.validate
-    end
-  end
-
   test 'validate() raises error for invalid value' do
     @instance.value = ''
     assert_raises ArgumentError do

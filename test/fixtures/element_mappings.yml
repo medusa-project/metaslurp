@@ -9,3 +9,8 @@ date_to_date:
   content_service: one
   source_name: date
   element_def: date
+
+subject_to_subject:
+  content_service: one
+  source_name: subject
+  element_def: subject

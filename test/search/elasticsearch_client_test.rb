@@ -3,35 +3,40 @@ require 'test_helper'
 class ElasticsearchClientTest < ActiveSupport::TestCase
 
   setup do
-    @instance = ElasticsearchClient.instance
-    @test_index = ElasticsearchIndex.latest(Item::ELASTICSEARCH_INDEX)
+    @instance   = ElasticsearchClient.instance
+    @test_index = Configuration.instance.elasticsearch_index
   end
 
   teardown do
-    @instance.delete_index(@test_index.name) rescue nil
+    @instance.delete_index(@test_index) rescue nil
   end
 
   test 'create_index() works' do
     @instance.create_index(@test_index)
-    assert @instance.index_exists?(@test_index.name)
+    assert @instance.index_exists?(@test_index)
   end
 
   test 'create_index_alias() works' do
     alias_name = 'test1-alias'
-
-    @instance.create_index(@test_index)
-    @instance.create_index_alias(@test_index.name, alias_name)
-    assert @instance.index_exists?(@test_index.name)
-    assert @instance.index_exists?(alias_name)
+    begin
+      @instance.create_index(@test_index)
+      @instance.create_index_alias(@test_index, alias_name)
+      assert @instance.index_exists?(@test_index)
+      assert @instance.index_exists?(alias_name)
+    ensure
+      if @instance.index_exists?(alias_name)
+        @instance.delete_index_alias(@test_index, alias_name)
+      end
+    end
   end
 
   test 'delete_index() works' do
     begin
       @instance.create_index(@test_index)
-      assert @instance.index_exists?(@test_index.name)
+      assert @instance.index_exists?(@test_index)
     ensure
-      @instance.delete_index(@test_index.name)
-      assert !@instance.index_exists?(@test_index.name)
+      @instance.delete_index(@test_index)
+      assert !@instance.index_exists?(@test_index)
     end
   end
 
@@ -44,45 +49,51 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
   test 'delete_index_alias() works' do
     alias_name = 'test1-alias'
 
+    if @instance.index_exists?(@test_index)
+      @instance.delete_index(@test_index)
+    end
     @instance.create_index(@test_index)
-    @instance.create_index_alias(@test_index.name, alias_name)
-    assert @instance.index_exists?(@test_index.name)
+    @instance.create_index_alias(@test_index, alias_name)
+    assert @instance.index_exists?(@test_index)
     assert @instance.index_exists?(alias_name)
 
-    @instance.delete_index_alias(@test_index.name, alias_name)
-    assert @instance.index_exists?(@test_index.name)
+    @instance.delete_index_alias(@test_index, alias_name)
+    assert @instance.index_exists?(@test_index)
     assert !@instance.index_exists?(alias_name)
   end
 
   test 'get_document() with missing document' do
     begin
       @instance.create_index(@test_index)
-      assert_nil @instance.get_document(@test_index.name, 'bogus')
+      assert_nil @instance.get_document(@test_index, 'bogus')
     ensure
-      @instance.delete_index(@test_index.name) rescue nil
+      @instance.delete_index(@test_index) rescue nil
     end
   end
 
   test 'get_document() with existing document' do
     @instance.create_index(@test_index)
-    @instance.index_document(@test_index.name, 'id1', {})
-    assert_not_nil @instance.get_document(@test_index.name, 'id1')
+    @instance.index_document(@test_index, 'id1', {})
+    assert_not_nil @instance.get_document(@test_index, 'id1')
   end
 
   test 'index_document() indexes a document' do
+    if @instance.index_exists?(@test_index)
+      @instance.delete_index(@test_index)
+    end
     @instance.create_index(@test_index)
-    assert_nil @instance.get_document(@test_index.name, 'id1')
+    assert_nil @instance.get_document(@test_index, 'id1')
 
-    @instance.index_document(@test_index.name, 'id1', {})
-    assert_not_nil @instance.get_document(@test_index.name, 'id1')
+    @instance.index_document(@test_index, 'id1', {})
+    assert_not_nil @instance.get_document(@test_index, 'id1')
   end
 
   test 'index_exists?() works' do
     @instance.create_index(@test_index)
-    assert @instance.index_exists?(@test_index.name)
+    assert @instance.index_exists?(@test_index)
 
-    @instance.delete_index(@test_index.name) rescue nil
-    assert !@instance.index_exists?(@test_index.name)
+    @instance.delete_index(@test_index) rescue nil
+    assert !@instance.index_exists?(@test_index)
   end
 
   test 'indexes() works' do

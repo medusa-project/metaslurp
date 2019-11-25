@@ -384,16 +384,16 @@ class ItemTest < ActiveSupport::TestCase
 
   test 'save() works' do
     client = ElasticsearchClient.instance
-    index = ElasticsearchIndex.latest(Item::ELASTICSEARCH_INDEX)
+    index = Configuration.instance.elasticsearch_index
     begin
-      client.delete_index(index.name) if client.index_exists?(index.name)
+      client.delete_index(index) if client.index_exists?(index)
 
-      assert !client.get_document(index.name, @instance.id)
+      assert !client.get_document(index, @instance.id)
       @instance.save
 
-      assert client.get_document(index.name, @instance.id)
+      assert client.get_document(index, @instance.id)
     ensure
-      client.delete_index(index.name)
+      client.delete_index(index)
     end
   end
 

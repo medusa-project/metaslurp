@@ -43,7 +43,7 @@ class ContentService < ApplicationRecord
         }
     }
     ElasticsearchClient.instance.delete_by_query(
-        ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX),
+        Configuration.instance.elasticsearch_index,
         JSON.generate(query))
   end
 
@@ -115,7 +115,7 @@ class ContentService < ApplicationRecord
         }
     }
     ElasticsearchClient.instance.delete_by_query(
-        ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX),
+        Configuration.instance.elasticsearch_index,
         JSON.generate(query))
   end
 

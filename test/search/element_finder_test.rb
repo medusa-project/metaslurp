@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ItemFinderTest < ActiveSupport::TestCase
+class ElementFinderTest < ActiveSupport::TestCase
 
   setup do
     config = Configuration.instance
@@ -8,8 +8,6 @@ class ItemFinderTest < ActiveSupport::TestCase
     client = ElasticsearchClient.instance
     client.create_index(@index) unless client.index_exists?(@index)
     seed
-
-    @instance = ItemFinder.new
   end
 
   teardown do
@@ -22,28 +20,21 @@ class ItemFinderTest < ActiveSupport::TestCase
                     source_id: 'cats',
                     source_uri: 'http://example.org/cats',
                     variant: Item::Variants::ITEM)
-    item.elements << SourceElement.new(name: 'name', value: 'value')
+    item.elements << SourceElement.new(name: 'subject', value: 'value1')
+    item.elements << SourceElement.new(name: 'subject', value: 'value2')
     item.save!
     ElasticsearchClient.instance.refresh(@index)
   end
 
   test 'to_a() works' do
-    assert_equal 1, @instance.to_a.length
-  end
-
-  test 'aggregations work when enabled' do
-    @instance.aggregations(true)
-    assert @instance.facets.any?
-  end
-
-  test 'aggregations are empty when disabled' do
-    @instance.aggregations(false)
-    assert @instance.facets.empty?
+    @instance = ElementFinder.new(ElementDef.new(name: 'subject'))
+    assert_equal 2, @instance.to_a.length
   end
 
   test 'count() works' do
-    @instance.aggregations(false)
-    assert @instance.count > 0
+    @instance = ElementFinder.new(ElementDef.new(name: 'subject')).
+        aggregations(false)
+    assert_equal 2, @instance.count
   end
 
 end

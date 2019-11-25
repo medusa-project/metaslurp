@@ -3,10 +3,6 @@ require 'test_helper'
 class ConfigurationTest < ActiveSupport::TestCase
 
   def setup
-    @config_struct = YAML.load(
-        ERB.new(
-            File.read(
-                File.join(Rails.root, 'config', 'metaslurp.yml'))).result)[Rails.env]
     @config = Configuration.instance
   end
 
@@ -17,8 +13,7 @@ class ConfigurationTest < ActiveSupport::TestCase
   end
 
   test 'get() with a valid config key should return the value' do
-    assert_equal @config_struct[:elasticsearch_endpoint],
-                 @config.get(:elasticsearch_endpoint)
+    assert_not_nil @config.get(:elasticsearch_endpoint)
   end
 
   # method_missing()
@@ -28,8 +23,7 @@ class ConfigurationTest < ActiveSupport::TestCase
   end
 
   test 'method_missing() with a valid config key should return the value' do
-    assert_equal @config_struct[:elasticsearch_endpoint],
-                 @config.elasticsearch_endpoint
+    assert_not_nil @config.elasticsearch_endpoint
   end
 
 end

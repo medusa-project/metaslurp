@@ -5,3 +5,5 @@
 
 //= link admin/application.css
 //= link admin/application.js
+
+//= link api/application.css

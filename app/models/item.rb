@@ -3,9 +3,11 @@
 #
 # # Structure
 #
-# Every item "resides" in a content service (ContentService). The association
-# is via a key attribute corresponding to a content service key. Items are
-# "flat" and have no relationships to each other.
+# All items are associated with a {ContentService}. The association is via a
+# `service_key` attribute corresponding to a content service key. There are
+# also `container_id` and `parent_id` attributes that can be used to support
+# placement inside some kind of "container" (such as a {Variants::COLLECTION
+# collection-variant Item}) and arbitrary item trees.
 #
 # # Identifiers
 #
@@ -16,67 +18,67 @@
 # # Description
 #
 # Items have a number of hard-coded attributes (see below) as well as
-# collections of SourceElements, which represent metadata elements of the
-# instance within the content service, and LocalElements, which represent local
-# metadata elements to which SourceElements get mapped. Hard-coded attributes
-# are used by the system. LocalElements contain free-form strings and can be
-# mapped to ElementDefs to control how they work with regard to searching,
-# faceting, etc. on a per-ContentService basis.
+# collections of {SourceElement}s, which represent metadata elements of the
+# instance within the content service, and {LocalElement}s, which represent
+# local metadata elements to which {SourceElement}s get mapped. Hard-coded
+# attributes are used by the system. {LocalElement}s contain free-form strings
+# and can be mapped to {ElementDef}s to control how they work in terms of
+# searching, faceting, etc. on a per-{ContentService} basis.
 #
 # # Dates
 #
 # Free-form date strings are allowed in any element, but they are indexed as
 # non-normalized strings, so aren't very useful. Instead, they can be indexed
-# as normalized dates by setting the data_type of the corresponding ElementDef
-# to ElementDef::DataType::DATE. When the element is indexed,
-# its date/time string will be normalized into a Time object which will be
+# as normalized dates by setting the `data_type` of the corresponding
+# {ElementDef} to {ElementDef::DataType::DATE}. When the element is indexed,
+# its date/time string will be normalized into a {Time} object which will be
 # indexed in a date field.
 #
 # # Indexing
 #
 # Items are searchable via Elasticsearch. High-level search functionality is
-# available via the ItemFinder class.
+# available via the {ItemFinder} class.
 #
 # All instance attributes are indexed, as well as both source and local mapped
 # elements. This makes instances "round-trippable," so they can be transformed
-# to ES documents via `as_indexed_json()`, sent to ES, retrieved, and
-# deserialized back into instances via `from_indexed_json()`.
+# to ES documents via {as_indexed_json}, sent to ES, retrieved, and
+# deserialized back into instances via {from_indexed_json}.
 #
 # The index schema should use dynamic templates for as many fields as possible.
-# It may take days to repopulate an index, so having to create a new index just
-# to support a new field is a major inconvenience.
+# It may take a long time to repopulate an index, so having to create a new
+# index just to support a new field would be a major inconvenience.
 #
 # # Attributes
 #
-# * container_id:   Identifier of a container (not parent) item--which would
-#                   typically be one with a collection variant.
-# * container_name: Name of a container (not parent). Used as a fallback to
-#                   `container_id` when the container is not an Item.
-# * elements:       Enumerable of SourceElements.
-# * full_text:      Full text.
-# * harvest_key:    Key of the harvest during which the item was last updated.
-# * id:             Identifier within the application.
-# * images:         Set of associated Images. One of them may be a master image
-#                   (see Image class doc).
-# * local_elements: Enumerable of LocalElements.
-# * parent_id:      Identifier of a parent (not container) item.
-# * score:          Relevance score assigned by Elasticsearch.
-# * service_key:    Key of the ContentService from which the instance was
-#                   obtained.
-# * source_id:      Identifier of the instance within its ContentService.
-# * variant:        Like a subclass. Used to differentiate types of instances
-#                   that all have more-or-less the same properties.
+# * `container_id`   Identifier of a container (not parent) item--which would
+#                    typically be one with a {Variants::COLLECTION} variant.
+# * `container_name` Name of a container (not parent). Used as a fallback to
+#                    `container_id` when the container is not an {Item}.
+# * `elements`       Enumerable of {SourceElement}s.
+# * `full_text`      Full text.
+# * `harvest_key`    Key of the {Harvest} during which the item was last
+#                    updated.
+# * `id`             Identifier within the application.
+# * `images`         Set of associated {Image}s. One of them may be a master
+#                    image.
+# * `local_elements` {Enumerable} of {LocalElement}s.
+# * `parent_id`      Identifier of a parent (not container) item.
+# * `score`          Relevance score assigned by Elasticsearch.
+# * `service_key`    Key of the {ContentService} in which the instance resides.
+# * `source_id`      Unique identifier of the instance.
+# * `variant`        Like a subclass. Used to differentiate types of instances
+#                    that all have more-or-less the same properties.
 #
 # ## Adding an attribute
 #
 # 1. Document it above
 # 2. Add an `attr_accessor` for it
-# 3. Add it to validate(), if necessary
-# 4. Add it to from_json() & as_json(), if necessary
-# 5. Add it to IndexFields, if necessary
-# 6. Add it to from_indexed_json() & as_indexed_json(), if necessary
+# 3. Add it to {validate}, if necessary
+# 4. Add it to {from_json} & {as_json}, if necessary
+# 5. Add it to {IndexFields}, if necessary
+# 6. Add it to {from_indexed_json} & {as_indexed_json}, if necessary
 # 7. Update tests for all of the above
-# 8. Update the ItemsController API test
+# 8. Update the {ItemsController} API test
 # 9. Add it to the API documentation
 # 10. Update the harvester and re-harvest everything
 #
@@ -92,7 +94,8 @@ class Item
   attr_reader :elements, :images, :local_elements
 
   ##
-  # These should all be dynamic fields if at all possible (see class doc).
+  # System (non-metadata) fields. These should all be dynamic fields if at all
+  # possible.
   #
   class IndexFields
     CONTAINER_ID   = 'system_keyword_container_id'
@@ -114,7 +117,8 @@ class Item
   # To add a variant:
   #
   # 1. Add it here
-  # 2. Make ApplicationHelper.icon_for() and thumbnail_for() aware of it
+  # 2. Make {ApplicationHelper#icon_for} and {ApplicationHelper#thumbnail_for}
+  #    aware of it
   #
   class Variants
     BOOK           = 'Book'
@@ -141,8 +145,8 @@ class Item
   # @raises [IOError]
   #
   def self.fetch_indexed_json(id)
-    index = ElasticsearchIndex.latest(ELASTICSEARCH_INDEX)
-    ElasticsearchClient.instance.get_document(index.name, id)
+    config = Configuration.instance
+    ElasticsearchClient.instance.get_document(config.elasticsearch_index, id)
   end
 
   ##
@@ -276,7 +280,7 @@ class Item
   ##
   # Returns an indexable JSON representation of the instance. Note that this
   # will not be the same as what is currently indexed; for that, see
-  # fetch_indexed_json().
+  # {fetch_indexed_json}.
   #
   # N.B.: Changing this may require re-harvesting and maybe even updating the
   # index schema.
@@ -384,7 +388,7 @@ class Item
 
   ##
   # @return [Item] The containing Item, which may be nil, in which case
-  #                `container_name()` should be used instead.
+  #                {container_name} should be used instead.
   #
   def container
     self.container_id.present? ? Item.find(self.container_id) : nil
@@ -443,8 +447,8 @@ class Item
   # @raises [IOError]
   #
   def save
-    index = ElasticsearchIndex.latest(ELASTICSEARCH_INDEX)
-    ElasticsearchClient.instance.index_document(index.name,
+    config = Configuration.instance
+    ElasticsearchClient.instance.index_document(config.elasticsearch_index,
                                                 self.id,
                                                 self.as_indexed_json)
   end
