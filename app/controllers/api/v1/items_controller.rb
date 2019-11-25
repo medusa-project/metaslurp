@@ -21,7 +21,7 @@ module Api
             LOGGER.debug('Ignoring test item: %s', item)
           else
             item.content_service.update_element_mappings(item.elements)
-            item.save!
+            item.save!(json['index'])
             LOGGER.debug('Ingested %s: %s', item, json)
           end
         rescue HarvestAbortedError => e

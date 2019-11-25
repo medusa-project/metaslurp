@@ -18,6 +18,7 @@ This is a getting-started guide for developers.
       to run a
       [metaslurp-cantaloupe](https://github.com/medusa-project/metaslurp-cantaloupe)
       container in Docker instead.
+* [metaslurper](https://github.com/medusa-project/metaslurper)
 
 # Installation
 
@@ -101,14 +102,16 @@ to an incompatible schema, the procedure would be something like:
     1. If the schema change was backwards-compatible with the source documents
        added to the index, invoke
        `bin/rails elasticsearch:indexes:reindex[my_current_index,my_new_index]`.
-       This will copy all source documents from the current index into the new
-       index, effectively reindexing them. (Ensure that the cluster has enough
-       capacity to support this.)
-    2. Otherwise, reharvest everything into the new index.
+       This will reindex all source documents from the current index into the
+       new index.
+    2. Otherwise, reharvest everything into the new index. This can be
+       accomplished by invoking the harvester with the
+       `SERVICE_SINK_METASLURP_INDEX` environment variable set to the name of
+       the index.
 
-Because all of the above is generally a huge pain, an effort has been made to
-design the index schema to be flexible enough to require migration as
-infrequently as possible.
+Because all of the above can be a huge pain, an effort has been made to design
+the index schema to be flexible enough to require migration as infrequently as
+possible.
 
 # Notes
 

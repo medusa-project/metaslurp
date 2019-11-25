@@ -443,12 +443,13 @@ class Item
   ##
   # (Re)indexes the instance into the latest index.
   #
+  # @param index [String] Name of the index in which to save.
   # @return [void]
   # @raises [IOError]
   #
-  def save
-    config = Configuration.instance
-    ElasticsearchClient.instance.index_document(config.elasticsearch_index,
+  def save(index = nil)
+    index ||= Configuration.instance.elasticsearch_index
+    ElasticsearchClient.instance.index_document(index,
                                                 self.id,
                                                 self.as_indexed_json)
   end

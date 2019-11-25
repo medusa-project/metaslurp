@@ -238,6 +238,7 @@
     <td><code class="code-block">{
     "variant": "Item",
     "id": "local-item-id",
+    "index": "elasticsearch_index_name"
     "parent_id": null,
     "harvest_key": "harvest-key",
     "media_type": "image/jp2",
@@ -283,12 +284,18 @@
           <th>Description</th>
         </tr>
         <tr>
-          <td><code>variant</code></td>
-          <td>Yes</td>
-          <td>
-            One of the following:
-            <%=raw Item::Variants::all.sort.map{ |v| "<code>#{v}</code>" }.join(', ') %>
-          </td>
+          <td><code>container_id</code></td>
+          <td>No</td>
+          <td>ID of a container item in the harvesting application, which
+            typically has a <code>variant</code> of
+            <code><%= Item::Variants::COLLECTION %></code>.
+            Must match the container item's <code>id</code>.</td>
+        </tr>
+        <tr>
+          <td><code>container_name</code></td>
+          <td>No</td>
+          <td>Name of a container. Used only when <code>container_id</code> is
+            not provided.</td>
         </tr>
         <tr>
           <td><code>elements</code></td>
@@ -297,11 +304,28 @@
             <%= link_to 'Control Panel', admin_root_path %>.
             <p class="text-info">
               <i class="fas fa-info-circle"></i>
-              Elements that map to date-type local elements will be parsed and
-              stored as dates. If the parsing fails, they will be silently discarded.
+              Elements that map to date-type local elements are parsed and
+              stored as dates. Parsing failures are silently discarded.
               For best compatibility, use the full ISO-8601 date format.
             </p>
           </td>
+        </tr>
+        <tr>
+          <td><code>full_text</code></td>
+          <td>No</td>
+          <td>Free-form string of unlimited length.</td>
+        </tr>
+        <tr>
+          <td><code>harvest_key</code></td>
+          <td>Yes</td>
+          <td>Key of a <a href="#start-harvest">started harvest</a>.</td>
+        </tr>
+        <tr>
+          <td><code>id</code></td>
+          <td>Yes</td>
+          <td>Must be unique across all items in the application, and stable
+            across harvests.
+            <strong>Must not contain slashes (/) or periods (.).</strong></td>
         </tr>
         <tr>
           <td><code>images</code></td>
@@ -323,41 +347,12 @@
           </td>
         </tr>
         <tr>
-          <td><code>full_text</code></td>
+          <td><code>index</code></td>
           <td>No</td>
-          <td>Free-form string of unlimited length.</td>
-        </tr>
-        <tr>
-          <td><code>harvest_key</code></td>
-          <td>Yes</td>
-          <td>Key of a <a href="#start-harvest">started harvest</a>.</td>
-        </tr>
-        <tr>
-          <td><code>id</code></td>
-          <td>Yes</td>
-          <td>Must be unique across all items in the harvesting application,
-            and should be stable from harvest to harvest.
-            <strong>Must not contain slashes (/) or periods (.).</strong></td>
-        </tr>
-        <tr>
-          <td><code>container_id</code></td>
-          <td>No</td>
-          <td>ID of a container item in the harvesting application, which
-            typically has a <code>variant</code> of
-            <code><%= Item::Variants::COLLECTION %></code>.
-            Must match the container item's <code>id</code>.</td>
-        </tr>
-        <tr>
-          <td><code>container_name</code></td>
-          <td>No</td>
-          <td>Name of a container. Used only when <code>container_id</code> is
-            not provided.</td>
-        </tr>
-        <tr>
-          <td><code>parent_id</code></td>
-          <td>No</td>
-          <td>ID of a parent (not container) item in the harvesting
-            application. Must match the parent item's <code>id</code>.</td>
+          <td>
+            Name of the Elasticsearch index in which to harvest the item. If
+            omitted, the default index is used.
+          </td>
         </tr>
         <tr>
           <td><code>media_type</code></td>
@@ -367,6 +362,12 @@
             (unless the represented data really is an unspecified binary format).
             May be omitted if unknown or not applicable.
           </td>
+        </tr>
+        <tr>
+          <td><code>parent_id</code></td>
+          <td>No</td>
+          <td>ID of a parent (not container) item in the harvesting
+            application. Must match the parent item's <code>id</code>.</td>
         </tr>
         <tr>
           <td><code>source_id</code></td>
@@ -379,6 +380,14 @@
           <td>URI of the item's main public human-consumable representation.
             If it has an <code>example.org</code> domain, the item will be
             silently discarded.</td>
+        </tr>
+        <tr>
+          <td><code>variant</code></td>
+          <td>Yes</td>
+          <td>
+            One of the following:
+            <%=raw Item::Variants::all.sort.map{ |v| "<code>#{v}</code>" }.join(', ') %>
+          </td>
         </tr>
       </table>
     </td>
@@ -400,11 +409,11 @@
   </tr>
   <tr>
     <td>Response Content Type</td>
-    <td></td>
+    <td>Any</td>
   </tr>
   <tr>
     <td>Response Entity</td>
-    <td></td>
+    <td>Empty</td>
   </tr>
 </table>
 
