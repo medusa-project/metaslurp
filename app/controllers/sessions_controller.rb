@@ -27,9 +27,13 @@ class SessionsController < WebsiteController
     redirect_to root_url
   end
 
+  ##
+  # Responds to DELETE /signout
+  #
   def destroy
     sign_out
-    redirect_back fallback_location: root_path
+    clear_and_return_return_path
+    redirect_to root_url
   end
 
   ##
