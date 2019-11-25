@@ -15,7 +15,6 @@ class Option < ApplicationRecord
     ADMINISTRATOR_EMAIL = 'website.administrator.email'
     COPYRIGHT_STATEMENT = 'website.copyright_statement'
     DEFAULT_RESULT_WINDOW = 'website.results_per_page'
-    ELASTICSEARCH_INDEX_VERSION = 'elasticsearch.index_version'
     FACET_TERM_LIMIT = 'website.facet_term_limit'
     ORGANIZATION_NAME = 'organization.name'
     SERVER_STATUS = 'status'

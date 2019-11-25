@@ -20,17 +20,17 @@ class ElasticsearchClient
   end
 
   ##
-  # @param index [ElasticsearchIndex]
+  # @param index_name [String] Index name.
   # @param num_shards [Integer] Supply a nonzero value to override the default
   #                             assigned by Elasticsearch.
   # @return [Boolean]
   # @raises [IOError]
   #
-  def create_index(index, num_shards = 0)
-    LOGGER.info('create_index(): creating %s...', index.name)
-    index_path = '/' + index.name
+  def create_index(index_name, num_shards = 0)
+    LOGGER.info('create_index(): creating %s...', index_name)
+    index_path = '/' + index_name
 
-    schema = index.schema
+    schema = ElasticsearchIndex::SCHEMA
     schema['settings']['number_of_shards'] = num_shards if num_shards > 0
 
     response = @http_client.put do |request|
@@ -40,7 +40,7 @@ class ElasticsearchClient
     end
 
     if response.status == 200
-      LOGGER.info('create_index(): created %s', index)
+      LOGGER.info('create_index(): created %s', index_name)
     else
       raise IOError, "Got #{response.status} for PUT #{index_path}\n"\
           "#{JSON.pretty_generate(JSON.parse(response.body))}"
@@ -186,8 +186,9 @@ class ElasticsearchClient
   # @return [String] Response body.
   #
   def query(query)
-    index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
-    path = sprintf('/%s/_search?pretty', index)
+    config = Configuration.instance
+    index  = config.elasticsearch_index
+    path   = sprintf('/%s/_search?pretty', index)
     response = @http_client.post do |request|
       request.path = path
       request.body = query
@@ -202,17 +203,17 @@ class ElasticsearchClient
   end
 
   ##
-  # @param from_index [ElasticsearchIndex]
-  # @param to_index [ElasticsearchIndex]
+  # @param from_index [String]
+  # @param to_index [String]
   #
   def reindex(from_index, to_index)
     path = '/_reindex'
     body = {
         source: {
-            index: from_index.name
+            index: from_index
         },
         dest: {
-            index: to_index.name
+            index: to_index
         }
     }
     body = JSON.generate(body)
