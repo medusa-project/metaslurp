@@ -85,7 +85,6 @@ class Item
   LOGGER = CustomLogger.new(Item)
 
   ELASTICSEARCH_INDEX = 'entities'
-  ELASTICSEARCH_TYPE = 'entity'
 
   attr_accessor :container_id, :container_name, :full_text, :harvest_key, :id,
                 :last_indexed, :media_type, :parent_id, :score, :service_key,
@@ -143,8 +142,7 @@ class Item
   #
   def self.fetch_indexed_json(id)
     index = ElasticsearchIndex.latest(ELASTICSEARCH_INDEX)
-    ElasticsearchClient.instance.get_document(index.name,
-                                              ELASTICSEARCH_TYPE, id)
+    ElasticsearchClient.instance.get_document(index.name, id)
   end
 
   ##
@@ -447,7 +445,6 @@ class Item
   def save
     index = ElasticsearchIndex.latest(ELASTICSEARCH_INDEX)
     ElasticsearchClient.instance.index_document(index.name,
-                                                ELASTICSEARCH_TYPE,
                                                 self.id,
                                                 self.as_indexed_json)
   end

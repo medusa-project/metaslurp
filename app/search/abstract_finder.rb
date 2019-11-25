@@ -247,9 +247,8 @@ class AbstractFinder
   private
 
   def get_response
-    index = ElasticsearchIndex.current(Item::ELASTICSEARCH_INDEX)
     @request_json = build_query
-    result = @client.query(index.name, @request_json)
+    result = @client.query(@request_json)
     JSON.parse(result)
   end
 

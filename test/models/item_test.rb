@@ -388,14 +388,10 @@ class ItemTest < ActiveSupport::TestCase
     begin
       client.delete_index(index.name) if client.index_exists?(index.name)
 
-      assert !client.get_document(index.name,
-                                  Item::ELASTICSEARCH_TYPE,
-                                  @instance.id)
+      assert !client.get_document(index.name, @instance.id)
       @instance.save
 
-      assert client.get_document(index.name,
-                                 Item::ELASTICSEARCH_TYPE,
-                                 @instance.id)
+      assert client.get_document(index.name, @instance.id)
     ensure
       client.delete_index(index.name)
     end
