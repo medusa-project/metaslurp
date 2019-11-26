@@ -19,8 +19,11 @@
 
 .byebug_history
 
-# Docker-related files
-env*.list
-
-# Ignore master key for decrypting credentials and more.
+# Ignore master keys for decrypting credentials.
 /config/master.key
+/config/credentials/demo.key
+/config/credentials/production.key
+
+# Ignore developer-specific unencrypted credentials.
+/config/credentials/development.yml
+/config/credentials/test.yml

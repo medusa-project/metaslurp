@@ -20,8 +20,8 @@ COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && bundle install --without development test --jobs 20 --retry 5
 
 # Copy the main application, except whatever is listed in .dockerignore.
-# This includes /config/master.key which will be needed to decrypt the
-# credentials.
+# This includes the /config/credentials/*.key files which are needed to decrypt
+# the credentials.
 COPY . ./
 
 RUN bin/rails assets:precompile

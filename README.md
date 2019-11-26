@@ -53,14 +53,9 @@ $ cd metaslurp
 
 ## 6) Configure the application
 
-Obtain the master key file from someone on the development team, and save it
-to `config/master.key`. Then:
-
-`$ EDITOR="vi or nano or whatever" rails credentials:edit`
-
-When you save, an encrypted file will be written to
-`config/credentials.yml.enc`, which should then be committed to version
-control.
+Copy `config/credentials/template.yml` to `config/credentials/development.yml`
+and `config/credentials/test.yml`. Fill in the latter two and **do not commit
+them to version control.**
 
 ## 7) Create and seed the database
 
