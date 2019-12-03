@@ -50,7 +50,6 @@ module Admin
     # Responds to GET /admin/users
     #
     def index
-      @human_users     = User.where(human: true).order(:username)
       @non_human_users = User.where(human: false).order(:username)
     end
 
