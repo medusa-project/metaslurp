@@ -2,6 +2,8 @@
 
   <%= render 'admin/shared/error_messages', object: f.object %>
 
+  <%= f.hidden_field :human, value: false %>
+
   <div class="form-group">
     <%= f.label :username, 'Username' %>
     <%= f.text_field :username, class: 'form-control',
