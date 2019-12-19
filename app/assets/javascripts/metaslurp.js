@@ -6,14 +6,18 @@ var Application = {
     initFacets: function() {
         var addFacetEventListeners = function() {
             $('[name="fq[]"]').off('change').on('change', function() {
-                var form = $(this).parents('form:first');
-
+                var form  = $(this).parents('form:first').find(':not(input[name=dl-results-style])');
+                var path  = $('[name=dl-current-path]').val();
+                var query = form.serialize();
                 $.ajax({
-                    url: $('[name=dl-current-path]').val(),
+                    url: path,
                     method: 'GET',
-                    data: form.serialize(),
+                    data: query,
                     dataType: 'script',
                     success: function(result) {
+                        // Enables results page persistence after back/forward
+                        // navigation.
+                        window.location.hash = query;
                         eval(result);
                     },
                     error: function(xhr, status, error) {
@@ -105,12 +109,17 @@ var Application = {
 
         var submitForm = function () {
             var forms = $('form.dl-filter');
+            var query = forms.serialize();
             $.ajax({
                 url: forms.attr('action'),
                 method: 'GET',
-                data: forms.serialize(),
+                data: query,
                 dataType: 'script',
-                success: function(result) {}
+                success: function(result) {
+                    // Enables results page persistence after back/forward
+                    // navigation.
+                    window.location.hash = query;
+                }
             });
             return false;
         };
