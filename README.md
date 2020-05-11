@@ -108,6 +108,37 @@ Because all of the above can be a huge pain, an effort has been made to design
 the index schema to be flexible enough to require migration as infrequently as
 possible.
 
+# Harvesting
+
+In production, the various web-based buttons for initiating harvests trigger
+calls to the ECS API to start new harvesting tasks. This won't work in
+development. Instead, [metaslurper](https://github.com/medusa-project/metaslurper)
+should be invoked manually. Here is an example that will harvest the DLS into a
+local Metaslurp instance:
+
+```sh
+export SERVICE_SOURCE_DLS_KEY=dls
+export SERVICE_SOURCE_DLS_ENDPOINT=https://digital.library.illinois.edu
+# your NetID
+export SERVICE_SOURCE_DLS_USERNAME=...
+# your API key; see https://digital.library.illinois.edu/admin/users/{NetID}
+export SERVICE_SOURCE_DLS_SECRET=...
+export SERVICE_SINK_METASLURP_KEY=metaslurp
+export SERVICE_SINK_METASLURP_ENDPOINT=http://localhost:3000
+# username of a "non-human user"; see http://localhost:3000/admin/users
+export SERVICE_SINK_METASLURP_USERNAME=...
+# the above user's API key
+export SERVICE_SINK_METASLURP_SECRET=...
+
+java -jar target/metaslurper-VERSION.jar \
+    -source $SERVICE_SOURCE_DLS_KEY \
+    -sink $SERVICE_SINK_METASLURP_KEY \
+    -threads 2
+```
+See the
+[metaslurper README](https://github.com/medusa-project/metaslurper) for more
+information about using metaslurper.
+
 # Notes
 
 ## Signing in locally
