@@ -43,8 +43,13 @@ module Api
 
       def request_json
         entity = request.body
-        entity = entity.is_a?(StringIO) ? entity.string : entity.to_s
-
+        if entity.is_a?(StringIO)
+          entity = entity.string
+        elsif entity.is_a?(Tempfile)
+          entity = File.read(entity)
+        else
+          entity = entity.to_s
+        end
         json = JSON.parse(entity)
 
         # Validate the harvest key
