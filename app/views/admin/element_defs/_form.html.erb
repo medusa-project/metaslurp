@@ -37,7 +37,7 @@
     <%= f.label :data_type %>
     <%= f.select(:data_type, data_type_options_for_select,
                  { selected: element_def.data_type },
-                 class: 'form-control') %>
+                 class: 'custom-select') %>
   </div>
 
   <div class="checkbox">
@@ -68,7 +68,7 @@
 
   <div class="clearfix">
     <div class="float-right">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
       <%= f.submit(context == :new ? 'Create Element' : 'Edit Element',
                    class: 'btn btn-primary') %>
     </div>

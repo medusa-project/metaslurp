@@ -60,10 +60,10 @@ var DLItemsView = function() {
         });
 
         $('.dl-thumbnail-container img[data-location="remote"]').one('load', function() {
-            $(this).parent().next('.dl-load-indicator').hide();
+            $(this).parent().next('.spinner-border').hide();
             $(this).animate({'opacity': 1}, 300);
         }).on('error', function() {
-            $(this).parent().next('.dl-load-indicator').hide();
+            $(this).parent().next('.spinner-border').hide();
         }).each(function() {
             if (this.complete) {
                 $(this).trigger('load');

@@ -14,34 +14,36 @@
 
             <hr>
 
-            <div class="radio">
-              <label>
+            <div class="form-check mb-3">
+              <label class="mb-1">
                 <%= radio_button_tag('import_mode',
                                      Admin::ElementDefsController::ImportMode::MERGE, true,
-                                     'aria-described-by' => 'dl-merge-help') %>
+                                     class: 'form-check-input',
+                                     'aria-described-by': 'dl-merge-help') %>
                 Merge
               </label>
-              <span id="dl-merge-help" class="help-block">
-              Create any new elements, and update existing elements, but don't
-              delete anything.
-            </span>
+              <span id="dl-merge-help" class="form-text text-muted">
+                Create any new elements, and update existing elements, but don't
+                delete anything.
+              </span>
             </div>
 
-            <div class="radio">
-              <label>
+            <div class="form-check">
+              <label class="mb-1">
                 <%= radio_button_tag('import_mode',
                                      Admin::ElementDefsController::ImportMode::REPLACE, false,
-                                     'aria-described-by' => 'dl-only-create-help') %>
+                                     class: 'form-check-input',
+                                     'aria-described-by': 'dl-only-create-help') %>
                 Replace
               </label>
-              <span id="dl-only-create-help" class="help-block">
-              Replace the current set of elements with the ones being imported.
-            </span>
+              <span id="dl-only-create-help" class="form-text text-muted">
+                Replace the current set of elements with the ones being imported.
+              </span>
             </div>
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-primary">Import</button>
           </div>
       <% end %>

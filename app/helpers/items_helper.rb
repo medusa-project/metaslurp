@@ -87,9 +87,9 @@ module ItemsHelper
       end
 
       unless thumbnail_is_local?(item)
-        # N.B.: this was made by https://loading.io with the following settings:
-        # rolling, color: #cacaca, radius: 25, stroke width: 10, speed: 5, size: 150
-        html <<     image_tag('thumbnail-spinner.svg', class: 'dl-load-indicator')
+        html << '<div class="spinner-border" role="status">'
+        html <<   '<span class="sr-only">Loading...</span>'
+        html << '</div>'
       end
       html <<   '</div>'
       html <<   '<div class="media-body">'

@@ -20,9 +20,9 @@
 
 <h1>Elements</h1>
 
-<form class="form-inline">
+<form class="form-inline mb-3">
   <label for="dl-sort">Sort by:</label>&nbsp;
-  <select class="custom-select mr-sm-2" name="sort" id="dl-sort">
+  <select class="custom-select" name="sort" id="dl-sort">
     <option value="name">Name</option>
     <option value="weight" <%= params[:sort] == 'weight' ? 'selected' : '' %>>Facet Weight</option>
   </select>
@@ -48,6 +48,7 @@
         <td>
           <% if current_user.medusa_admin? %>
             <button type="button" class="btn btn-light btn-sm dl-edit-element"
+                    style="white-space: nowrap"
                     data-toggle="modal" data-target="#dl-edit-element-modal"
                     data-element-name="<%= element.name %>">
               <i class="fas fa-edit"></i> Edit
