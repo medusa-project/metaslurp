@@ -14,6 +14,6 @@
 //= require jquery3
 //= require local-time
 //= require popper
-//= require bootstrap-sprockets
+//= require bootstrap
 //= require ../metaslurp
 //= require_tree .

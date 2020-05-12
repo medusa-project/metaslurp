@@ -15,5 +15,7 @@
 //= require js.cookie
 //= require local-time
 //= require popper
-//= require bootstrap-sprockets
+//= require bootstrap
+//= require activestorage
+
 //= require_tree .

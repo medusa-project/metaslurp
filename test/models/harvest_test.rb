@@ -14,9 +14,12 @@ class HarvestTest < ActiveSupport::TestCase
 
   # progress()
 
-  test 'progress() reports a correct figure' do
-    assert_equal 0, @instance.progress
+  test 'progress() reports a correct figure for empty harvests' do
+    @instance.num_items = 0
+    assert_equal 1, @instance.progress
+  end
 
+  test 'progress() reports a correct figure for non-empty harvests' do
     @instance.num_items = 100
     assert_equal 0, @instance.progress
 

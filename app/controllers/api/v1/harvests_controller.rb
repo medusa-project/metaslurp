@@ -16,7 +16,7 @@ module Api
           harvest.update_from_json(json)
           LOGGER.debug('Created harvest %s', harvest)
         rescue ArgumentError, JSON::ParserError => e
-          LOGGER.debug('Invalid: %s', json)
+          LOGGER.debug('%s: %s', e, request.body)
           render plain: e.message, status: :bad_request
         rescue IOError => e
           LOGGER.error(e)
@@ -54,7 +54,13 @@ module Api
 
       def request_json
         entity = request.body
-        entity = entity.is_a?(StringIO) ? entity.string : entity.to_s
+        if entity.is_a?(StringIO)
+          entity = entity.string
+        elsif entity.is_a?(Tempfile)
+          entity = File.read(entity)
+        else
+          entity = entity.to_s
+        end
         json = JSON.parse(entity)
         # API exposes `service_key` but the Harvest requires
         # `content_service_id`.
