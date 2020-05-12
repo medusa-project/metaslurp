@@ -7,17 +7,17 @@ This is a getting-started guide for developers.
 
 # Dependencies
 
-* PostgreSQL 9.x
+* PostgreSQL
 * Elasticsearch 6.x
     * **7.x is not yet supported.**
     * The [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
       is also required.
 * Cantaloupe 4.1.x (image server)
     * Required for thumbnails but otherwise optional.
-    * You can install and configure this yourself, but it will be a lot easier
+    * You can install and configure this yourself, but it will be easier
       to run a
       [metaslurp-cantaloupe](https://github.com/medusa-project/metaslurp-cantaloupe)
-      container in Docker instead.
+      container in Docker.
 * [metaslurper](https://github.com/medusa-project/metaslurper)
 
 # Installation
@@ -32,10 +32,10 @@ $ rbenv init
 $ rbenv rehash
 ```
 
-## 2) Clone the repository:
+## 2) Clone the repository and submodules:
 
 ```
-$ git clone https://github.com/medusa-project/metaslurp.git
+$ git clone --recursive https://github.com/medusa-project/metaslurp.git
 $ cd metaslurp
 ```
 
@@ -53,9 +53,11 @@ $ cd metaslurp
 
 ## 6) Configure the application
 
-Copy `config/credentials/template.yml` to `config/credentials/development.yml`
-and `config/credentials/test.yml`. Fill in the latter two and **do not commit
-them to version control.**
+```
+cp config/credentials/template.yml config/credentials/development.yml
+cp config/credentials/template.yml config/credentials/test.yml
+```
+Fill in the new files and **do not commit them to version control.**
 
 ## 7) Create and seed the database
 
@@ -138,6 +140,10 @@ java -jar target/metaslurper-VERSION.jar \
 See the
 [metaslurper README](https://github.com/medusa-project/metaslurper) for more
 information about using metaslurper.
+
+Once a harvest is running, you can monitor it from the
+[harvests page](http://localhost:3000/admin/harvests) just like any other
+harvest.
 
 # Notes
 
