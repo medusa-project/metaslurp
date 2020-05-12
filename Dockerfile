@@ -17,7 +17,7 @@ WORKDIR app
 # Copy the Gemfile as well as the Gemfile.lock and install gems.
 # This is a separate, earlier step in order to cache dependencies.
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler && bundle install --without development test --jobs 20 --retry 5
+RUN gem install bundler && bundle config set without 'development test' && bundle install --jobs 20 --retry 5
 
 # Copy the main application, except whatever is listed in .dockerignore.
 # This includes the /config/credentials/*.key files which are needed to decrypt
