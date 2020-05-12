@@ -14,13 +14,13 @@ gem 'local_time'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
 gem 'mini_racer', platforms: :ruby
 gem 'omniauth'
-gem "omniauth-rails_csrf_protection"
 gem 'omniauth-shibboleth'
 gem 'pg'
 gem 'rails', '~> 6.0.3'
 gem 'sassc'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
     branch: 'release/bootstrap-4.4'
+#gem 'scars-bootstrap-theme', path: '/path/to/scars-bootstrap-theme'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
@@ -30,5 +30,6 @@ group :development, :test do
 end
 
 group :production do
+  gem "omniauth-rails_csrf_protection"
   gem 'passenger'
 end
