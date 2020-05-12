@@ -27,17 +27,10 @@
     <%= hidden_field_tag('dl-current-path', request.path) %>
 
     <div class="container-fluid">
-      <% if request.path == '/' %>
-        <header>
-          <%= render partial: 'layouts/library_header' %>
-        </header>
-      <% else %>
-        <%= render partial: 'layouts/header' %>
-      <% end %>
+      <%= render partial: 'layouts/header' %>
 
       <div class="page-content">
         <%= flashes %>
-
         <%= yield.force_encoding(Encoding::UTF_8) %>
       </div>
 
