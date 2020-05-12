@@ -19,3 +19,7 @@ dl {
   max-width: 15em;
   margin-bottom: 1em;
 }
+
+input[disabled], a[disabled], .disabled {
+  cursor: not-allowed;
+}
