@@ -136,7 +136,7 @@ class Harvest < ApplicationRecord
   # @return [Float]
   #
   def items_per_second
-    self.num_succeeded / ((self.ended_at || Time.zone.now) - self.created_at)
+    self.num_succeeded / ((self.ended_at || Time.zone.now) - self.created_at).to_f
   end
 
   ##
@@ -144,7 +144,7 @@ class Harvest < ApplicationRecord
   #
   def progress
     value = (self.num_items > 0) ?
-        (self.num_succeeded + self.num_failed) / self.num_items.to_f : 0.0
+        (self.num_succeeded + self.num_failed) / self.num_items.to_f : 1.0
     (value > 1) ? 1 : value
   end
 
