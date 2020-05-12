@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/medusa-project/scars-bootstrap-theme.git
-  revision: a9e8ebfce277f4a048b53a3094de11962723aeae
+  revision: 7c4014c97c8d442d433ace18c3b3ccbab873a70e
   branch: release/bootstrap-4.4
   specs:
     scars-bootstrap-theme (4.4.1.pre.1.0)
