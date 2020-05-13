@@ -27,13 +27,12 @@
   <%= render partial: 'layouts/admin/header' %>
 
   <div class="container-fluid">
-    <%= flashes %>
-
     <%= hidden_field_tag('dl-root-url', root_url(protocol: (Rails.env.production? or Rails.env.demo?) ? :https : :http)) %>
     <%= hidden_field_tag('dl-root-path', root_path) %>
     <%= hidden_field_tag('dl-current-path', request.fullpath) %>
 
     <div class="page-content">
+      <%= flashes %>
       <%= yield.force_encoding(Encoding::UTF_8) %>
     </div>
   </div>
