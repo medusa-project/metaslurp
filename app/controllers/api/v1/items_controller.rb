@@ -43,12 +43,8 @@ module Api
 
       def request_json
         entity = request.body
-        if entity.is_a?(StringIO)
-          entity = entity.string
-        elsif entity.is_a?(Tempfile)
-          entity = File.read(entity)
-        else
-          entity = entity.to_s
+        unless entity.is_a?(String)
+          entity = entity.read
         end
         json = JSON.parse(entity)
 
