@@ -62,4 +62,7 @@ Rails.application.routes.draw do
   match '/', to: redirect(Configuration.instance.dls_url, status: 303),
         via: :all, as: 'root'
 
+  # catch unknown routes
+  match "/*a" => "errors#not_found", via: :all
+
 end
