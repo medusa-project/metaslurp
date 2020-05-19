@@ -1,0 +1,17 @@
+-# @param value_mapping [ValueMapping]
+-# @param context [Symbol] :new or :edit
+
+= form_for([:admin, value_mapping.element_def, value_mapping], remote: true) do |f|
+  .dl-error-messages
+    - # populated via ajax by shared/_validation_messages.js.erb
+  .form-group
+    = f.label :source_value
+    = f.text_field :source_value, class: 'form-control'
+  .form-group
+    = f.label :local_value
+    = f.text_field :local_value, class: 'form-control'
+  .clearfix
+    .float-right
+      %button.btn.btn-light{"data-dismiss" => "modal", type: "button"} Cancel
+      = f.submit(context == :new ? 'Create Mapping' : 'Edit Mapping',
+                 class: 'btn btn-primary')

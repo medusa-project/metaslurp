@@ -1,0 +1,13 @@
+-# Edit-value-mapping modal
+
+#dl-edit-value-mapping-modal.modal.fade{"aria-labelledby": "dl-edit-value-mapping-modal-label",
+                                        role: "dialog",
+                                        tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %h5#dl-edit-value-mapping-modal-label.modal-title Edit Value Mapping
+        %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"aria-hidden": "true"} &times;
+      .modal-body
+        -# will be populated via XHR

@@ -1,0 +1,43 @@
+-# Requires the following locals:
+-#
+-# content_service [ContentService]
+-#
+
+- last_completed = content_service.last_completed_harvest
+
+#dl-harvest-modal.modal.fade{"aria-labelledby": "dl-harvest-modal-label", role: "dialog", tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      = form_tag(admin_content_service_harvest_path(content_service), method: :post) do
+        .modal-header
+          %h5#dl-harvest-modal-label.modal-title Harvest
+          %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+            %span{"aria-hidden": "true"}
+        .modal-body
+          - if Configuration.instance.max_items_to_harvest > 0
+            .alert.alert-info
+              %i.fa.fa-info-circle
+              Only up to
+              \#{number_with_delimiter(Configuration.instance.max_items_to_harvest)}
+              entities will be harvested in this environment.
+          .form-check
+            %input#harvest-full.form-check-input{name: "harvest_type",
+                                                 type: "radio",
+                                                 value: "full",
+                                                 checked: !last_completed}
+            %label.form-check-label{for: "harvest-full"}
+              Full
+          .form-check
+            %input#harvest-incremental.form-check-input{name: "harvest_type",
+                                                        type: "radio",
+                                                        value: "incremental",
+                                                        checked: last_completed,
+                                                        disabled: !last_completed}
+            %label.form-check-label{for: "harvest-incremental"}
+              - if last_completed
+                Changes since #{local_time last_completed.created_at}
+              - else
+                Incremental (must complete a full harvest first)
+        .modal-footer
+          %button.btn.btn-light{"data-dismiss" => "modal", type: "button"} Cancel
+          %button.btn.btn-primary{type: "submit"} Harvest

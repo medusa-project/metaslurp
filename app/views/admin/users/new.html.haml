@@ -1,0 +1,11 @@
+- provide(:title, 'New Non-Human User')
+- provide(:body_id, 'users_new')
+- provide :active_nav, 'access'
+
+= breadcrumb({ label: 'Home', url: admin_root_path }, |
+  { label: 'Users', url: admin_users_path },          |
+  { label: 'New Non-Human User' })                    |
+
+%h1 New Non-Human User
+
+= render partial: 'form', locals: { user: @user, context: :new }

@@ -1,0 +1,17 @@
+- if object.respond_to?(:errors)
+  - if object.errors.any?
+    .card.text-white.bg-danger.mb-3
+      .card-header Validation Error
+      .card-body
+        %h5.card-title
+          = pluralize(object.errors.count, 'error')
+          prevented this #{object.class.to_s.underscore.humanize.downcase}
+          from being saved:
+        %ul.card-text
+          - object.errors.full_messages.each do |msg|
+            %li= msg
+- else
+  .card.text-white.bg-danger.mb-3
+    .card-header Validation Error
+    .card-body
+      = object

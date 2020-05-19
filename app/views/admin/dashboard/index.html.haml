@@ -1,0 +1,15 @@
+- provide(:title, 'Dashboard')
+
+%h1 Dashboard
+%table.table
+  %thead
+    %th Content Service
+    %th Last Completed Harvest
+  %tbody
+    - ContentService.all.order(:name).each do |service|
+      %tr
+        %td= link_to service.name, admin_content_service_path(service)
+        %td
+          - harvest = service.last_completed_harvest
+          - if harvest
+            = link_to(local_time_ago(harvest.updated_at), admin_harvest_path(harvest))

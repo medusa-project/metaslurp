@@ -1,0 +1,74 @@
+.row
+  .col-md-4
+    %dl
+      %dt Content Service
+      %dd
+        = link_to(admin_content_service_path(@harvest.content_service)) do
+          = icon_for(@harvest.content_service)
+          = @harvest.content_service.name
+      %dt Triggered By
+      %dd
+        = link_to(admin_user_path(@harvest.user)) do
+          = icon_for(@harvest.user)
+          = @harvest.user
+      %dt Key
+      %dd
+        %code= @harvest.key
+      %dt AWS
+      %dd
+        - if @harvest.ecs_task_uuid
+          = link_to("ECS Task", @harvest.ecs_task_uri, target: '_blank')
+          |
+          \#{link_to("CloudWatch Log", @harvest.cloudwatch_log_uri, target: '_blank')}
+        - else
+          None
+      %dt Created
+      %dd= local_time @harvest.created_at
+      %dt Last Updated
+      %dd
+        - if Time.now - @harvest.updated_at > 1.hour
+          = local_time @harvest.updated_at
+        - else
+          = local_time_ago @harvest.updated_at
+  .col-md-4
+    %dl
+      %dt Status
+      %dd= harvest_status_badge @harvest.status
+      %dt Progress
+      %dd= (@harvest.progress * 100).round(2).to_s + '%'
+      %dt Run Time
+      %dd= distance_of_time_in_words(@harvest.created_at, |
+          @harvest.ended_at || Time.zone.now)            |
+      - if @harvest.usable?
+        %dt ETA
+        %dd= @harvest.estimated_completion ?                    |
+            time_ago_in_words(@harvest.estimated_completion) : |
+            'Unknown'                                          |
+      %dt Items Per Minute
+      %dd= number_with_delimiter((@harvest.items_per_second * 60).round)
+  .col-md-4
+    %dl
+      %dt Type
+      %dd= @harvest.incremental ?                                                                                |
+          raw("Incremental since #{local_time(@harvest.content_service.last_completed_harvest&.created_at)}") : |
+          'Full'                                                                                                |
+      %dt Total Items To Harvest
+      %dd= number_with_delimiter(@harvest.canonical_num_items)
+      %dt Succeeded Items
+      %dd
+        - if @harvest.num_succeeded > 0
+          %span.badge.badge-pill.badge-success
+            = number_with_delimiter(@harvest.num_succeeded)
+        - else
+          %span.badge.badge-pill.badge-light 0
+      %dt Failed Items
+      %dd
+        - if @harvest.num_failed > 0
+          %span.badge.badge-pill.badge-danger
+            = number_with_delimiter(@harvest.num_failed)
+        - else
+          %span.badge.badge-pill.badge-light 0
+- if @harvest.message.present?
+  %hr/
+  %h2 Harvester Messages
+  %pre= @harvest.message

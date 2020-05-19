@@ -1,0 +1,31 @@
+%header
+  = render partial: 'layouts/library_header'
+  %nav.navbar.navbar-expand-md{role: "navigation"}
+    = link_to 'Digital Collections', root_path, class: 'navbar-brand'
+    %button.navbar-toggler{"aria-controls": "navbarColor01",
+                           "aria-expanded": "false",
+                           "aria-label": "Toggle navigation",
+                           "data-target": "#navbarColor01",
+                           "data-toggle": "collapse",
+                           type: "button"}
+      %span.navbar-toggler-icon
+    #navbarColor01.collapse.navbar-collapse
+      %ul.navbar-nav.mr-auto
+        %li#collections-nav.nav-item
+          = link_to collections_path, class: 'nav-link' do
+            = icon_for(Item.new(variant: Item::Variants::COLLECTION))
+            Collections
+        %li#items-nav.nav-item
+          = link_to items_path, class: 'nav-link' do
+            = icon_for(Item)
+            Items
+      = form_tag(search_path, method: :get, enforce_utf8: false, class: 'form-inline mr-2') do
+        .input-group
+          = search_field_tag(:q, '',
+                             placeholder: raw('Search'),
+                             'aria-label': 'Search',
+                             class: 'form-control')
+          .input-group-append
+            %button.btn.btn-outline-secondary{type: "submit"}
+              %i.fa.fa-search
+              %span.sr-only Search

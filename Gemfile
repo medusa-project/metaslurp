@@ -7,6 +7,8 @@ gem "autoprefixer-rails" # required to avoid some bootstrap CSS weirdness
 gem 'aws-sdk-ecs', '~> 1' # used to trigger harvests
 gem 'faraday'
 gem "font-awesome-sass", "~> 5.6"
+gem 'haml'
+gem 'haml-rails'
 gem 'jbuilder'
 gem 'jquery-rails'
 gem 'js_cookie_rails'

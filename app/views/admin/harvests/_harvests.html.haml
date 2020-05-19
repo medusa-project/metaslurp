@@ -1,0 +1,49 @@
+.row.justify-content-md-center
+  .col-md-auto
+    = paginate(@count, @limit, @current_page,
+               Admin::HarvestsController::PERMITTED_PARAMS)
+%table.table
+  %thead
+    %tr
+      %th
+      %th Content Service
+      %th Status
+      %th Progress
+      %th ETA
+      %th Succeeded
+      %th Failed
+      %th Started
+  %tbody
+    - @harvests.each do |harvest|
+      %tr
+        %td= link_to 'Details', admin_harvest_path(harvest)
+        %td
+          = link_to(admin_content_service_path(harvest.content_service)) do
+            = icon_for(harvest.content_service)
+            = harvest.content_service.name
+        %td= harvest_status_badge harvest.status
+        %td= (harvest.progress * 100).round(2).to_s + '%'
+        %td
+          - if harvest.usable?
+            = harvest.estimated_completion ?                    |
+              time_ago_in_words(harvest.estimated_completion) : |
+              'Unknown'                                         |
+        %td
+          - if harvest.num_succeeded > 0
+            %span.badge.badge-pill.badge-success
+              = number_with_delimiter(harvest.num_succeeded)
+          - else
+            %span.badge.badge-pill.badge-light 0
+        %td
+          - if harvest.num_failed > 0
+            %span.badge.badge-pill.badge-danger
+              = number_with_delimiter(harvest.num_failed)
+          - else
+            %span.badge.badge-pill.badge-light 0
+        %td
+          = time_ago_in_words harvest.created_at
+          ago
+.row.justify-content-md-center
+  .col-md-auto
+    = paginate(@count, @limit, @current_page,
+               Admin::HarvestsController::PERMITTED_PARAMS)

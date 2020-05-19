@@ -1,0 +1,68 @@
+- provide :title, 'Elements'
+- provide :body_id, 'dl-admin-elements'
+- provide :active_nav, 'elements'
+
+- if current_user.medusa_admin?
+  = button_bar({ type: 'button',                    |
+    label: 'Add Element',                           |
+    'data-toggle': 'modal',                         |
+    'data-target': '#dl-add-element-modal',         |
+    icon: 'fa-plus' },                              |
+    { type: 'button',                               |
+    label: 'Import&hellip;',                        |
+    'data-toggle': 'modal',                         |
+    'data-target': '#dl-import-modal',              |
+    icon: 'fa-upload' },                            |
+    { label: 'Export',                              |
+    icon: 'fa-download',                            |
+    url: @permitted_params.merge(format: 'json') }) |
+
+%h1 Elements
+%form.form-inline.mb-3
+  %label{for: "dl-sort"} Sort by:
+  %select#dl-sort.custom-select{name: "sort"}
+    %option{value: "name" } Name
+    %option{value: "weight" , selected: (params[:sort] == 'weight')} Facet Weight
+
+%table.table
+  %thead
+    %tr
+      %th{style: "width: 1px"}
+      %th>Name
+      %th>Label
+      %th>Data Type
+      %th>Description
+      %th>Searchable
+      %th>Sortable
+      %th>Facetable
+      %th>Facet Weight
+  %tbody
+    - @elements.each do |element|
+      %tr
+        %td
+          - if current_user.medusa_admin?
+            %button{type: "button",
+                    class: "btn btn-light btn-sm dl-edit-element",
+                    style: "white-space: nowrap",
+                    "data-toggle": "modal",
+                    "data-target": "#dl-edit-element-modal",
+                    "data-element-name": element.name}
+              %i.fas.fa-edit
+              Edit
+        %td
+          %code= link_to element.name, admin_element_def_path(element)
+        %td= element.label
+        %td= ElementDef::DataType::to_s(element.data_type)
+        %td= element.description
+        %td.text-center{class: element.searchable ? 'bg-success' : 'bg-danger'}
+          = boolean(element.searchable)
+        %td.text-center{class: element.sortable ? 'bg-success' : 'bg-danger'}
+          = boolean(element.sortable)
+        %td.text-center{class: element.facetable ? 'bg-success' : 'bg-danger'}
+          = boolean(element.facetable)
+        %td= element.weight
+
+= render partial: 'add_modal',
+         locals: { element_def: @new_element_def, context: :new }
+= render partial: 'edit_modal'
+= render partial: 'import_modal'

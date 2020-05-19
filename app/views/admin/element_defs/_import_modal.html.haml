@@ -1,0 +1,36 @@
+-# Import-elements modal
+#dl-import-modal.modal.fade{"aria-labelledby": "dl-import-modal-label",
+                            role: "dialog",
+                            tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      = form_tag(admin_element_defs_import_path, multipart: true) do
+        .modal-header
+          %h5#dl-import-modal-label.modal-title Import Elements
+          %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+            %span{"aria-hidden": "true"} &times;
+        .modal-body
+          = file_field_tag('elements')
+          %hr/
+          .form-check.mb-3
+            %label.mb-1
+              = radio_button_tag('import_mode',
+                                 Admin::ElementDefsController::ImportMode::MERGE, true,
+                                 class: 'form-check-input',
+                                 'aria-described-by': 'dl-merge-help')
+              Merge
+            %span#dl-merge-help.form-text.text-muted
+              Create any new elements, and update existing elements, but don't
+              delete anything.
+          .form-check
+            %label.mb-1
+              = radio_button_tag('import_mode',
+                                 Admin::ElementDefsController::ImportMode::REPLACE, false,
+                                 class: 'form-check-input',
+                                 'aria-described-by': 'dl-only-create-help')
+              Replace
+            %span#dl-only-create-help.form-text.text-muted
+              Replace the current set of elements with the ones being imported.
+        .modal-footer
+          %button.btn.btn-light{"data-dismiss": "modal", type: "button"} Cancel
+          %button.btn.btn-primary{type: "submit"} Import

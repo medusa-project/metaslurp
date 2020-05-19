@@ -1,0 +1,20 @@
+- provide :title, 'Harvests'
+- provide :body_id, 'dl-admin-harvests'
+- provide :active_nav, 'harvests'
+- content_service_options = options_for_select(ContentService.all.order(:name).map{ |s| [s.name, s.id] })
+- status_options = options_for_select(Harvest::Status::all.sort.map{ |s| [Harvest::Status::to_s(s), s] })
+%h1 Harvests
+= hidden_field_tag('dl-harvests-url', admin_harvests_url)
+= hidden_field_tag('dl-limit', @limit)
+.card
+  .card-body
+    = form_tag admin_harvests_path, method: 'get', class: 'dl-filter' do
+      .form-inline
+        %label.mr-sm-2{for: "content_service_id"} Content Service
+        = select_tag('content_service_id', content_service_options, |
+          class: 'custom-select mr-sm-3', include_blank: true)      |
+        %label.mr-sm-2{for: "status"} Status
+        = select_tag('status', status_options,         |
+          class: 'custom-select', include_blank: true) |
+#dl-harvests
+  = render 'harvests'

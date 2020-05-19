@@ -1,0 +1,25 @@
+- provide :title, harvest_title(@harvest, no_js: true)
+- provide :body_id, 'dl-admin-harvest'
+- provide :active_nav, 'harvests'
+= breadcrumb({ label: 'Home', url: admin_root_path }, |
+  { label: 'Harvests', url: admin_harvests_path },    |
+  { label: harvest_title(@harvest) })                 |
+- if current_user.medusa_admin?
+  .btn-group.float-right
+    - if @harvest.usable?
+      = link_to admin_harvest_abort_path(@harvest),                          |
+        class: 'btn btn-danger',                                             |
+        method: :patch,                                                      |
+        data: { confirm: 'Are you sure you want to abort this harvest?' } do |
+        %i.far.fa-stop-circle
+        Abort
+    - if @harvest.destroyable?
+      = link_to admin_harvest_path(@harvest),                                               |
+        class: 'btn btn-danger',                                                            |
+        method: :delete,                                                                    |
+        data: { confirm: 'Are you sure you want to delete all record of this harvest?' } do |
+        %i.fa.fa-trash
+        Delete
+%h1= harvest_title(@harvest)
+#dl-harvest
+  = render partial: 'show'

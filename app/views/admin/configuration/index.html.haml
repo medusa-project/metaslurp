@@ -1,0 +1,38 @@
+- provide :title, 'Configuration'
+- provide :body_id, 'configuration'
+- provide :active_nav, 'server'
+
+%h1 Configuration
+
+= form_tag(admin_configuration_path, method: :patch) do
+  %h2 General
+  = admin_configuration_table_for({             |
+        key: Option::Keys::ORGANIZATION_NAME,   |
+        label: 'Organization Name'              |
+    },                                          |
+    {                                           |
+        key: Option::Keys::ADMINISTRATOR_EMAIL, |
+        label: 'Administrator Email'            |
+    },                                          |
+    {                                           |
+        key: Option::Keys::COPYRIGHT_STATEMENT, |
+        label: 'Copyright Statement'            |
+    })                                          |
+
+  %h2 Website
+  = admin_configuration_table_for({               |
+        key: Option::Keys::WEBSITE_NAME,          |
+        label: 'Website Name'                     |
+    },                                            |
+    {                                             |
+        key: Option::Keys::DEFAULT_RESULT_WINDOW, |
+        label: 'Results Per Page',                |
+        type: :number                             |
+    },                                            |
+    {                                             |
+        key: Option::Keys::FACET_TERM_LIMIT,      |
+        label: 'Facet Term Limit',                |
+        type: :number                             |
+    })                                            |
+
+  = submit_tag 'Save Changes', class: 'btn btn-primary'

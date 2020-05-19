@@ -1,0 +1,18 @@
+-# Add-value-mapping modal
+-#
+-# @param element_def [ElementDef]
+-#
+
+#dl-add-value-mapping-modal.modal.fade{"aria-labelledby": "dl-add-value-mapping-modal-label",
+                                       role: "dialog",
+                                       tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %h5#dl-add-value-mapping-modal-label.modal-title Add Value Mapping
+        %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"aria-hidden": "true"} &times;
+      .modal-body
+        = render partial: 'admin/value_mappings/form',
+                 locals: { value_mapping: ValueMapping.new(element_def: element_def),
+                           context: :new }

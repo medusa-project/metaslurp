@@ -1,0 +1,12 @@
+- provide :title, 'Content Services'
+- provide :body_id, 'dl-admin-content-services'
+- provide :active_nav, 'content-services'
+
+- if current_user.medusa_admin?
+  = button_bar({ label: 'New Content Service', |
+    url: new_admin_content_service_path,       |
+    icon: 'fa-plus' })                         |
+
+%h1 Content Services
+#dl-content-services
+  = render 'content_services'

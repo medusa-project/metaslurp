@@ -1,0 +1,26 @@
+!!!
+%html{lang: "en"}
+  %head
+    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title
+      = yield(:title)
+      |
+      \#{Option::string(Option::Keys::WEBSITE_NAME)} Control Panel
+    %meta{charset: "utf-8"}/
+    %meta{content: "width=device-width, initial-scale=1, shrink-to-fit=no", name: "viewport"}/
+    = csrf_meta_tags
+    = stylesheet_link_tag 'admin/application', media: 'all'
+    = javascript_include_tag 'admin/application'
+    = render partial: 'layouts/font_awesome'
+    = content_for :head
+  %body.dl-admin{id: yield(:body_id).present? ? yield(:body_id) : nil,
+                 'active_nav': yield(:active_nav)}
+    = render partial: 'layouts/admin/header'
+    .container-fluid
+      = hidden_field_tag('dl-root-url', root_url(protocol: (Rails.env.production? or Rails.env.demo?) ? :https : :http))
+      = hidden_field_tag('dl-root-path', root_path)
+      = hidden_field_tag('dl-current-path', request.fullpath)
+      .page-content
+        = flashes
+        = yield.force_encoding(Encoding::UTF_8)
+    %footer

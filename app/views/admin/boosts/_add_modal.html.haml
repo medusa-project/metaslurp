@@ -1,0 +1,16 @@
+-# Add-boost modal
+-#
+-# @param boost [Boost]
+-# @param context [Symbol] :new or :edit
+
+#dl-add-boost-modal.modal.fade{"aria-labelledby": "dl-add-boost-modal-label",
+                               role: "dialog",
+                               tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %h5#dl-add-boost-modal-label.modal-title Add Boost
+        %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"aria-hidden": "true"} &times;
+      .modal-body
+        = render partial: 'form', locals: { boost: boost, context: context }

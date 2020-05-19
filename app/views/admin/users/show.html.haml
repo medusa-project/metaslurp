@@ -1,0 +1,51 @@
+- provide :title, @user.username
+- provide :active_nav, 'access'
+
+= breadcrumb({ label: 'Home', url: admin_root_path }, |
+  { label: 'Users', url: admin_users_path },          |
+  { label: @user.username })                          |
+
+.btn-group.float-right{role: "group"}
+  .btn-group{role: "group"}
+    -# Actions menu
+    - if current_user.medusa_admin? or @user == current_user
+      %button.btn.btn-light.dropdown-toggle{"aria-expanded": "false",
+                                            "aria-haspopup": "true",
+                                            "data-toggle": "dropdown",
+                                            type: "button"}
+        Actions
+        %span.caret
+      .dropdown-menu{role: "menu"}
+        = link_to(admin_user_reset_api_key_path(@user), method: :post, class: 'dropdown-item') do
+          %i.fas.fa-key
+          Reset API Key
+  - if current_user.medusa_admin? or current_user == @user
+    = link_to edit_admin_user_path(@user), class: 'btn btn-light' do
+      %i.fas.fa-edit
+      Edit
+  - if current_user.medusa_admin?
+    = link_to(admin_user_path(@user), method: :delete,
+              class: 'btn btn-danger',
+              data: { confirm: 'Are you sure you want to delete this user?' }) do
+      %i.fas.fa-trash
+      Delete
+
+%h1= @user.username
+
+%dl
+  %dt Type
+  %dd= @user.human ? 'Human' : 'Non-Human'
+  %dt API Key
+  %dd
+    - if @user == current_user
+      - if @user.api_key.present?
+        %code= @user.api_key
+      - else
+        None
+    - else
+      - if @user.human
+        Only visible to #{@user}
+      - elsif current_user.medusa_admin?
+        %code= @user.api_key
+      - else
+        Only visible to #{@user} and administrators

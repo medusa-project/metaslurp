@@ -1,0 +1,84 @@
+- provide :body_id, 'dl-admin-item'
+- provide(:title, @item.title)
+
+%h1= @item.title
+
+%nav{style: "margin-bottom: 1em"}
+  #nav-tab.nav.nav-tabs{role: "tablist"}
+    %a#nav-system-info-tab.nav-item.nav-link.active{"aria-controls": "nav-system-info", "aria-selected": "true", "data-toggle": "tab", href: "#nav-system-info", role: "tab"} System Information
+    %a#nav-descriptive-info-tab.nav-item.nav-link{"aria-controls": "nav-descriptive-info", "aria-selected": "false", "data-toggle": "tab", href: "#nav-descriptive-info", role: "tab"} Description
+    %a#nav-indexed-fields-tab.nav-item.nav-link{"aria-controls": "nav-indexed-fields", "aria-selected": "false", "data-toggle": "tab", href: "#nav-indexed-fields", role: "tab"} Indexed Fields
+    %a#nav-document-tab.nav-item.nav-link{"aria-controls": "nav-document", "aria-selected": "false", "data-toggle": "tab", href: "#nav-document", role: "tab"} Raw Document
+    %a#nav-object-tab.nav-item.nav-link{"aria-controls": "nav-object", "aria-selected": "false", "data-toggle": "tab", href: "#nav-object", role: "tab"} Object
+.tab-content
+  #nav-system-info.tab-pane.fade.show.active{"aria-labelledby": "nav-system-info-tab", role: "tabpanel"}
+    %dl
+      %dt Content Service
+      %dd
+        = link_to admin_content_service_path(@item.content_service) do
+          = icon_for @item.content_service
+          = @item.content_service.name
+      %dt Local ID
+      %dd
+        %code= @item.id
+      %dt Source ID
+      %dd
+        %code= @item.source_id
+      %dt Source URI
+      %dd= link_to @item.source_uri, @item.source_uri, target: '_blank'
+      %dt Variant
+      %dd= @item.variant
+      %dt Media Type
+      %dd= @item.media_type.present? ? @item.media_type : 'None'
+      %dt Last Harvest
+      %dd
+        - if @item.harvest
+          = link_to harvest_title(@item.harvest), |
+            admin_harvest_path(@item.harvest)     |
+        - elsif @item.last_indexed
+          = local_time(@item.last_indexed)
+  #nav-descriptive-info.tab-pane.fade{"aria-labelledby": "nav-descriptive-info-tab", role: "tabpanel"}
+    %table.table
+      %tr
+        %th Source Element
+        %th= link_to('Local Element Mapping', admin_content_service_path(@item.content_service))
+        %th Value
+      - @item.elements.sort_by(&:name).each do |element|
+        %tr
+          %td
+            %code= element.name
+          %td
+            = @item.content_service.element_def_for_element(element)&.label
+          %td= element.value
+  #nav-indexed-fields.tab-pane.fade{"aria-labelledby": "nav-indexed-fields-tab",
+                                    role: "tabpanel"}
+    %table.table
+      %thead
+        %tr
+          %th Field
+          %th Value
+          %th Boost (#{Boost::MIN_BOOST}–#{Boost::MAX_BOOST})
+      %tbody
+        - @indexed_document['_source'].each do |field, values|
+          - values = [values] unless values.respond_to?(:each)
+          - values.each do |value|
+            %tr
+              %td
+                %code= field
+              %td
+                %code= value
+              %td
+                - boost = @boosts.find{ |b| b.field == field and b.value == value }
+                - if boost
+                  - if boost.boost > 0
+                    %span.badge.badge-pill.badge-success= boost.boost
+                  - elsif boost.boost < 0
+                    %span.badge.badge-pill.badge-danger= boost.boost
+                - else
+                  %span.badge.badge-pill.badge-light 0
+  #nav-document.tab-pane.fade{"aria-labelledby": "nav-document-tab",
+                              role: "tabpanel"}
+    %pre= JSON.pretty_unparse(@indexed_document)
+  #nav-object.tab-pane.fade{"aria-labelledby": "nav-object-tab",
+                            role: "tabpanel"}
+    %pre= YAML::dump(@item)

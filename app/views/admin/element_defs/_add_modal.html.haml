@@ -1,0 +1,17 @@
+-# Add-element modal
+-#
+-# @param element_def [ElementDef]
+-# @param context [Symbol] :new or :edit
+
+#dl-add-element-modal.modal.fade{"aria-labelledby": "dl-add-element-modal-label",
+                                 role: "dialog",
+                                 tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %h5#dl-add-element-modal-label.modal-title Add Element
+        %button.close{"aria-label": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"aria-hidden": "true"} &times;
+      .modal-body
+        = render partial: 'form',
+                 locals: { element_def: element_def, context: context }

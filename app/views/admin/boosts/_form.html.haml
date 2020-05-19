@@ -1,0 +1,20 @@
+-# @param boost [Boost]
+-# @param context [Symbol] :new or :edit
+
+= form_for([:admin, boost], remote: true) do |f|
+  .dl-error-messages
+    -# populated via ajax by shared/_validation_messages.js.erb
+  .form-group
+    = f.label :field
+    = f.text_field :field, class: 'form-control'
+  .form-group
+    = f.label :value
+    = f.text_field :value, class: 'form-control'
+  .form-group
+    = f.label :boost
+    = f.number_field :boost, class: 'form-control'
+  .clearfix
+    .float-right
+      %button.btn.btn-light{"data-dismiss": "modal", type: "button"} Cancel
+      = f.submit(context == :new ? 'Create Boost' : 'Edit Boost',
+                 class: 'btn btn-primary')

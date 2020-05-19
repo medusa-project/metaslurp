@@ -1,0 +1,60 @@
+%nav.navbar.navbar-expand-md.navbar-dark
+  %button.navbar-toggler{"aria-controls": "dl-navbar-left-collapse",
+                         "aria-expanded": "false",
+                         "aria-label": "Toggle navigation",
+                         "data-target": "#dl-navbar-left-collapse",
+                         "data-toggle": "collapse",
+                         type: "button"}
+    %span.navbar-toggler-icon
+  #dl-navbar-left-collapse.collapse.navbar-collapse
+    %ul.navbar-nav
+      %li#cr-nav.nav-item
+        = link_to('Collection Registry', Configuration.instance.collection_registry_url, class: 'nav-link')
+      %li#dl-nav.nav-item
+        = link_to('Digital Library', Configuration.instance.dls_url + '/admin', class: 'nav-link')
+      %li#gateway-nav.nav-item.active
+        = link_to('Metadata Gateway', '#', class: 'nav-link')
+%nav.navbar.navbar-expand-md.navbar-dark.bg-dark
+  = link_to(admin_root_path, class: 'navbar-brand') do
+    %i.fas.fa-tachometer-alt
+  %button.navbar-toggler{"aria-controls": "dl-navbar-right-collapse",
+                         "aria-expanded": "false",
+                         "aria-label": "Toggle navigation",
+                         "data-target": "#dl-navbar-right-collapse",
+                         "data-toggle": "collapse",
+                         type: "button"}
+    %span.navbar-toggler-icon
+  #dl-navbar-right-collapse.collapse.navbar-collapse
+    %ul.navbar-nav
+      %li#elements-nav.nav-item
+        = link_to('Elements', admin_element_defs_path, class: 'nav-link')
+      %li#content-services-nav.nav-item
+        = link_to('Content Services', admin_content_services_path, class: 'nav-link')
+      %li#harvests-nav.nav-item
+        = link_to('Harvests', admin_harvests_path, class: 'nav-link')
+      - if current_user.medusa_admin?
+        %li#server-nav.nav-item.dropdown
+          %a#dl-server-menu-toggle.nav-link.dropdown-toggle{"aria-expanded": "false",
+                                                            "aria-haspopup": "true",
+                                                            "data-toggle": "dropdown",
+                                                            href: "#"}
+            Server
+          .dropdown-menu{"aria-labelledby": "dl-server-menu-toggle"}
+            = link_to('Configuration', admin_configuration_path, class: 'dropdown-item')
+            = link_to('Boosts', admin_boosts_path, class: 'dropdown-item')
+            = link_to('Users', admin_users_path, class: 'dropdown-item')
+    %ul.navbar-nav.ml-md-auto
+      %li.nav-item
+        = link_to('https://wiki.illinois.edu/wiki/display/scrs/Search+Gateway',
+                  class: 'nav-link', target: '_blank') do
+          %i.fa.fa-question-circle
+      %li.nav-item.dropdown
+        %a#dl-user-menu-toggle.nav-link.dropdown-toggle{"aria-expanded": "false",
+                                                        "aria-haspopup": "true",
+                                                        "data-toggle": "dropdown",
+                                                        href: "#"}
+          %i.fas.fa-user{"aria-hidden": "true"}
+          = current_user.username
+        .dropdown-menu.dropdown-menu-right{"aria-labelledby": "dl-user-menu-toggle"}
+          = link_to 'HTTP API', api_url, class: 'dropdown-item'
+          = link_to 'Log Out', signout_path, method: :delete, class: 'dropdown-item'

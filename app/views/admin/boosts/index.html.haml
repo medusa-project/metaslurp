@@ -1,0 +1,18 @@
+- provide :title, 'Boosts'
+- provide :body_id, 'dl-admin-boosts'
+- provide :active_nav, 'server'
+
+- if current_user.medusa_admin?
+  = button_bar({ type: 'button',
+                 label: 'Add Boost',
+                 'data-toggle': 'modal',
+                 'data-target': '#dl-add-boost-modal',
+                 icon: 'fa-plus' })
+
+%h1 Boosts
+
+#dl-boosts
+  = render 'boosts'
+
+= render partial: 'add_modal', locals: { boost: @new_boost, context: :new }
+= render partial: 'edit_modal'

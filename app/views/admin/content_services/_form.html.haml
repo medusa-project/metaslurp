@@ -1,0 +1,32 @@
+= form_for([:admin, @content_service]) do |f|
+  = render 'admin/shared/error_messages', object: f.object
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+  .form-group
+    = f.label :key
+    = f.text_field :key, class: 'form-control', disabled: (context == :edit)
+  .form-group
+    = f.label :uri, 'URI'
+    = f.text_field :uri, class: 'form-control'
+  - if context == :edit
+    %h2 Element Mappings
+    %table.table.dl-elements
+      %thead
+        %tr
+          %th Source Element
+          %th= link_to 'Local Element', admin_element_defs_path, target: '_blank'
+      %tbody
+        - @content_service.element_mappings.order(:source_name).each do |mapping|
+          %tr
+            %td{style: "width:50%"}
+              %code= mapping.source_name
+            %td{style: "width:50%"}
+              = select_tag "content_service[element_mappings][#{mapping.id}][element_def_id]", |
+                options_from_collection_for_select(ElementDef.all.order(:name),                |
+                                                   'id', 'label', mapping.element_def_id),     |
+                include_blank: true,                                                           |
+                class: 'custom-select'                                                         |
+  .float-right
+    = f.submit(context == :new ? 'Create Content Service' : 'Save Changes', |
+      class: 'btn btn-primary mb-3')                                             |

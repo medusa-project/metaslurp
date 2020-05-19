@@ -1,0 +1,11 @@
+%table.table
+  %thead
+    %tr
+      %th{style: "min-width: 20%"} Name
+      %th Key
+  %tbody
+    - @content_services.each do |service|
+      %tr
+        %td= link_to service.name, admin_content_service_path(service)
+        %td
+          %code= service.key

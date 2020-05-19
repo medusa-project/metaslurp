@@ -1,0 +1,16 @@
+= button_bar({ label: 'Add Non-Human User',  |
+  icon: 'fa-plus',                           |
+  if: lambda { current_user.medusa_admin? }, |
+  url: new_admin_user_path })                |
+
+%h2
+  Non-Human Users
+  %a.btn.btn-sm.btn-light.popover-dismiss{"data-content": "These users are used for automated access by other applications and scripts.",
+                                          "data-toggle": "popover",
+                                          "data-trigger": "focus",
+                                          role: "button",
+                                          tabindex: "0"}
+    %i.fa.fa-question-circle
+%ul
+  - @non_human_users.each do |user|
+    %li= link_to user.username, admin_user_path(user)
