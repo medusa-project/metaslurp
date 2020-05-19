@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
   before_action :setup
   after_action :flash_in_response_headers
 
+  rescue_from StandardError, with: :error_occurred
+
   def setup
     @keep_flash = false
   end
@@ -75,6 +77,35 @@ class ApplicationController < ActionController::Base
       response.headers['X-DL-Message'] = flash['success'] unless
           flash['success'].blank?
       flash.clear unless @keep_flash
+    end
+  end
+
+  private
+
+  def error_occurred(exception)
+    io = StringIO.new
+    io << "Error on #{request.url}\n"
+    io << "Class: #{exception.class}\n"
+    io << "Message: #{exception.message}\n"
+    io << "Time: #{Time.now.iso8601}\n"
+    io << "Stack Trace:\n"
+    exception.backtrace.each do |line|
+      io << line
+      io << "\n"
+    end
+
+    unless Rails.env.development?
+      io << "Current User: #{current_user.username}}\n" if current_user
+      #notification = MetaslurpMailer.error(message)
+      #notification.deliver_now
+    end
+
+    @message = io.string
+    Rails.logger.error(@message)
+
+    respond_to do |format|
+      format.html { render "errors/internal_server_error", status: :internal_server_error }
+      format.all { render nothing: true, status: :internal_server_error }
     end
   end
 
