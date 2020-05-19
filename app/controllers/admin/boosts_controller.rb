@@ -15,7 +15,7 @@ module Admin
         @boost.save!
       rescue ActiveRecord::RecordInvalid
         response.headers['X-DL-Result'] = 'error'
-        render partial: 'shared/validation_messages',
+        render partial: 'admin/shared/validation_messages',
                locals: { entity: @boost }
       rescue => e
         handle_error(e)

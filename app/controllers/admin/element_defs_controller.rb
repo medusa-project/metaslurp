@@ -25,7 +25,7 @@ module Admin
         @element.save!
       rescue ActiveRecord::RecordInvalid
         response.headers['X-DL-Result'] = 'error'
-        render partial: 'shared/validation_messages',
+        render partial: 'admin/shared/validation_messages',
                locals: { entity: @element }
       rescue => e
         handle_error(e)
