@@ -29,8 +29,13 @@ RUN bin/rails assets:precompile
 
 EXPOSE 3000
 
-# N.B.: --engine=builtin works around an issue with the embedded nginx where
-# large POST requests cause HTTP 5xx errors.
-# Also see: https://www.phusionpassenger.com/library/config/standalone/optimization/
+# This command invokes Passenger.
+# See: https://www.phusionpassenger.com/library/config/standalone/
+#
+# We aren't using Passenger anymore due to HTTP 502 errors in response to
+# certain large request bodies that were difficult to debug. It's probably
+# possible to tune it to fix this, but it was easier to just switch to Puma.
 #CMD ["bundle", "exec", "passenger", "start", "-p", "3000", "--engine=builtin", "--max-pool-size=16", "--min-instances=16", "--log-file=/dev/stdout"]
+
+# See config/puma.rb
 CMD ["bundle", "exec", "puma"]
