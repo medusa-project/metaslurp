@@ -105,6 +105,19 @@ class Harvest < ApplicationRecord
   end
 
   ##
+  # @return [String] CloudWatch log URI within the AWS web console.
+  #
+  def cloudwatch_log_uri
+    if self.ecs_task_uuid
+      config = Configuration.instance
+      return sprintf('https://%s.console.aws.amazon.com/cloudwatch/home?region=%s#logEventViewer:group=/ecs/metadata;stream=ecs/metaslurper/%s',
+                     config.aws_region, config.aws_region,
+                     self.ecs_task_uuid)
+    end
+    nil
+  end
+
+  ##
   # @return [Boolean]
   #
   def destroyable?
