@@ -45,6 +45,12 @@ module Api
              status: :internal_server_error
     end
 
+    def request_body_string
+      body = request.body
+      body = body.read unless body.is_a?(String)
+      body
+    end
+
   end
 
 end

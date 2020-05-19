@@ -53,15 +53,8 @@ module Api
       private
 
       def request_json
-        entity = request.body
-        if entity.is_a?(StringIO)
-          entity = entity.string
-        elsif entity.is_a?(Tempfile)
-          entity = File.read(entity)
-        else
-          entity = entity.to_s
-        end
-        json = JSON.parse(entity)
+        entity = request_body_string
+        json   = JSON.parse(entity)
         # API exposes `service_key` but the Harvest requires
         # `content_service_id`.
         json['content_service_id'] = ContentService.find_by_key(json['service_key'])&.id

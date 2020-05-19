@@ -42,11 +42,8 @@ module Api
       private
 
       def request_json
-        entity = request.body
-        unless entity.is_a?(String)
-          entity = entity.read
-        end
-        json = JSON.parse(entity)
+        entity = request_body_string
+        json   = JSON.parse(entity)
 
         # Validate the harvest key
         harvest = Harvest.find_by_key(json['harvest_key'])
