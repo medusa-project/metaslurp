@@ -12,6 +12,15 @@ class HarvestTest < ActiveSupport::TestCase
     assert_equal content_services(:one), @instance.content_service
   end
 
+  # destroy()
+
+  test 'destroy() raises an error if the instance is not destroyable' do
+    @instance.status = Harvest::Status::RUNNING
+    assert_raises ActiveRecord::RecordNotDestroyed do
+      @instance.destroy!
+    end
+  end
+
   # progress()
 
   test 'progress() reports a correct figure for empty harvests' do

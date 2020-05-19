@@ -16,6 +16,17 @@ class HarvestsControllerTest < ActionDispatch::IntegrationTest
     assert_equal Harvest::Status::ABORTED, harvest.status
   end
 
+  # destroy()
+
+  test 'destroy() destroys the given harvest' do
+    harvest = harvests(:new)
+    delete admin_harvest_path(harvest)
+    assert_raises ActiveRecord::RecordNotFound do
+      harvest.reload
+    end
+    assert_redirected_to admin_harvests_path
+  end
+
   # index()
 
   test 'index() renders the index page' do

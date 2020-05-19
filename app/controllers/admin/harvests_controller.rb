@@ -5,7 +5,7 @@ module Admin
     PERMITTED_PARAMS = [:content_service_id, :status]
 
     ##
-    # Responds to PATCH /admin/harvests/:key/abort
+    # Responds to `PATCH /admin/harvests/:key/abort`
     #
     def abort
       harvest = Harvest.find_by_key(params[:harvest_key])
@@ -23,7 +23,24 @@ module Admin
     end
 
     ##
-    # Responds to GET /admin/harvests
+    # Responds to `DELETE /admin/harvests/:key`
+    #
+    def destroy
+      harvest = Harvest.find_by_key(params[:key])
+      raise ActiveRecord::RecordNotFound unless harvest
+      begin
+        harvest.destroy!
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = 'Harvest deleted.'
+      ensure
+        redirect_to admin_harvests_path
+      end
+    end
+
+    ##
+    # Responds to GET `/admin/harvests`
     #
     def index
       @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
@@ -48,7 +65,7 @@ module Admin
     end
 
     ##
-    # Responds to GET /admin/harvests/:key
+    # Responds to GET `/admin/harvests/:key`
     #
     def show
       @harvest = Harvest.find_by_key(params[:key])

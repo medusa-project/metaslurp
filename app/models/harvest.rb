@@ -94,6 +94,7 @@ class Harvest < ApplicationRecord
   after_initialize :populate_key
   before_validation :restrict_key_changes, :restrict_status_changes
   before_save :update_ended_at
+  before_destroy :validate_destroyable
 
   ##
   # @return [Integer] Total number of items to harvest, taking into account
@@ -101,6 +102,13 @@ class Harvest < ApplicationRecord
   #
   def canonical_num_items
     (max_num_items.to_i > 0) ? [max_num_items, num_items].min : num_items
+  end
+
+  ##
+  # @return [Boolean]
+  #
+  def destroyable?
+    ![Status::RUNNING].include?(self.status)
   end
 
   ##
@@ -209,6 +217,10 @@ class Harvest < ApplicationRecord
 
   def update_ended_at
     self.ended_at ||= (Time.zone&.now || Time.now) unless self.usable?
+  end
+
+  def validate_destroyable
+    throw(:abort) unless destroyable?
   end
 
 end
