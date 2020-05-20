@@ -9,7 +9,7 @@ module Api
     before_action :authorize_user
     skip_before_action :verify_authenticity_token
 
-    rescue_from Exception, with: :error_response
+    rescue_from StandardError, with: :error_response
 
     DEFAULT_RESULTS_LIMIT = 100
     MAX_RESULTS_LIMIT = 1000

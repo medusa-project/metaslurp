@@ -11,7 +11,10 @@ class ApplicationController < ActionController::Base
   before_action :setup
   after_action :flash_in_response_headers
 
-  rescue_from StandardError, with: :error_occurred
+  # N.B.: these must be listed in order of most generic to most specific.
+  rescue_from StandardError, with: :rescue_internal_server_error
+  rescue_from ActionController::UnknownFormat, with: :rescue_unknown_format
+  rescue_from ActiveRecord::RecordNotFound, with: :rescue_not_found
 
   def setup
     @keep_flash = false
@@ -82,31 +85,58 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def error_occurred(exception)
+  def rescue_internal_server_error(exception)
     io = StringIO.new
     io << "Error on #{request.url}\n"
     io << "Class: #{exception.class}\n"
     io << "Message: #{exception.message}\n"
     io << "Time: #{Time.now.iso8601}\n"
+    io << "User: #{current_user.username}}\n" if current_user
     io << "Stack Trace:\n"
     exception.backtrace.each do |line|
       io << line
       io << "\n"
     end
 
-    unless Rails.env.development?
-      io << "Current User: #{current_user.username}}\n" if current_user
-      #notification = MetaslurpMailer.error(message)
-      #notification.deliver_now
-    end
-
     @message = io.string
     Rails.logger.error(@message)
 
     respond_to do |format|
-      format.html { render "errors/internal_server_error", status: :internal_server_error }
-      format.all { render nothing: true, status: :internal_server_error }
+      format.html do
+        render "errors/internal_server_error",
+               status: :internal_server_error,
+               content_type: "text/html"
+      end
+      format.all do
+        render plain: "500 Internal Server Error",
+               status: :internal_server_error,
+               content_type: "text/plain"
+      end
     end
+  end
+
+  def rescue_not_found
+    message = 'This resource does not exist.'
+    respond_to do |format|
+      format.html do
+        render 'errors/error', status: :not_found, locals: {
+            status_message: 'Not Found',
+            message: message
+        }
+      end
+      format.json do
+        render 'errors/error', status: :not_found, locals: { message: message }
+      end
+      format.all do
+        render plain: "404 Not Found", status: :not_found,
+               content_type: "text/plain"
+      end
+    end
+  end
+
+  def rescue_unknown_format
+    render plain: "Sorry, we aren't able to provide the requested format.",
+           status: :unsupported_media_type
   end
 
 end
