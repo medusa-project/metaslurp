@@ -313,15 +313,13 @@ class ItemTest < ActiveSupport::TestCase
     assert_equal 'cats', @instance.container.id
   end
 
-  test 'container() raises an error when the container item does not exist' do
-    assert_raises ActiveRecord::RecordNotFound do
-      @instance.container
-    end
-  end
-
-  test 'container() returns nil when there is no container item' do
+  test 'container() returns nil when container_id is nil' do
     @instance.container_id = nil
     assert_nil @instance.container
+  end
+
+  test 'container() returns nil when the container item does not exist' do
+    assert_nil  @instance.container
   end
 
   # content_service()

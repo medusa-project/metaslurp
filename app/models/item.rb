@@ -391,7 +391,14 @@ class Item
   #                {container_name} should be used instead.
   #
   def container
-    self.container_id.present? ? Item.find(self.container_id) : nil
+    if self.container_id.present?
+      begin
+        Item.find(self.container_id)
+      rescue ActiveRecord::RecordNotFound
+        # nothing we can do
+      end
+    end
+    nil
   end
 
   ##
