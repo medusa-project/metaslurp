@@ -48,7 +48,7 @@ module ItemsHelper
     html = StringIO.new
     html << '<ul class="list-unstyled">'
 
-    items.each_with_index do |item, index|
+    items.select(&:present?).each_with_index do |item, index|
       title = raw(StringUtils.truncate(item.title, MAX_MEDIA_TITLE_LENGTH))
 
       # Get the URI to link to.
