@@ -6,33 +6,53 @@
 
 = form_tag(admin_configuration_path, method: :patch) do
   %h2 General
-  = admin_configuration_table_for({             |
-        key: Option::Keys::ORGANIZATION_NAME,   |
-        label: 'Organization Name'              |
-    },                                          |
-    {                                           |
-        key: Option::Keys::ADMINISTRATOR_EMAIL, |
-        label: 'Administrator Email'            |
-    },                                          |
-    {                                           |
-        key: Option::Keys::COPYRIGHT_STATEMENT, |
-        label: 'Copyright Statement'            |
-    })                                          |
+
+  .form-group.row
+    = label_tag("configuration[#{Option::Keys::ORGANIZATION_NAME}]",
+                'Organization Name', class: "col-sm-3 col-form-label")
+    .col-sm-9
+      = text_field_tag("configuration[#{Option::Keys::ORGANIZATION_NAME}]",
+                       Option::string(Option::Keys::ORGANIZATION_NAME),
+                       class: 'form-control')
+  .form-group.row
+    = label_tag("configuration[#{Option::Keys::ADMINISTRATOR_EMAIL}]",
+                'Administrator Email', class: "col-sm-3 col-form-label")
+    .col-sm-9
+      = text_field_tag("configuration[#{Option::Keys::ADMINISTRATOR_EMAIL}]",
+                       Option::string(Option::Keys::ADMINISTRATOR_EMAIL),
+                       class: 'form-control')
+  .form-group.row
+    = label_tag("configuration[#{Option::Keys::COPYRIGHT_STATEMENT}]",
+                'Copyright Statement', class: "col-sm-3 col-form-label")
+    .col-sm-9
+      = text_field_tag("configuration[#{Option::Keys::COPYRIGHT_STATEMENT}]",
+                       Option::string(Option::Keys::COPYRIGHT_STATEMENT),
+                       class: 'form-control')
 
   %h2 Website
-  = admin_configuration_table_for({               |
-        key: Option::Keys::WEBSITE_NAME,          |
-        label: 'Website Name'                     |
-    },                                            |
-    {                                             |
-        key: Option::Keys::DEFAULT_RESULT_WINDOW, |
-        label: 'Results Per Page',                |
-        type: :number                             |
-    },                                            |
-    {                                             |
-        key: Option::Keys::FACET_TERM_LIMIT,      |
-        label: 'Facet Term Limit',                |
-        type: :number                             |
-    })                                            |
 
-  = submit_tag 'Save Changes', class: 'btn btn-primary'
+  .form-group.row
+    = label_tag("configuration[#{Option::Keys::WEBSITE_NAME}]",
+                'Website Name', class: "col-sm-3 col-form-label")
+    .col-sm-9
+      = text_field_tag("configuration[#{Option::Keys::WEBSITE_NAME}]",
+                       Option::string(Option::Keys::WEBSITE_NAME),
+                       class: 'form-control')
+  .form-group.row
+    = label_tag("configuration[#{Option::Keys::DEFAULT_RESULT_WINDOW}]",
+                'Default Result Window', class: "col-sm-3 col-form-label")
+    .col-sm-9
+      = number_field_tag("configuration[#{Option::Keys::DEFAULT_RESULT_WINDOW}]",
+                         Option::string(Option::Keys::DEFAULT_RESULT_WINDOW),
+                         class: 'form-control')
+  .form-group.row
+    = label_tag("configuration[#{Option::Keys::FACET_TERM_LIMIT}]",
+                'Facet Term Limit', class: "col-sm-3 col-form-label")
+    .col-sm-9
+      = number_field_tag("configuration[#{Option::Keys::FACET_TERM_LIMIT}]",
+                         Option::string(Option::Keys::FACET_TERM_LIMIT),
+                         class: 'form-control')
+  .form-group.row
+    .col-sm-3
+    .col-sm-9
+      = submit_tag 'Save Changes', class: 'btn btn-primary'
