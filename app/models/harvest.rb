@@ -164,6 +164,7 @@ class Harvest < ApplicationRecord
   # @return [Float] Between 0 and 1.
   #
   def progress
+    return 0.0 if status == Status::NEW
     value = (self.num_items > 0) ?
         (self.num_succeeded + self.num_failed) / self.num_items.to_f : 1.0
     (value > 1) ? 1 : value
