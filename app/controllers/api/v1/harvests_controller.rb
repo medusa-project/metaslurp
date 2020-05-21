@@ -30,6 +30,29 @@ module Api
       end
 
       ##
+      # Responds to `DELETE /api/v1/harvests/:key`. Used for deleting harvests.
+      #
+      def destroy
+        begin
+          harvest = Harvest.find_by_key(params[:key])
+          raise ActiveRecord::RecordNotFound unless harvest
+          if harvest.destroyable?
+            harvest.destroy!
+            head :no_content
+          else
+            render plain: "A running harvest cannot be deleted. Abort it first.",
+                   status: :conflict
+          end
+        rescue ArgumentError, ActiveRecord::RecordInvalid, JSON::ParserError => e
+          LOGGER.debug('Invalid: %s', json)
+          render plain: e.message, status: :bad_request
+        rescue IOError => e
+          LOGGER.error(e)
+          render plain: e.message, status: :internal_server_error
+        end
+      end
+
+      ##
       # Responds to PATCH /api/v1/harvests/:key. Used for updating harvests.
       #
       def update

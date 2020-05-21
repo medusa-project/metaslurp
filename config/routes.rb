@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       root 'landing#index'
       resources :elements, only: :index
-      resources :harvests, only: [:create, :update], param: :key
+      resources :harvests, only: [:create, :destroy, :update], param: :key
       resources :items, only: :update
     end
   end

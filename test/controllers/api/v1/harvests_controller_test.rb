@@ -47,6 +47,39 @@ module Api
       assert_response :bad_request
     end
 
+    # destroy()
+
+    test 'destroy() with no credentials returns 401' do
+      delete api_v1_harvest_path(@valid_harvest.key)
+      assert_response :unauthorized
+    end
+
+    test 'destroy() with invalid credentials returns 401' do
+      headers = valid_headers.merge(
+          'Authorization' => ActionController::HttpAuthentication::Basic.
+              encode_credentials('bogus', 'bogus'))
+      delete api_v1_harvest_path(@valid_harvest), headers: headers
+      assert_response :unauthorized
+    end
+
+    test 'destroy() with valid credentials returns 204' do
+      delete api_v1_harvest_path(@valid_harvest), headers: valid_headers
+      assert_response :no_content
+    end
+
+    test 'destroy() with valid credentials destroys the harvest' do
+      delete api_v1_harvest_path(@valid_harvest), headers: valid_headers
+      assert_raises ActiveRecord::RecordNotFound do
+        @valid_harvest.reload
+      end
+    end
+
+    test 'destroy() with valid credentials and running harvest returns 409' do
+      @valid_harvest.update!(status: Harvest::Status::RUNNING)
+      delete api_v1_harvest_path(@valid_harvest), headers: valid_headers
+      assert_response :conflict
+    end
+
     # update()
 
     test 'update() with no credentials returns 401' do

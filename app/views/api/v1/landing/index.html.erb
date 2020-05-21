@@ -17,6 +17,7 @@
       <ul>
         <li><a href="#start-harvest">Start a harvest</a></li>
         <li><a href="#update-harvest">Update a harvest</a></li>
+        <li><a href="#delete-harvest">Delete a harvest</a></li>
       </ul>
     </li>
     <li>
@@ -61,6 +62,8 @@
     <li>When the harvest is complete, successfully or not,
       <a href="#update-harvest">close it out</a> with an appropriate status.
       If there were any errors, communicate them in the message.</li>
+    <li>(OPTIONAL) <a href="#delete-harvest">Delete the harvest</a>. This
+      should typically only be done for testing purposes.</li>
   </ol>
 </section>
 
@@ -199,6 +202,51 @@
   <tr>
     <td>Response Status</td>
     <td><code>204 No Content</code></td>
+  </tr>
+  <tr>
+    <td>Response Content Type</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Response Entity</td>
+    <td></td>
+  </tr>
+</table>
+
+<h3 id="delete-harvest">Delete a harvest</h3>
+
+<table class="table">
+  <tr>
+    <td>Request Method</td>
+    <td><code>DELETE</code></td>
+  </tr>
+  <tr>
+    <td>URI Path</td>
+    <td><code>/api/<%= @version_path_component %>/harvests/:key</code></td>
+  </tr>
+  <tr>
+    <td>Query Arguments</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Request Content Type</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Request Entity</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Response Status</td>
+    <td>
+      <dl>
+        <dt><code>204 No Content</code></dt>
+        <dd>The request succeeded.</dd>
+        <dt><code>409 Conflict</code></dt>
+        <dd>The harvest could not be deleted because it is running. Update its
+          status to some other value and try again.</dd>
+      </dl>
+    </td>
   </tr>
   <tr>
     <td>Response Content Type</td>
