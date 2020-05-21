@@ -5,11 +5,12 @@
     %title
       HTTP API | #{Option::string(Option::Keys::WEBSITE_NAME)}
     %meta{charset: "utf-8"}/
-    %meta{content: "width=device-width, initial-scale=1", name: "viewport"}/
+    %meta{content: "width=device-width, initial-scale=1, shrink-to-fit=no", name: "viewport"}/
     = csrf_meta_tags
     = stylesheet_link_tag 'api/application', media: 'all'
     = render partial: 'layouts/font_awesome'
   %body{id: yield(:body_id).present? ? yield(:body_id) : nil,
         'active_nav': yield(:active_nav)}
     .container-fluid
-      = yield.force_encoding(Encoding::UTF_8)
+      .page-content
+        = yield.force_encoding(Encoding::UTF_8)
