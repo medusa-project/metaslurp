@@ -14,5 +14,4 @@
           %span{"aria-hidden": "true"} &times;
       .modal-body
         = render partial: 'admin/value_mappings/form',
-                 locals: { value_mapping: ValueMapping.new(element_def: element_def),
-                           context: :new }
+                 locals: { value_mapping: ValueMapping.new(element_def: element_def) }

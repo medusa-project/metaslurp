@@ -64,7 +64,7 @@ module Admin
       raise ActiveRecord::RecordNotFound unless element_def
 
       render partial: 'admin/element_defs/form',
-             locals: { element_def: element_def, context: :edit }
+             locals: { element_def: element_def }
     end
 
     ##

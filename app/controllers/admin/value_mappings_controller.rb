@@ -54,7 +54,7 @@ module Admin
       mapping = ValueMapping.find(params[:id])
 
       render partial: 'admin/value_mappings/form',
-             locals: { value_mapping: mapping, context: :edit }
+             locals: { value_mapping: mapping }
     end
 
     ##

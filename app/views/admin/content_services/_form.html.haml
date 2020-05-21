@@ -5,11 +5,11 @@
     = f.text_field :name, class: 'form-control'
   .form-group
     = f.label :key
-    = f.text_field :key, class: 'form-control', disabled: (context == :edit)
+    = f.text_field :key, class: 'form-control', disabled: !f.object.new_record?
   .form-group
     = f.label :uri, 'URI'
     = f.text_field :uri, class: 'form-control'
-  - if context == :edit
+  - unless f.object.new_record?
     %h2 Element Mappings
     %table.table.dl-elements
       %thead
@@ -28,5 +28,5 @@
                 include_blank: true,                                                           |
                 class: 'custom-select'                                                         |
   .float-right
-    = f.submit(context == :new ? 'Create Content Service' : 'Save Changes', |
+    = f.submit(f.object.new_record? ? 'Create Content Service' : 'Save Changes', |
       class: 'btn btn-primary mb-3')                                             |

@@ -51,8 +51,7 @@ module Admin
     def edit
       boost = Boost.find(params[:id])
 
-      render partial: 'admin/boosts/form',
-             locals: { boost: boost, context: :edit }
+      render partial: 'admin/boosts/form', locals: { boost: boost }
     end
 
     ##

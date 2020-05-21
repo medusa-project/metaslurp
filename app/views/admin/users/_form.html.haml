@@ -3,6 +3,8 @@
   = f.hidden_field :human, value: false
   .form-group
     = f.label :username, 'Username'
-    = f.text_field :username, class: 'form-control', disabled: (context == :edit)
+    = f.text_field(:username, class: 'form-control',
+                              disabled: !f.object.new_record?)
   .float-right
-    = f.submit(context == :new ? 'Create User' : 'Save Changes', class: 'btn btn-primary')
+    = f.submit(f.object.new_record? ? 'Create User' : 'Save Changes',
+               class: 'btn btn-primary')
