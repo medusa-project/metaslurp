@@ -109,9 +109,8 @@ class Harvest < ApplicationRecord
   #
   def cloudwatch_log_uri
     if self.ecs_task_uuid
-      config = Configuration.instance
       return sprintf('https://%s.console.aws.amazon.com/cloudwatch/home?region=%s#logEventViewer:group=/ecs/metadata;stream=ecs/metaslurper/%s',
-                     config.aws_region, config.aws_region,
+                     ENV['AWS_REGION'], ENV['AWS_REGION'],
                      self.ecs_task_uuid)
     end
     nil
@@ -125,13 +124,14 @@ class Harvest < ApplicationRecord
   end
 
   ##
-  # @return [String] ECS task URI within the AWS web console.
+  # @return [String,nil] ECS task URI within the AWS web console, or nil if
+  #                      {ecs_task_uuid} is not set.
   #
   def ecs_task_uri
     if self.ecs_task_uuid
       config = Configuration.instance
       return sprintf('https://%s.console.aws.amazon.com/ecs/home?region=%s#/clusters/%s/tasks/%s/details',
-                     config.aws_region, config.aws_region, config.ecs_cluster,
+                     ENV['AWS_REGION'], ENV['AWS_REGION'], config.ecs_cluster,
                      self.ecs_task_uuid)
     end
     nil
