@@ -15,7 +15,7 @@ class HarvestTest < ActiveSupport::TestCase
   # destroy()
 
   test 'destroy() raises an error if the instance is not destroyable' do
-    @instance.status = Harvest::Status::RUNNING
+    @instance = harvests(:running)
     assert_raises ActiveRecord::RecordNotDestroyed do
       @instance.destroy!
     end
@@ -23,12 +23,22 @@ class HarvestTest < ActiveSupport::TestCase
 
   # progress()
 
+  test 'progress() returns 0 when the status is  Status::NEW' do
+    @instance               = harvests(:new)
+    @instance.num_items     = 100
+    @instance.num_succeeded = 75
+    @instance.num_failed    = 5
+    assert_equal 0, @instance.progress
+  end
+
   test 'progress() reports a correct figure for empty harvests' do
+    @instance               = harvests(:running)
     @instance.num_items = 0
     assert_equal 1, @instance.progress
   end
 
   test 'progress() reports a correct figure for non-empty harvests' do
+    @instance               = harvests(:running)
     @instance.num_items = 100
     assert_equal 0, @instance.progress
 
@@ -38,9 +48,10 @@ class HarvestTest < ActiveSupport::TestCase
   end
 
   test 'progress() clamps the max return value to 1' do
-    @instance.num_items = 100
+    @instance               = harvests(:running)
+    @instance.num_items     = 100
     @instance.num_succeeded = 125
-    @instance.num_failed = 5
+    @instance.num_failed    = 5
     assert_equal 1, @instance.progress
   end
 

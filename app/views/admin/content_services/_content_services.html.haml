@@ -14,5 +14,5 @@
         %td= number_with_delimiter(service.num_items)
         %td
           - harvest = service.last_completed_harvest
-          - if harvest
+          - if harvest&.ended_at
             = local_time_ago(harvest.ended_at)

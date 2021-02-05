@@ -252,7 +252,7 @@ class ItemTest < ActiveSupport::TestCase
                  struct[SourceElement::RAW_INDEX_PREFIX + 'date']
     assert_equal ['value'],
                  struct[LocalElement::TEXT_INDEX_PREFIX + 'title']
-    assert_equal '2018-05-01T21:06:00Z',
+    assert_equal '2018-05-01T16:06:00Z',
                  struct[LocalElement::DATE_INDEX_PREFIX + 'date']
   end
 
@@ -310,7 +310,7 @@ class ItemTest < ActiveSupport::TestCase
   test 'container() returns the container item' do
     @instance.container_id = @instance.id
     @instance.save!
-    assert_equal 'cats', @instance.container.id
+    assert_not_nil @instance.container
   end
 
   test 'container() returns nil when container_id is nil' do

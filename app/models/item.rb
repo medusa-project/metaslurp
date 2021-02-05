@@ -397,7 +397,6 @@ class Item
         # nothing we can do
       end
     end
-    nil
   end
 
   ##

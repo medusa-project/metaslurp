@@ -3,6 +3,7 @@ require 'test_helper'
 class ContentServicesControllerTest < ActionDispatch::IntegrationTest
 
   setup do
+    setup_elasticsearch
     sign_in_as(users(:admin))
   end
 

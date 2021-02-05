@@ -5,10 +5,12 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
   setup do
     @instance   = ElasticsearchClient.instance
     @test_index = Configuration.instance.elasticsearch_index
+    @instance.delete_index(@test_index, raise_on_not_found: false)
   end
 
   teardown do
-    @instance.delete_index(@test_index) rescue nil
+    @instance.delete_index(@test_index,
+                           raise_on_not_found: false) rescue nil
   end
 
   test 'create_index() works' do
