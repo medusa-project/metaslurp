@@ -10,6 +10,15 @@
 # The harvester is a separate application called
 # [metaslurper](https://github.com/medusa-project/metaslurper).
 #
+# Harvests can be full or incremental. A full harvest includes all content
+# available in the source service. When a harvest ends, its `ended_at`
+# attribute is set, and future harvests can be set to incremental in order to
+# include only content added after the last harvest ended.
+#
+# After a full harvest has completed successfully, all items associated with
+# the same content service but having a different harvest key are deleted, as
+# they are assumed to have vanished from the content service.
+#
 # # Limiting Harvest Sizes
 #
 # Some {ContentServices} take a long time to harvest fully. The
@@ -95,6 +104,7 @@ class Harvest < ApplicationRecord
   before_validation :restrict_key_changes, :restrict_status_changes
   before_save :update_ended_at
   before_destroy :validate_destroyable
+  after_save -> { purge_unharvested_items(wait_for_completion: false) }
 
   ##
   # @return [Integer] Total number of items to harvest, taking into account
@@ -170,6 +180,26 @@ class Harvest < ApplicationRecord
     (value > 1) ? 1 : value
   end
 
+  ##
+  # If the harvest has succeeded, and was not incremental, deletes all items
+  # within the same content service that have a different harvest key, which we
+  # can infer are no longer available in the service.
+  #
+  def purge_unharvested_items(wait_for_completion: true)
+    if self.status == Status::SUCCEEDED and !self.incremental
+      index = Configuration.instance.elasticsearch_index
+      json = ItemFinder.new.
+        filter(Item::IndexFields::SERVICE_KEY, self.content_service.key).
+        exclude(Item::IndexFields::HARVEST_KEY, self.key).
+        include_children(true).
+        aggregations(false).
+        limit(9999999).
+        build_query
+      ElasticsearchClient.instance.delete_by_query(index, json,
+                                                   wait_for_completion: wait_for_completion)
+    end
+  end
+
   def to_param
     key
   end
@@ -206,6 +236,7 @@ class Harvest < ApplicationRecord
   def usable?
     [Status::NEW, Status::RUNNING].include?(self.status)
   end
+
 
   private
 

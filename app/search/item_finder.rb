@@ -37,8 +37,6 @@ class ItemFinder < AbstractFinder
     self
   end
 
-  protected
-
   ##
   # @return [String] JSON string.
   #
@@ -87,8 +85,21 @@ class ItemFinder < AbstractFinder
                 end
               end
 
-              if @exclude_variants.any? or !@include_children
+              if @excludes.any? || @exclude_variants.any? || !@include_children
                 j.must_not do
+                  @excludes.each do |field, value|
+                    j.child! do
+                      if value.respond_to?(:each)
+                        j.terms do
+                          j.set! field, value
+                        end
+                      else
+                        j.term do
+                          j.set! field, value
+                        end
+                      end
+                    end
+                  end
                   if @exclude_variants.any?
                     j.child! do
                       j.terms do
@@ -157,7 +168,7 @@ class ItemFinder < AbstractFinder
       end
 
       # Start
-      if @start.present?
+      if @start != 0
         j.from @start
       end
 

@@ -8,6 +8,7 @@ class AbstractFinder
     @aggregations    = true
     @bucket_limit    = Option::integer(Option::Keys::FACET_TERM_LIMIT) || 10
     @content_service = nil
+    @excludes        = {}  # Hash<String,Object>
     @filters         = {} # Hash<String,Object>
     @limit           = ElasticsearchClient::MAX_RESULT_WINDOW
     @orders          = [] # Array<Hash<Symbol,String>> with :field and :direction keys
@@ -86,6 +87,18 @@ class AbstractFinder
   end
 
   ##
+  # Like an inverse {filter}.
+  #
+  # @param field [String]
+  # @param value [Object] Single value or an array of "OR" values.
+  # @return [self]
+  #
+  def exclude(field, value)
+    @excludes.merge!(field => value)
+    self
+  end
+
+  ##
   # @return [Enumerable<Facet>] Result facets.
   #
   def facets
@@ -101,7 +114,7 @@ class AbstractFinder
   # @return [self]
   #
   def filter(field, value)
-    @filters.merge!({ field => value })
+    @filters.merge!(field => value)
     self
   end
 
