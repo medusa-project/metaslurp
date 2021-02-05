@@ -5,8 +5,7 @@ class ItemFinderTest < ActiveSupport::TestCase
   setup do
     config = Configuration.instance
     @index = config.elasticsearch_index
-    client = ElasticsearchClient.instance
-    client.create_index(@index) unless client.index_exists?(@index)
+    setup_elasticsearch
     seed
 
     @instance = ItemFinder.new
