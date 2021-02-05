@@ -99,17 +99,22 @@ class ElasticsearchClient
   end
 
   ##
-  # @param name [String] Index name.
-  # @return [void]
+  # @param index_name [String] Index name.
+  # @param raise_on_not_found [Boolean]
+  # @return [Boolean]
   # @raises [IOError]
   #
-  def delete_index(name)
-    LOGGER.info('delete_index(): deleting %s...', name)
-    response = @http_client.delete('/' + name)
+  def delete_index(index_name, raise_on_not_found: true)
+    LOGGER.info('delete_index(): deleting %s...', index_name)
+    url = sprintf('%s/%s',
+                  Configuration.instance.elasticsearch_endpoint,
+                  index_name)
+    response = @http_client.delete(url, nil,
+                                   'Content-Type': 'application/json')
     if response.status == 200
-      LOGGER.info('delete_index(): %s deleted', name)
-    else
-      raise IOError, "Got #{response.status} for #{name}"
+      LOGGER.info('delete_index(): deleted %s', index_name)
+    elsif response.status != 404 || (response.status == 404 && raise_on_not_found)
+      raise IOError, "Got HTTP #{response.status} for #{index_name}"
     end
   end
 
