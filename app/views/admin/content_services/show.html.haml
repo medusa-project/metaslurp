@@ -42,6 +42,8 @@
       %dt Key
       %dd
         %code= @content_service.key
+      %dt Items
+      %dd= number_with_delimiter(@content_service.num_items)
       - if @harvests.any?
         %dt
           Last #{Admin::ContentServicesController::HARVEST_WINDOW_SIZE} Harvests
