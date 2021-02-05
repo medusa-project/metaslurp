@@ -81,11 +81,14 @@ class ElasticsearchClient
   ##
   # @param index [String]
   # @param query [String] JSON query string.
+  # @param wait_for_completion [Boolean]
   # @return [String] Response body.
   #
-  def delete_by_query(index, query)
-    path = sprintf('/%s/_delete_by_query?pretty&conflicts=proceed&refresh',
-                   index)
+  def delete_by_query(index, query, wait_for_completion: true)
+    path = sprintf("/%s/_delete_by_query?pretty"\
+        "&conflicts=proceed"\
+        "&wait_for_completion=#{wait_for_completion}"\
+        "&refresh", index)
     LOGGER.debug("delete_by_query(): %s\n    %s", path, query)
     response = @http_client.post do |request|
       request.path = path

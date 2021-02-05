@@ -44,7 +44,8 @@ class ContentService < ApplicationRecord
     }
     ElasticsearchClient.instance.delete_by_query(
         Configuration.instance.elasticsearch_index,
-        JSON.generate(query))
+        JSON.generate(query),
+        wait_for_completion: true)
   end
 
   ##
@@ -116,7 +117,8 @@ class ContentService < ApplicationRecord
     }
     ElasticsearchClient.instance.delete_by_query(
         Configuration.instance.elasticsearch_index,
-        JSON.generate(query))
+        JSON.generate(query),
+        wait_for_completion: true)
   end
 
   ##
