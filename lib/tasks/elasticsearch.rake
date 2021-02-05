@@ -34,6 +34,14 @@ namespace :elasticsearch do
       puts ElasticsearchClient.instance.indexes
     end
 
+    # N.B.: This is used in the testing Dockerfile
+    desc 'Recreate an index with the current index schema'
+    task :recreate, [:name] => :environment do |task, args|
+      client = ElasticsearchClient.instance
+      client.delete_index(args[:name], raise_on_not_found: false)
+      client.create_index(args[:name])
+    end
+
     desc 'Copy the current index into the latest index'
     task :reindex, [:from_index, :to_index] => :environment do |task, args|
       ElasticsearchClient.instance.reindex(args[:from_index], args[:to_index])
