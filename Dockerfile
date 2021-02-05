@@ -1,3 +1,7 @@
+# This Dockerfile is for running the web application in demo & production.
+# There is a separate Dockerfile in docker/metaslurp for running the tests.
+# (Also see docker-compose.yml which is related to that file and not this one.)
+
 FROM ruby:2.7.1-slim
 
 ENV RAILS_ENV=production
