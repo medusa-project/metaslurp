@@ -4,6 +4,7 @@
       %th{style: "min-width: 20%"} Name
       %th Key
       %th Items
+      %th Last Harvest
   %tbody
     - @content_services.each do |service|
       %tr
@@ -11,3 +12,7 @@
         %td
           %code= service.key
         %td= number_with_delimiter(service.num_items)
+        %td
+          - harvest = service.last_completed_harvest
+          - if harvest
+            = local_time_ago(harvest.ended_at)
