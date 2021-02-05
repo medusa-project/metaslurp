@@ -65,7 +65,7 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
   test 'get_document() with missing document' do
     begin
       @instance.create_index(@test_index)
-      assert_nil @instance.get_document(@test_index, 'bogus')
+      assert_nil @instance.get_document('bogus')
     ensure
       @instance.delete_index(@test_index) rescue nil
     end
@@ -74,7 +74,7 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
   test 'get_document() with existing document' do
     @instance.create_index(@test_index)
     @instance.index_document(@test_index, 'id1', {})
-    assert_not_nil @instance.get_document(@test_index, 'id1')
+    assert_not_nil @instance.get_document('id1')
   end
 
   test 'index_document() indexes a document' do
@@ -82,10 +82,10 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
       @instance.delete_index(@test_index)
     end
     @instance.create_index(@test_index)
-    assert_nil @instance.get_document(@test_index, 'id1')
+    assert_nil @instance.get_document('id1')
 
     @instance.index_document(@test_index, 'id1', {})
-    assert_not_nil @instance.get_document(@test_index, 'id1')
+    assert_not_nil @instance.get_document('id1')
   end
 
   test 'index_exists?() works' do

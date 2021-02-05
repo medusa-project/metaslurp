@@ -26,7 +26,7 @@ class ElasticsearchClient
   # @return [Boolean]
   # @raises [IOError]
   #
-  def create_index(index_name, num_shards = 0)
+  def create_index(index_name, num_shards: 0)
     LOGGER.info('create_index(): creating %s...', index_name)
     index_path = '/' + index_name
 
@@ -79,12 +79,12 @@ class ElasticsearchClient
   end
 
   ##
-  # @param index [String]
   # @param query [String] JSON query string.
   # @param wait_for_completion [Boolean]
   # @return [String] Response body.
   #
-  def delete_by_query(index, query, wait_for_completion: true)
+  def delete_by_query(query:, wait_for_completion: true)
+    index = Configuration.instance.elasticsearch_index
     path = sprintf("/%s/_delete_by_query?pretty"\
         "&conflicts=proceed"\
         "&wait_for_completion=#{wait_for_completion}"\
@@ -129,11 +129,11 @@ class ElasticsearchClient
   end
 
   ##
-  # @param index_name [String]
   # @param id [String]
   # @return [Hash, nil]
   #
-  def get_document(index_name, id)
+  def get_document(id)
+    index_name = ::Configuration.instance.elasticsearch_index
     path = sprintf('/%s/entity/%s', index_name, id) # in ES 7, `entity` changes to `_doc`
     LOGGER.debug('get_document(): %s/%s', index_name, id)
     response = @http_client.get(path)
@@ -208,10 +208,10 @@ class ElasticsearchClient
   ##
   # Refreshes an index.
   #
-  # @param index [String]
   # @return [void]
   #
-  def refresh(index)
+  def refresh
+    index = ::Configuration.instance.elasticsearch_index
     path = sprintf('/%s/_refresh?pretty', index)
     @http_client.post do |request|
       request.path = path

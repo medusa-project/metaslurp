@@ -386,10 +386,10 @@ class ItemTest < ActiveSupport::TestCase
     begin
       client.delete_index(index) if client.index_exists?(index)
 
-      assert !client.get_document(index, @instance.id)
+      assert !client.get_document(@instance.id)
       @instance.save
 
-      assert client.get_document(index, @instance.id)
+      assert client.get_document(@instance.id)
     ensure
       client.delete_index(index)
     end

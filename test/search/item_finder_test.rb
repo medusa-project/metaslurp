@@ -24,7 +24,7 @@ class ItemFinderTest < ActiveSupport::TestCase
                     variant: Item::Variants::ITEM)
     item.elements << SourceElement.new(name: 'name', value: 'value')
     item.save!
-    ElasticsearchClient.instance.refresh(@index)
+    ElasticsearchClient.instance.refresh
   end
 
   test 'to_a() works' do

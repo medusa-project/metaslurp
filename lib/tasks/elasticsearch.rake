@@ -58,7 +58,7 @@ namespace :elasticsearch do
 
   desc 'Refresh the current index'
   task :refresh => :environment do |task, args|
-    ElasticsearchClient.instance.refresh(Configuration.instance.elasticsearch_index)
+    ElasticsearchClient.instance.refresh
   end
 
 end

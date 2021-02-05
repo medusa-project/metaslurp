@@ -145,8 +145,7 @@ class Item
   # @raises [IOError]
   #
   def self.fetch_indexed_json(id)
-    config = Configuration.instance
-    ElasticsearchClient.instance.get_document(config.elasticsearch_index, id)
+    ElasticsearchClient.instance.get_document(id)
   end
 
   ##

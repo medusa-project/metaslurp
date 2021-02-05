@@ -187,7 +187,6 @@ class Harvest < ApplicationRecord
   #
   def purge_unharvested_items(wait_for_completion: true)
     if self.status == Status::SUCCEEDED and !self.incremental
-      index = Configuration.instance.elasticsearch_index
       json = ItemFinder.new.
         filter(Item::IndexFields::SERVICE_KEY, self.content_service.key).
         exclude(Item::IndexFields::HARVEST_KEY, self.key).
@@ -195,7 +194,7 @@ class Harvest < ApplicationRecord
         aggregations(false).
         limit(9999999).
         build_query
-      ElasticsearchClient.instance.delete_by_query(index, json,
+      ElasticsearchClient.instance.delete_by_query(query: json,
                                                    wait_for_completion: wait_for_completion)
     end
   end
