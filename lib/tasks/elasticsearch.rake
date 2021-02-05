@@ -56,4 +56,9 @@ namespace :elasticsearch do
     puts 'cURL equivalent: ' + curl_cmd
   end
 
+  desc 'Refresh the current index'
+  task :refresh => :environment do |task, args|
+    ElasticsearchClient.instance.refresh(Configuration.instance.elasticsearch_index)
+  end
+
 end
