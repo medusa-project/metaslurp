@@ -132,7 +132,7 @@ module Admin
     #
     def update
       begin
-        @content_service.update_attributes!(sanitized_params)
+        @content_service.update!(sanitized_params)
 
         params[:content_service][:element_mappings]&.each do |k, v|
           ElementMapping.find(k).update!(element_def_id: v.values[0])

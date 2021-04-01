@@ -9,23 +9,19 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   # create()
 
   test 'create() creates a user' do
-    post '/admin/users', {
-        params: {
-            user: {
-                username: 'cats'
-            }
-        }
+    post '/admin/users', params: {
+      user: {
+        username: 'cats'
+      }
     }
     assert_not_nil User.find_by_username('cats')
   end
 
   test 'create() redirects to the created user' do
-    post '/admin/users', {
-        params: {
-            user: {
-                username: 'cats'
-            }
-        }
+    post '/admin/users', params: {
+      user: {
+        username: 'cats'
+      }
     }
     assert_redirected_to admin_user_path(User.find_by_username('cats'))
   end
@@ -79,12 +75,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test 'update() updates a user' do
     user = users(:admin)
 
-    patch "/admin/users/#{user.username}", {
-        params: {
-            user: {
-                username: 'cats'
-            }
-        }
+    patch "/admin/users/#{user.username}", params: {
+      user: {
+        username: 'cats'
+      }
     }
 
     user.reload

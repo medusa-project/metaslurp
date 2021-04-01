@@ -95,7 +95,7 @@ module Admin
       raise ActiveRecord::RecordNotFound unless @user
 
       begin
-        @user.update_attributes!(sanitized_params)
+        @user.update!(sanitized_params)
       rescue => e
         handle_error(e)
         render 'edit'

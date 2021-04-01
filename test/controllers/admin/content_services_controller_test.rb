@@ -9,24 +9,22 @@ class ContentServicesControllerTest < ActionDispatch::IntegrationTest
 
   def valid_params
     {
-        params: {
-            content_service: {
-                name: 'Cats Cats Cats',
-                key: 'cats'
-            }
-        }
+      content_service: {
+        name: 'Cats Cats Cats',
+        key: 'cats'
+      }
     }
   end
 
   # create()
 
   test 'create() creates a service' do
-    post '/admin/content-services', valid_params
+    post '/admin/content-services', params: valid_params
     assert_not_nil ContentService.find_by_key('cats')
   end
 
   test 'create() redirects to the created model' do
-    post '/admin/content-services', valid_params
+    post '/admin/content-services', params: valid_params
     assert_redirected_to admin_content_service_path(ContentService.find_by_key('cats'))
   end
 
@@ -79,7 +77,7 @@ class ContentServicesControllerTest < ActionDispatch::IntegrationTest
   test 'update() updates a service' do
     service = content_services(:one)
 
-    patch "/admin/content-services/#{service.key}", valid_params
+    patch "/admin/content-services/#{service.key}", params: valid_params
 
     service.reload
     assert_equal 'cats', service.key
