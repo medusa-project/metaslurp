@@ -1,4 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'from@example.com'
-  layout 'mailer'
+  default from: "Metaslurp <#{::Configuration.instance.mail[:from]}>",
+          reply_to: ::Configuration.instance.mail[:reply_to]
+  layout "mailer"
 end
