@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
   build-essential \
   libpq-dev \
   curl \
-  git
+  git \
+  shared-mime-info
 
 RUN mkdir app
 WORKDIR app
