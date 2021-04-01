@@ -1,6 +1,17 @@
-- provide :title, 'Error'
-- provide :body_id, 'error'
+-# Dynamic error template.
+-# To use, call from a controller like this:
+-#
+-# render 'errors/error', status: :forbidden, locals: {
+-#     status_code: 403,
+-#     status_message: 'Forbidden',
+-#     message: 'This item is currently not published.'
+-# }
 
-%h2= status_message
+- provide(:title, 'Error')
+- provide(:body_id, 'error')
+
+%h1
+  = status_code
+  = status_message
 
 %p= message

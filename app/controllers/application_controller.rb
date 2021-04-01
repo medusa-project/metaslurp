@@ -142,8 +142,9 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html do
         render 'errors/error', status: :not_found, locals: {
-            status_message: 'Not Found',
-            message: message
+          status_code: 404,
+          status_message: 'Not Found',
+          message: message
         }
       end
       format.json do

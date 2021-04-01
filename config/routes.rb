@@ -63,6 +63,6 @@ Rails.application.routes.draw do
         via: :all, as: 'root'
 
   # catch unknown routes
-  match "/*a" => "errors#not_found", via: :all
+  match '*path', to: 'errors#not_found', via: :all
 
 end

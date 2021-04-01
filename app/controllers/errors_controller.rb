@@ -1,18 +1,18 @@
-# frozen_string_literal: true
-
-class ErrorsController < ApplicationController
+class ErrorsController < WebsiteController
 
   def not_found
     respond_to do |format|
-      format.html { render "errors/not_found", status: :not_found }
-      format.all { render nothing: true, status: :not_found }
+      format.html do
+        render 'error', status: 404, content_type: 'text/html',
+               locals: { status_code: 404,
+                         status_message: 'Not Found',
+                         message: 'There is no resource available at this URL.' }
+      end
+      format.all do
+        render plain: '404 Not Found', content_type: 'text/plain',
+               status: :not_found
+      end
     end
   end
 
-  def internal_server_error
-    respond_to do |format|
-      format.html { render "errors/internal_server_error", status: :internal_server_error }
-      format.all { render nothing: true, status: :internal_server_error }
-    end
-  end
 end
