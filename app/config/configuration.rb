@@ -1,12 +1,14 @@
 ##
 # Singleton interface to the application configuration.
 #
-# # Usage
+# Going back to its inception, Rails has offered a half dozen or more ways of
+# supporting application-specific configuration. The application configuration
+# system is designed with the following goals:
 #
-# `Configuration.instance.key_name` (shorthand for
-# `Configuration.instance.get(:key_name)`)
-#
-# # How the configuration system works
+# 1. Consolidate configuration into as few files as possible for ease of use.
+# 2. Require as little custom code as possible.
+# 3. Centralize configuration of all environments so that adding & removing
+#    keys is quick and painless.
 #
 # The configuration system works in two different ways depending on the Rails
 # environment:
@@ -20,8 +22,12 @@
 #    are committed to version control but the `.key` files are not.) To edit,
 #    use `rails credentials:edit -e <demo or production>`.
 #
-# This class abstracts all of the above so that a call to
-# `Configuration.instance.key_name` is all you need.
+# This class abstracts all of the above.
+#
+# # Usage
+#
+# `Configuration.instance.key_name` (shorthand for
+# `Configuration.instance.get(:key_name)`)
 #
 class Configuration
 
@@ -32,11 +38,11 @@ class Configuration
   # @return [Object]
   #
   def get(key)
-    if Rails.env.development? or Rails.env.test?
-      read_unencrypted_config
-      return @config[key.to_s]
+    if Rails.env.demo? or Rails.env.production?
+      return Rails.application.credentials.dig(key)
     end
-    Rails.application.credentials.dig(key)
+    read_unencrypted_config
+    @config[key.to_sym]
   end
 
   def method_missing(m, *args, &block)
@@ -49,7 +55,7 @@ class Configuration
     unless @config
       raw_config = File.read(File.join(
           Rails.root, 'config', 'credentials', "#{Rails.env}.yml"))
-      @config = YAML.load(raw_config)
+      @config = YAML.load(raw_config).with_indifferent_access
     end
   end
 
