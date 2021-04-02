@@ -64,7 +64,9 @@ class AbstractFinder
   #
   def facet_filters(filters)
     if filters.present?
-      if filters.respond_to?(:keys) # check if it's a hash
+      if filters.respond_to?(:to_unsafe_h)
+        @filters = filters.to_unsafe_h
+      elsif filters.respond_to?(:keys) # check if it's a hash
         @filters = filters
       elsif filters.respond_to?(:each) # check if it's an Enumerable
         filters.each do |filter|
