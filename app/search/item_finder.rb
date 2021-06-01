@@ -182,8 +182,7 @@ class ItemFinder < AbstractFinder
   private
 
   def query_json(j)
-    # See: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
-    j.query_string do
+    j.simple_query_string do
       # Filter out unicode non-letters & non-numerics
       # See: https://www.regular-expressions.info/unicode.html#prop
       query = @query[:query].gsub(/[^\p{L}+\p{N}+ ]/, '')
