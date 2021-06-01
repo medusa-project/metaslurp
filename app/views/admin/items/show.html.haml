@@ -10,6 +10,7 @@
     %a#nav-indexed-fields-tab.nav-item.nav-link{"aria-controls": "nav-indexed-fields", "aria-selected": "false", "data-toggle": "tab", href: "#nav-indexed-fields", role: "tab"} Indexed Fields
     %a#nav-document-tab.nav-item.nav-link{"aria-controls": "nav-document", "aria-selected": "false", "data-toggle": "tab", href: "#nav-document", role: "tab"} Raw Document
     %a#nav-object-tab.nav-item.nav-link{"aria-controls": "nav-object", "aria-selected": "false", "data-toggle": "tab", href: "#nav-object", role: "tab"} Object
+    %a#nav-full-text-tab.nav-item.nav-link{"aria-controls": "nav-full-text", "aria-selected": "false", "data-toggle": "tab", href: "#nav-full-text", role: "tab"} Full Text
 .tab-content
   #nav-system-info.tab-pane.fade.show.active{"aria-labelledby": "nav-system-info-tab", role: "tabpanel"}
     %dl
@@ -82,3 +83,6 @@
   #nav-object.tab-pane.fade{"aria-labelledby": "nav-object-tab",
                             role: "tabpanel"}
     %pre= YAML::dump(@item)
+  #nav-full-text.tab-pane.fade{"aria-labelledby": "nav-full-text-tab",
+                               role: "tabpanel"}
+    %pre= @item.full_text
