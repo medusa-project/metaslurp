@@ -1,7 +1,7 @@
 ##
 # Provides a convenient ActiveRecord-style Builder interface for Item retrieval.
 #
-class ItemFinder < AbstractFinder
+class ItemRelation < AbstractRelation
 
   def initialize
     super
@@ -12,7 +12,7 @@ class ItemFinder < AbstractFinder
 
   ##
   # @param variants [String] One or more `Item::Variants` constant values.
-  # @return [ItemFinder] self
+  # @return [ItemRelation] self
   #
   def exclude_variants(*variants)
     @exclude_variants = variants
@@ -21,7 +21,7 @@ class ItemFinder < AbstractFinder
 
   ##
   # @param bool [Boolean]
-  # @return [ItemFinder] self
+  # @return [ItemRelation] self
   #
   def include_children(bool)
     @include_children = bool
@@ -30,7 +30,7 @@ class ItemFinder < AbstractFinder
 
   ##
   # @param variants [String] One or more `Item::Variants` constant values.
-  # @return [ItemFinder] self
+  # @return [ItemRelation] self
   #
   def include_variants(*variants)
     @include_variants = variants

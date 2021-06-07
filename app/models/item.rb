@@ -37,7 +37,7 @@
 # # Indexing
 #
 # Items are searchable via Elasticsearch. High-level search functionality is
-# available via the {ItemFinder} class.
+# available via the {ItemRelation} class.
 #
 # All instance attributes are indexed, as well as both source and local mapped
 # elements. This makes instances "round-trippable," so they can be transformed

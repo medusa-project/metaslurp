@@ -49,20 +49,20 @@ class ItemsController < ApplicationController
     @start = params[:start]&.to_i || 0
     @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
 
-    finder = ItemFinder.new.
+    relation = ItemRelation.new.
         query_all(params[:q]).
         facet_filters(params[:fq]).
         exclude_variants(Item::Variants::COLLECTION).
         order(params[:sort]).
         start(@start).
         limit(@limit)
-    @items             = finder.to_a
-    @facets            = finder.facets
-    @count             = finder.count
-    @current_page      = finder.page
+    @items             = relation.to_a
+    @facets            = relation.facets
+    @count             = relation.count
+    @current_page      = relation.page
     @num_results_shown = [@limit, @count].min
-    @es_request_json   = finder.request_json
-    @es_response_json  = finder.response_json
+    @es_request_json   = relation.request_json
+    @es_response_json  = relation.response_json
 
     respond_to do |format|
       format.html

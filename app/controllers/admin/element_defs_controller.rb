@@ -123,7 +123,7 @@ module Admin
       raise ActiveRecord::RecordNotFound unless @element
 
       @value_mappings = @element.value_mappings.order(:source_value)
-      @num_usages = ElementFinder.new(@element).limit(0).count
+      @num_usages = ElementRelation.new(@element).limit(0).count
     end
 
     ##
@@ -159,20 +159,20 @@ module Admin
 
       response.header['Content-Type'] = 'text/tab-separated-values'
       response.header['Content-Disposition'] = "attachment; filename=\"#{element.name}.tsv\""
-      response.stream.write ElementFinder::TSV_HEADER
+      response.stream.write ElementRelation::TSV_HEADER
       response.stream.write NEWLINE
 
       offset = 0
       limit  = 1000
       rows   = [:placeholder]
       while rows.any?
-        finder = ElementFinder.new(element)
+        relation = ElementRelation.new(element)
         if params[:content_service_key].present?
           content_service = ContentService.find_by_key(params[:content_service_key])
-          finder = finder.content_service(content_service)
+          relation = relation.content_service(content_service)
         end
 
-        rows = finder.start(offset).limit(limit).to_a
+        rows = relation.start(offset).limit(limit).to_a
             .map{ |o| o.values.map{ |v| v.gsub("\t", "") }.join("\t") }
         response.stream.write rows.join(NEWLINE)
         response.stream.write NEWLINE

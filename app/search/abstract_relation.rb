@@ -1,4 +1,4 @@
-class AbstractFinder
+class AbstractRelation
 
   attr_reader :request_json, :response_json
 
@@ -37,7 +37,7 @@ class AbstractFinder
   # Limits the search to a particular content service.
   #
   # @param content_service [ContentService]
-  # @return [ItemFinder] self
+  # @return [ItemRelation] self
   #
   def content_service(content_service)
     @content_service = content_service

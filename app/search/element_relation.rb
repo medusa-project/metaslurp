@@ -2,7 +2,7 @@
 # Provides a convenient ActiveRecord-style Builder interface for retrieval of
 # element reports.
 #
-class ElementFinder < AbstractFinder
+class ElementRelation < AbstractRelation
 
   TSV_HEADER = %w(service_key source_id element value).join("\t")
 

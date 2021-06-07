@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ElementFinderTest < ActiveSupport::TestCase
+class ElementRelationTest < ActiveSupport::TestCase
 
   setup do
     config = Configuration.instance
@@ -22,13 +22,13 @@ class ElementFinderTest < ActiveSupport::TestCase
   end
 
   test 'to_a() works' do
-    @instance = ElementFinder.new(ElementDef.new(name: 'subject'))
+    @instance = ElementRelation.new(ElementDef.new(name: 'subject'))
     assert_equal 2, @instance.to_a.length
   end
 
   test 'count() works' do
     skip # TODO: why does this fail?
-    @instance = ElementFinder.new(ElementDef.new(name: 'subject')).
+    @instance = ElementRelation.new(ElementDef.new(name: 'subject')).
         aggregations(false)
     assert_equal 2, @instance.count
   end

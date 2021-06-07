@@ -135,7 +135,7 @@ class ElementDef < ApplicationRecord
   # @return [Integer]
   #
   def num_usages(content_service)
-    ElementFinder.new(self)
+    ElementRelation.new(self)
         .content_service(content_service)
         .limit(0)
         .count

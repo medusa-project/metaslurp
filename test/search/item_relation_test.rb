@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ItemFinderTest < ActiveSupport::TestCase
+class ItemRelationTest < ActiveSupport::TestCase
 
   setup do
     config = Configuration.instance
@@ -8,7 +8,7 @@ class ItemFinderTest < ActiveSupport::TestCase
     setup_elasticsearch
     seed
 
-    @instance = ItemFinder.new
+    @instance = ItemRelation.new
   end
 
   teardown do
