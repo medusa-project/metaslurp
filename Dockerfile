@@ -1,3 +1,7 @@
+#
+# Dockerfile for use in production.
+#
+
 FROM ruby:2.7.1-slim
 
 ENV RAILS_ENV=production
@@ -26,8 +30,7 @@ RUN gem install bundler \
 # Copy the main application, except whatever is listed in .dockerignore.
 COPY . ./
 
-RUN cp config/credentials/ci.yml config/credentials/test.yml \
-    && bin/rails assets:precompile
+RUN bin/rails assets:precompile
 
 EXPOSE 3000
 
