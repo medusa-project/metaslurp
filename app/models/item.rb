@@ -262,6 +262,13 @@ class Item
     item
   end
 
+  ##
+  # @return [ItemRelation]
+  #
+  def self.search
+    ItemRelation.new
+  end
+
   def initialize(args = {})
     @elements       = Set.new
     @images         = Set.new

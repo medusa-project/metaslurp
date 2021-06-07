@@ -14,7 +14,7 @@ class SearchController < ApplicationController
     @start = params[:start]&.to_i || 0
     @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
 
-    relation = ItemRelation.new.
+    relation = Item.search.
         query_all(params[:q]).
         facet_filters(params[:fq]).
         order(params[:sort]).

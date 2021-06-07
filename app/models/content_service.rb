@@ -252,7 +252,7 @@ class ContentService < ApplicationRecord
   #
   def num_items
     if @num_items < 0
-      @num_items = ItemRelation.new.
+      @num_items = Item.search.
           content_service(self).
           aggregations(false).
           exclude_variants(Item::Variants::COLLECTION).

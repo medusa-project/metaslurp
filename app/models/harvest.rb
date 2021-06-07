@@ -187,7 +187,7 @@ class Harvest < ApplicationRecord
   #
   def purge_unharvested_items(wait_for_completion: true)
     if self.status == Status::SUCCEEDED and !self.incremental
-      json = ItemRelation.new.
+      json = Item.search.
         filter(Item::IndexFields::SERVICE_KEY, self.content_service.key).
         exclude(Item::IndexFields::HARVEST_KEY, self.key).
         include_children(true).
