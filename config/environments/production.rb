@@ -90,7 +90,7 @@ Rails.application.configure do
   require "configuration"
   mail_config = ::Configuration.instance.mail
   config.action_mailer.delivery_method       = :smtp
-  config.action_mailer.smtp_settings         = mail_config[:smtp].symbolize_keys
+  config.action_mailer.smtp_settings         = mail_config[:smtp].symbolize_keys if mail_config
   config.action_mailer.perform_deliveries    = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.logger                = Rails.logger
