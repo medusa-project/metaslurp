@@ -213,11 +213,7 @@ class AbstractRelation
 
   def add_facet_filter_string(str)
     parts = str.split(':')
-    if parts.length == 2
-      @filters[parts[0]] = parts[1]
-    else
-      raise ArgumentError, 'Facet filter string is not a key:value pair'
-    end
+    @filters[parts[0]] = parts[1] if parts.length == 2
   end
 
   def facetable_elements
