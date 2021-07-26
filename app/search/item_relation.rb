@@ -1,5 +1,6 @@
 ##
-# Provides a convenient ActiveRecord-style Builder interface for Item retrieval.
+# Provides a convenient ActiveRecord-style Builder interface for [Item]
+# retrieval.
 #
 class ItemRelation < AbstractRelation
 

@@ -1,5 +1,5 @@
 ##
-# A local element to which a source element has been mapped.
+# Local element to which a [SourceElement] has been mapped.
 #
 class LocalElement < Element
 

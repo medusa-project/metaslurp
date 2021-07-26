@@ -1,3 +1,8 @@
+##
+# Metadata element ascribed to an item in a [ContentService]. The content
+# service may expose arbitrary such elements, which get normalized/mapped to
+# [LocalElement]s by administrators.
+#
 class SourceElement < Element
 
   # N.B.: These must match dynamic templates in the index schema.
