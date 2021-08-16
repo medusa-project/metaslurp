@@ -187,7 +187,7 @@ class ItemRelation < AbstractRelation
       # See: https://www.regular-expressions.info/unicode.html#prop
       query = @query[:query].gsub(/[^\p{L}+\p{N}+ ]/, '')
       query = '*' if query.blank?
-      j.query "(#{query} OR #{query}*)"
+      j.query query
       j.default_operator 'AND'
       j.lenient true
     end
