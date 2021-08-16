@@ -91,7 +91,8 @@
             - if element
               - num_usages = element.num_usages(@content_service)
               - if num_usages > 0
-                = link_to(num_usages, admin_element_def_usages_path(element,
+                = link_to(number_with_delimiter(num_usages),
+                          admin_element_def_usages_path(element,
                           content_service_key: @content_service.key))
 
 = render partial: 'harvest_modal',
