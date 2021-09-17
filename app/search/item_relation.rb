@@ -184,11 +184,11 @@ class ItemRelation < AbstractRelation
 
   def query_json(j)
     j.simple_query_string do
-      # Filter out unicode non-letters & non-numerics
-      # See: https://www.regular-expressions.info/unicode.html#prop
-      query = @query[:query].gsub(/[^\p{L}+\p{N}+ ]/, '')
+      query = @query[:query]
       query = '*' if query.blank?
       j.query query
+      j.fields [ElasticsearchIndex::StandardFields::SEARCH_ALL]
+      j.flags 'NONE'
       j.default_operator 'AND'
       j.lenient true
     end
