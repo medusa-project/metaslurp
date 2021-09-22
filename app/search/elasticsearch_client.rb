@@ -135,6 +135,21 @@ class ElasticsearchClient
 
   ##
   # @param id [String]
+  # @return [void]
+  #
+  def delete_task(id)
+    path     = sprintf('/_tasks/%s', id)
+    response = @http_client.delete(path)
+    if response.status == 200
+      LOGGER.info('delete_task(): deleted task %s', id)
+    else
+      raise IOError, "Got #{response.status} for DELETE #{path}\n"\
+          "#{JSON.pretty_generate(JSON.parse(response.body))}"
+    end
+  end
+
+  ##
+  # @param id [String]
   # @return [Hash, nil]
   #
   def get_document(id)
@@ -149,6 +164,23 @@ class ElasticsearchClient
         nil
       else
         raise IOError, response.body
+    end
+  end
+
+  ##
+  # @param id [String]
+  # @return [Hash, nil]
+  #
+  def get_task(id)
+    path     = sprintf('/_tasks/%s?pretty', id)
+    response = @http_client.get(path)
+    case response.status
+    when 200
+      JSON.parse(response.body)
+    when 404
+      nil
+    else
+      raise IOError, response.body
     end
   end
 

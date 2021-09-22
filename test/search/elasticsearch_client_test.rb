@@ -64,6 +64,10 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
     assert !@instance.index_exists?(alias_name)
   end
 
+  test 'delete_task() deletes a task' do
+    # TODO: write this
+  end
+
   test 'get_document() with missing document' do
     begin
       @instance.create_index(@test_index)
@@ -77,6 +81,10 @@ class ElasticsearchClientTest < ActiveSupport::TestCase
     @instance.create_index(@test_index)
     @instance.index_document(@test_index, 'id1', {})
     assert_not_nil @instance.get_document('id1')
+  end
+
+  test 'get_task() gets a task' do
+    # TODO: write this
   end
 
   test 'index_document() indexes a document' do

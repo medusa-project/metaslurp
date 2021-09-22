@@ -49,6 +49,20 @@ namespace :elasticsearch do
 
   end
 
+  namespace :tasks do
+
+    desc 'Delete a task'
+    task :delete, [:id] => :environment do |task, args|
+      ElasticsearchClient.instance.delete_task(args[:id])
+    end
+
+    desc 'Show the status of a task'
+    task :show, [:id] => :environment do |task, args|
+      puts JSON.pretty_generate(ElasticsearchClient.instance.get_task(args[:id]))
+    end
+
+  end
+
   desc 'Execute an arbitrary query'
   task :query, [:file] => :environment do |task, args|
     file_path = File.expand_path(args[:file])
