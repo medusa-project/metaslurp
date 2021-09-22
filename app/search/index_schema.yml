@@ -19,28 +19,32 @@
 # All operations in parentheses are carried out in Item.as_indexed_json().
 #
 settings:
-  index.query.default_field: search_all
-  index.max_result_window: 10000 # must match ElasticsearchClient::MAX_RESULT_WINDOW
+  index:
+    query:
+      default_field: search_all
+    max_result_window: 10000 # must match ElasticsearchClient::MAX_RESULT_WINDOW
   analysis:
     filter:
       custom_stopper:
         type: stop
         stopwords:
-        - _english_
-        - _french_
-      custom_stemmer:
+          - _english_
+          - _french_
+      english_stemmer:
         type: stemmer
-        name: english
+        language: english
+      possessive_stemmer:
+        type: stemmer
+        language: possessive_english
     analyzer:
-      search:
+      custom_search:
         tokenizer: standard
         filter:
-        - standard
-        - lowercase
-        - custom_stopper
-        - custom_stemmer
-        - apostrophe
-        - decimal_digit
+          - possessive_stemmer
+          - lowercase
+          - custom_stopper
+          - english_stemmer
+          - decimal_digit
 mappings:
   entity:
     date_detection: false
@@ -50,13 +54,14 @@ mappings:
         match: source_raw_* # must match SourceElement::RAW_INDEX_PREFIX
         mapping:
           type: text
+          analyzer: custom_search
     # Source elements optimized for searching and copied into the search_all
     # field so that every element is searchable, even if it's not mapped.
     - searchable_source_elements:
         match: source_search_* # must match SourceElement::ANALYZED_INDEX_PREFIX
         mapping:
           type: text
-          analyzer: search
+          analyzer: custom_search
           copy_to: search_all
     # Local (sink) text elements. Source elements may or may not be mapped to
     # these, and the mapping may involve some kind of transformation.
@@ -64,6 +69,7 @@ mappings:
         match: local_text_* # must match LocalElement::TEXT_INDEX_PREFIX
         mapping:
           type: text
+          analyzer: custom_search
     # Local (sink) keyword elements. These correspond 1:1 with local text
     # elements and are used for sorting. The ICU module is used with
     # `numeric: true` to achieve "natural sort." Leading stop words have to be
@@ -120,8 +126,10 @@ mappings:
         match: system_text_*
         mapping:
           type: text
+          analyzer: custom_search
           copy_to: search_all
     properties:
       search_all:
         type: text
+        analyzer: custom_search
         store: false
