@@ -259,9 +259,10 @@ class ElasticsearchClient
   ##
   # @param from_index [String]
   # @param to_index [String]
+  # @param async [Boolean]
   #
-  def reindex(from_index, to_index)
-    path = '/_reindex'
+  def reindex(from_index, to_index, async: true)
+    path = "/_reindex?wait_for_completion=#{!async}&pretty"
     body = {
         source: {
             index: from_index
