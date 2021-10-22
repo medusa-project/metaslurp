@@ -460,7 +460,11 @@ class Item
       identifier: self.id
     }
 
-    client   = Faraday.new(url: Configuration.instance.image_server_endpoint)
+    config = Configuration.instance
+    client = Faraday.new(url: config.image_server_endpoint) do |conn|
+      conn.basic_auth(config.image_server_username, config.image_server_secret)
+    end
+
     response = client.post do |request|
       request.path = path
       request.body = JSON.generate(body)
