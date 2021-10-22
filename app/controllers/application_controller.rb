@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
     io << "Class:   #{exception.class}\n"
     io << "Message: #{exception.message}\n"
     io << "Time:    #{Time.now.iso8601}\n"
-    io << "User:    #{current_user.name}\n" if current_user
+    io << "User:    #{current_user.username}\n" if current_user
     io << "\nStack Trace:\n"
     exception.backtrace.each do |line|
       io << line
