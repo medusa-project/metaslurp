@@ -29,7 +29,8 @@ module Api
             # So we run them in the foreground there.
             if Rails.env.test?
               UpdateElementMappingsJob.new.perform(item.id)
-              PurgeCachedItemImagesJob.new.perform(item.id)
+              # we don't have an image server in test
+              #PurgeCachedItemImagesJob.new.perform(item.id)
             else
               UpdateElementMappingsJob.perform_later(item.id)
               PurgeCachedItemImagesJob.perform_later(item.id)
