@@ -51,7 +51,9 @@ Rails.application.routes.draw do
     resources :harvests, param: :key, only: [:destroy, :index, :show] do
       match '/abort', to: 'harvests#abort', via: :patch, as: 'abort'
     end
-    resources :items, only: :show
+    resources :items, only: :show do
+      match '/purge-cached-images', to: 'items#purge_cached_item_images', via: :patch
+    end
     resources :users, param: :username do
       match '/reset-api-key', to: 'users#reset_api_key', via: :post, as: 'reset_api_key'
     end

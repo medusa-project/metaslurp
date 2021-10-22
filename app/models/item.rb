@@ -3,41 +3,43 @@
 #
 # # Structure
 #
-# All items are associated with a {ContentService}. The association is via a
-# `service_key` attribute corresponding to a content service key. There are
-# also `container_id` and `parent_id` attributes that can be used to support
-# placement inside some kind of "container" (such as a {Variants::COLLECTION
+# All items are associated with a [ContentService]. The association is via a
+# {service_key} attribute corresponding to its key. There are also
+# {container_id} and {parent_id} attributes that can be used to support
+# placement inside some kind of "container" (like a {Variants::COLLECTION
 # collection-variant Item}) and arbitrary item trees.
 #
 # # Identifiers
 #
 # Identifiers are unique across all items and content services and stable from
-# harvest to harvest. Those are the only requirements, but it's also nice if
-# they aren't too ugly in URIs.
+# harvest to harvest. They do not contain any characters are problematic to
+# include in Rails URLs, like slashes. Those are the only requirements, but
+# it's also nice if they aren't too ugly in URIs.
 #
 # # Description
 #
 # Items have a number of hard-coded attributes (see below) as well as
-# collections of {SourceElement}s, which represent metadata elements of the
-# instance within the content service, and {LocalElement}s, which represent
-# local metadata elements to which {SourceElement}s get mapped. Hard-coded
-# attributes are used by the system. {LocalElement}s contain free-form strings
-# and can be mapped to {ElementDef}s to control how they work in terms of
-# searching, faceting, etc. on a per-{ContentService} basis.
+# collections of [SourceElement]s, which represent metadata elements of the
+# instance within the content service, and [LocalElement]s, which represent
+# local metadata elements to which [SourceElement]s may get mapped. Hard-coded
+# attributes are used by the system. [LocalElement]s contain free-form strings
+# and can be mapped to [ElementDef]s to control how they work in terms of
+# searching, faceting, etc. on a per-[ContentService] basis.
 #
 # # Dates
 #
 # Free-form date strings are allowed in any element, but they are indexed as
-# non-normalized strings, so aren't very useful. Instead, they can be indexed
-# as normalized dates by setting the `data_type` of the corresponding
-# {ElementDef} to {ElementDef::DataType::DATE}. When the element is indexed,
-# its date/time string will be normalized into a {Time} object which will be
-# indexed in a date field.
+# non-normalized strings, so they aren't very useful. Instead, they can be
+# indexed as normalized dates by setting the {ElementDef#data_type} of the
+# corresponding [ElementDef] to {ElementDef::DataType::DATE}. When the element
+# is indexed, its date/time string will be normalized into a [Time] object
+# which will be indexed in a date field.
 #
 # # Indexing
 #
 # Items are searchable via Elasticsearch. High-level search functionality is
-# available via the {ItemRelation} class.
+# available via the [ItemRelation} class. {Item#search} is a convenient way of
+# obtaining an instance of this class.
 #
 # All instance attributes are indexed, as well as both source and local mapped
 # elements. This makes instances "round-trippable," so they can be transformed
@@ -53,18 +55,18 @@
 # * `container_id`   Identifier of a container (not parent) item--which would
 #                    typically be one with a {Variants::COLLECTION} variant.
 # * `container_name` Name of a container (not parent). Used as a fallback to
-#                    `container_id` when the container is not an {Item}.
-# * `elements`       Enumerable of {SourceElement}s.
+#                    `container_id` when the container is not an [Item].
+# * `elements`       [Enumerable] of [SourceElement]s.
 # * `full_text`      Full text.
-# * `harvest_key`    Key of the {Harvest} during which the item was last
+# * `harvest_key`    Key of the [Harvest] during which the item was last
 #                    updated.
 # * `id`             Identifier within the application.
-# * `images`         Set of associated {Image}s. One of them may be a master
+# * `images`         Set of associated [Image]s. One of them may be a master
 #                    image.
-# * `local_elements` {Enumerable} of {LocalElement}s.
+# * `local_elements` [Enumerable] of [LocalElement]s.
 # * `parent_id`      Identifier of a parent (not container) item.
 # * `score`          Relevance score assigned by Elasticsearch.
-# * `service_key`    Key of the {ContentService} in which the instance resides.
+# * `service_key`    Key of the [ContentService] in which the instance resides.
 # * `source_id`      Unique identifier of the instance.
 # * `variant`        Like a subclass. Used to differentiate types of instances
 #                    that all have more-or-less the same properties.
@@ -75,17 +77,16 @@
 # 2. Add an `attr_accessor` for it
 # 3. Add it to {validate}, if necessary
 # 4. Add it to {from_json} & {as_json}, if necessary
-# 5. Add it to {IndexFields}, if necessary
+# 5. Add it to [IndexFields], if necessary
 # 6. Add it to {from_indexed_json} & {as_indexed_json}, if necessary
 # 7. Update tests for all of the above
-# 8. Update the {ItemsController} API test
+# 8. Update the [ItemsController] API test
 # 9. Add it to the API documentation
 # 10. Update the harvester and re-harvest everything
 #
 class Item
 
-  LOGGER = CustomLogger.new(Item)
-
+  LOGGER              = CustomLogger.new(Item)
   ELASTICSEARCH_INDEX = 'entities'
 
   attr_accessor :container_id, :container_name, :full_text, :harvest_key, :id,
@@ -168,8 +169,8 @@ class Item
   # @return [Item]
   #
   def self.from_indexed_json(jobj)
-    item = Item.new
-    item.id = jobj[IndexFields::ID]
+    item       = Item.new
+    item.id    = jobj[IndexFields::ID]
     item.score = jobj['_score'] || 0
 
     jsrc                = jobj['_source']
@@ -450,6 +451,26 @@ class Item
 
   def hash
     self.id.hash
+  end
+
+  def purge_cached_images
+    path = '/tasks'
+    body = {
+      verb: "PurgeItemFromCache",
+      identifier: self.id
+    }
+
+    client   = Faraday.new(url: Configuration.instance.image_server_endpoint)
+    response = client.post do |request|
+      request.path = path
+      request.body = JSON.generate(body)
+      request.headers['Content-Type'] = 'application/json'
+    end
+
+    if response.status > 299
+      raise IOError, "Got #{response.status} for POST #{path}\n"\
+          "#{JSON.pretty_generate(JSON.parse(response.body))}"
+    end
   end
 
   ##

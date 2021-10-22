@@ -1,6 +1,11 @@
 - provide :body_id, 'dl-admin-item'
 - provide(:title, @item.title)
 
+.btn-group.float-right
+  = link_to(admin_item_purge_cached_images_path(@item), method: :patch, class: 'btn btn-danger') do
+    %i.fa.fa-trash
+    Purge Cached Images
+
 %h1= @item.title
 
 %nav{style: "margin-bottom: 1em"}
