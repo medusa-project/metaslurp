@@ -27,8 +27,8 @@ module ItemsHelper
     iiif_options[:region] = 'square' unless iiif_options.has_key?(:region)
     iiif_options[:size] = 'max' unless iiif_options.has_key?(:size)
 
-    uri = sprintf('%s/%s/%s/%s/0/default.jpg',
-                  Configuration.instance.iiif_endpoint,
+    uri = sprintf('%s/iiif/2/%s/%s/%s/0/default.jpg',
+                  Configuration.instance.image_server_endpoint,
                   item.id,
                   iiif_options[:region],
                   iiif_options[:size])
