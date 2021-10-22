@@ -20,8 +20,11 @@ module Api
           if item.source_uri.start_with?('http://example.org')
             LOGGER.debug('Ignoring test item: %s', item)
           else
-            item.content_service.update_element_mappings(item.elements)
             item.save!(json['index'])
+            # Doing these tasks asynchronously will enable us to return sooner,
+            # which may speed up a harvest.
+            UpdateElementMappingsJob.perform_later(item.id)
+            PurgeCachedItemImagesJob.perform_later(item.id)
             LOGGER.debug('Ingested %s: %s', item, json)
           end
         rescue HarvestAbortedError => e

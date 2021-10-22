@@ -18,6 +18,8 @@ Rails.application.configure do
     'Cache-Control' => "public, max-age=#{1.hour.to_i}"
   }
 
+  config.active_job.queue_adapter = :async
+
   config.active_record.logger = nil
 
   # Show full error reports and disable caching.
