@@ -12,14 +12,13 @@
 class Option < ApplicationRecord
 
   class Keys
-    ADMINISTRATOR_EMAIL = 'website.administrator.email'
-    COPYRIGHT_STATEMENT = 'website.copyright_statement'
+    ADMINISTRATOR_EMAIL   = 'website.administrator.email'
+    COPYRIGHT_STATEMENT   = 'website.copyright_statement'
     DEFAULT_RESULT_WINDOW = 'website.results_per_page'
-    FACET_TERM_LIMIT = 'website.facet_term_limit'
-    ORGANIZATION_NAME = 'organization.name'
-    SERVER_STATUS = 'status'
+    ORGANIZATION_NAME     = 'organization.name'
+    SERVER_STATUS         = 'status'
     SERVER_STATUS_MESSAGE = 'status_message'
-    WEBSITE_NAME = 'website.name'
+    WEBSITE_NAME          = 'website.name'
   end
 
   # Values are stored in hashes keyed by this key.
