@@ -19,5 +19,11 @@
 
   #dl-facets {
     padding-right: 0px;
+    .dl-facet {
+      .card-body {
+        max-height: 20em;
+        overflow-y: scroll;
+      }
+    }
   }
 }

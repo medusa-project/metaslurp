@@ -89,7 +89,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # ActionMailer configuration
-  require "configuration"
+  require File.join(Rails.root, "/app/config/configuration")
   mail_config = ::Configuration.instance.mail
   config.action_mailer.delivery_method       = :smtp
   config.action_mailer.smtp_settings         = mail_config[:smtp].symbolize_keys if mail_config

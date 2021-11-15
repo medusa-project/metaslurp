@@ -11,7 +11,6 @@ Option.set(Option::Keys::ADMINISTRATOR_EMAIL, 'admin@example.org')
 Option.set(Option::Keys::COPYRIGHT_STATEMENT,
            'Copyright © 2018 My Great Organization. All rights reserved.')
 Option.set(Option::Keys::DEFAULT_RESULT_WINDOW, 30)
-Option.set(Option::Keys::FACET_TERM_LIMIT, 10)
 Option.set(Option::Keys::ORGANIZATION_NAME, 'My Great Organization')
 Option.set(Option::Keys::WEBSITE_NAME,
            'My Great Organization Metadata Gateway')

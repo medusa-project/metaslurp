@@ -1,12 +1,14 @@
 class AbstractRelation
 
+  AGGREGATION_TERM_LIMIT = 100
+
   attr_reader :request_json, :response_json
 
   def initialize
     @client = ElasticsearchClient.instance
 
     @aggregations    = true
-    @bucket_limit    = Option::integer(Option::Keys::FACET_TERM_LIMIT) || 10
+    @bucket_limit    = AGGREGATION_TERM_LIMIT
     @content_service = nil
     @excludes        = {}  # Hash<String,Object>
     @filters         = {} # Hash<String,Object>
