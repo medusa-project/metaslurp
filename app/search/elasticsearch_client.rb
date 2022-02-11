@@ -154,7 +154,7 @@ class ElasticsearchClient
   #
   def get_document(id)
     index_name = ::Configuration.instance.elasticsearch_index
-    path = sprintf('/%s/entity/%s', index_name, id) # in ES 7, `entity` changes to `_doc`
+    path = sprintf('/%s/_doc/%s', index_name, id)
     LOGGER.debug('get_document(): %s/%s', index_name, id)
     response = @http_client.get(path)
     case response.status
@@ -192,7 +192,7 @@ class ElasticsearchClient
   # @raises [IOError]     If Elasticsearch returns an error response.
   #
   def index_document(index, id, doc)
-    path = sprintf('/%s/entity/%s', index, id) # in ES 7, `entity` changes to `_doc`
+    path = sprintf('/%s/_doc/%s', index, id)
     LOGGER.debug('index_document(): %s/%s', index, id)
     response = @http_client.put do |request|
       request.path = path

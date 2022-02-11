@@ -18,6 +18,8 @@
 #
 # All operations in parentheses are carried out in Item.as_indexed_json().
 #
+# Requires Elasticsearch 7.
+#
 settings:
   index:
     query:
@@ -46,90 +48,89 @@ settings:
           - english_stemmer
           - decimal_digit
 mappings:
-  entity:
-    date_detection: false
-    dynamic_templates:
-    # Source elements, stored verbatim from source services as text.
-    - raw_source_elements:
-        match: source_raw_* # must match SourceElement::RAW_INDEX_PREFIX
-        mapping:
-          type: text
-          analyzer: custom_search
-    # Source elements optimized for searching and copied into the search_all
-    # field so that every element is searchable, even if it's not mapped.
-    - searchable_source_elements:
-        match: source_search_* # must match SourceElement::ANALYZED_INDEX_PREFIX
-        mapping:
-          type: text
-          analyzer: custom_search
-          copy_to: search_all
-    # Local (sink) text elements. Source elements may or may not be mapped to
-    # these, and the mapping may involve some kind of transformation.
-    - local_text_elements:
-        match: local_text_* # must match LocalElement::TEXT_INDEX_PREFIX
-        mapping:
-          type: text
-          analyzer: custom_search
-    # Local (sink) keyword elements. These correspond 1:1 with local text
-    # elements and are used for sorting. The ICU module is used with
-    # `numeric: true` to achieve "natural sort." Leading stop words have to be
-    # stripped manually before indexing.
-    - local_sort_elements:
-        match: local_sort_* # must match LocalElement::SORT_INDEX_PREFIX
-        mapping:
-          type: icu_collation_keyword
-          index: false
-          numeric: true
-          language: en
-          strength: quaternary
-          alternate: shifted
-    # Local (sink) facetable elements. These correspond 1:1 with text elements
-    # for use with aggregations.
-    - local_facet_elements:
-        match: local_facet_* # must match LocalElement::FACET_INDEX_PREFIX
-        mapping:
-          type: keyword
-    # Local (date) elements. Source elements that are mapped to date-type
-    # local elements are normalized and stored here.
-    - local_date_elements:
-        match: local_date_* # must match LocalElement::DATE_INDEX_PREFIX
-        mapping:
-          type: date
-    # The fields below store various non-element information, generally
-    # corresponding to the Item::IndexFields constants. There is one field per
-    # data type.
-    - system_dates:
-        match: system_date_*
-        mapping:
-          type: date
-    - system_floats:
-        match: system_float_*
-        mapping:
-          type: double
-    - system_geo_points:
-        match: system_point_*
-        mapping:
-          type: geo_point
-    - system_integers:
-        match: system_int_*
-        mapping:
-          type: long
-    - system_keywords:
-        match: system_keyword_*
-        mapping:
-          type: keyword
-    - system_objects:
-        match: system_object_*
-        mapping:
-          type: object
-    - system_text:
-        match: system_text_*
-        mapping:
-          type: text
-          analyzer: custom_search
-          copy_to: search_all
-    properties:
-      search_all:
+  date_detection: false
+  dynamic_templates:
+  # Source elements, stored verbatim from source services as text.
+  - raw_source_elements:
+      match: source_raw_* # must match SourceElement::RAW_INDEX_PREFIX
+      mapping:
         type: text
         analyzer: custom_search
-        store: false
+  # Source elements optimized for searching and copied into the search_all
+  # field so that every element is searchable, even if it's not mapped.
+  - searchable_source_elements:
+      match: source_search_* # must match SourceElement::ANALYZED_INDEX_PREFIX
+      mapping:
+        type: text
+        analyzer: custom_search
+        copy_to: search_all
+  # Local (sink) text elements. Source elements may or may not be mapped to
+  # these, and the mapping may involve some kind of transformation.
+  - local_text_elements:
+      match: local_text_* # must match LocalElement::TEXT_INDEX_PREFIX
+      mapping:
+        type: text
+        analyzer: custom_search
+  # Local (sink) keyword elements. These correspond 1:1 with local text
+  # elements and are used for sorting. The ICU module is used with
+  # `numeric: true` to achieve "natural sort." Leading stop words have to be
+  # stripped manually before indexing.
+  - local_sort_elements:
+      match: local_sort_* # must match LocalElement::SORT_INDEX_PREFIX
+      mapping:
+        type: icu_collation_keyword
+        index: false
+        numeric: true
+        language: en
+        strength: quaternary
+        alternate: shifted
+  # Local (sink) facetable elements. These correspond 1:1 with text elements
+  # for use with aggregations.
+  - local_facet_elements:
+      match: local_facet_* # must match LocalElement::FACET_INDEX_PREFIX
+      mapping:
+        type: keyword
+  # Local (date) elements. Source elements that are mapped to date-type
+  # local elements are normalized and stored here.
+  - local_date_elements:
+      match: local_date_* # must match LocalElement::DATE_INDEX_PREFIX
+      mapping:
+        type: date
+  # The fields below store various non-element information, generally
+  # corresponding to the Item::IndexFields constants. There is one field per
+  # data type.
+  - system_dates:
+      match: system_date_*
+      mapping:
+        type: date
+  - system_floats:
+      match: system_float_*
+      mapping:
+        type: double
+  - system_geo_points:
+      match: system_point_*
+      mapping:
+        type: geo_point
+  - system_integers:
+      match: system_int_*
+      mapping:
+        type: long
+  - system_keywords:
+      match: system_keyword_*
+      mapping:
+        type: keyword
+  - system_objects:
+      match: system_object_*
+      mapping:
+        type: object
+  - system_text:
+      match: system_text_*
+      mapping:
+        type: text
+        analyzer: custom_search
+        copy_to: search_all
+  properties:
+    search_all:
+      type: text
+      analyzer: custom_search
+      store: false

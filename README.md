@@ -8,8 +8,7 @@ This is a getting-started guide for developers.
 # Dependencies
 
 * PostgreSQL
-* Elasticsearch 6.x
-    * **7.x is not yet supported.**
+* Elasticsearch 7
     * The [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
       is also required.
 * Cantaloupe 4.1.x (image server)

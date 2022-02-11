@@ -51,11 +51,7 @@ class AbstractRelation
   #
   def count
     load
-    count = @response_json['hits']['total'] # ES 6.x
-    if count.respond_to?(:keys)
-      count = count['value'] # ES 7.x
-    end
-    count
+    @response_json['hits']['total']['value']
   end
 
   ##
