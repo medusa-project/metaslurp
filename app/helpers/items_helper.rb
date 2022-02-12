@@ -137,7 +137,7 @@ module ItemsHelper
         info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
       end
 
-      if item.score > 0 and options[:link_to_admin]
+      if item.score.to_i > 0 and options[:link_to_admin]
         info_parts << "Score: #{item.score.round(2)}"
       end
 
