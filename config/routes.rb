@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   ######################## Public website routes ############################
 
+  match '/auth/:provider', to: 'sessions#new', via: :get
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
         as: 'auth' # used by omniauth
   resources :collections, only: :index
@@ -14,7 +15,6 @@ Rails.application.routes.draw do
     match '/image', to: 'items#image', via: :get
   end
   match '/search', to: 'search#index', via: :get
-  match '/signin', to: 'sessions#new', via: :get
   match '/signout', to: 'sessions#destroy', via: :delete
 
   ############################ REST API routes ##############################

@@ -264,6 +264,14 @@ module ApplicationHelper
     raw(html.string)
   end
 
+  def signin_path
+    if Rails.env.demo? || Rails.env.production?
+      shibboleth_login_path(Metaslurp::Application.shibboleth_host)
+    else
+      "/auth/developer"
+    end
+  end
+
   ##
   # @param entity [Object]
   # @param options [Hash] Options to pass to `image_tag()`

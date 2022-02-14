@@ -4,7 +4,7 @@ class SessionsController < WebsiteController
   skip_before_action :verify_authenticity_token
 
   ##
-  # Responds to POST /auth/:provider/callback
+  # Responds to `POST /auth/:provider/callback`
   #
   def create
     auth_hash = request.env['omniauth.auth']
@@ -28,7 +28,7 @@ class SessionsController < WebsiteController
   end
 
   ##
-  # Responds to DELETE /signout
+  # Responds to `DELETE /signout`
   #
   def destroy
     sign_out
@@ -37,15 +37,11 @@ class SessionsController < WebsiteController
   end
 
   ##
-  # Responds to GET /signin
+  # N.B.: OmniAuth responds to `/auth/developer` only via `POST`. This route
+  # responds only via `GET`.
   #
   def new
-    session[:referer] = request.env['HTTP_REFERER']
-    if Rails.env.production? or Rails.env.demo?
-      redirect_to(shibboleth_login_path(Metaslurp::Application.shibboleth_host))
-    else
-      redirect_to('/auth/developer')
-    end
+    redirect_to root_url
   end
 
   protected

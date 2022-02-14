@@ -17,6 +17,7 @@ gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
 gem 'mini_racer', platforms: :ruby
 gem 'omniauth'
 gem 'omniauth-shibboleth'
+gem "omniauth-rails_csrf_protection"
 gem 'pg'
 gem 'puma', '~> 5'
 gem 'rails', '~> 6.1'
@@ -28,8 +29,4 @@ gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
   gem 'listen', '>= 3.0.5', '< 3.2'
-end
-
-group :production do
-  gem "omniauth-rails_csrf_protection"
 end

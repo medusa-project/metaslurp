@@ -30,4 +30,4 @@
             = link_to 'Administration', admin_root_path, class: 'dropdown-item'
             = link_to 'Log Out', signout_path, method: :delete, class: 'dropdown-item'
       - else
-        = link_to 'Staff Login', signin_path, class: 'stripe-link'
+        = link_to 'Staff Login', signin_path, method: :post, class: 'stripe-link'
