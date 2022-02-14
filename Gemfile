@@ -18,7 +18,7 @@ gem 'mini_racer', platforms: :ruby
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'pg'
-gem 'puma'
+gem 'puma', '~> 5'
 gem 'rails', '~> 6.1.4'
 gem 'sassc'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
