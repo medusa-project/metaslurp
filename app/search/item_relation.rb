@@ -43,6 +43,7 @@ class ItemRelation < AbstractRelation
   #
   def build_query
     Jbuilder.encode do |j|
+      j.track_total_hits true
       j.query do
         j.function_score do
           j.query do
