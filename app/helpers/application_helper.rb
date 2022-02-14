@@ -266,7 +266,8 @@ module ApplicationHelper
 
   def signin_path
     if Rails.env.demo? || Rails.env.production?
-      shibboleth_login_path(Metaslurp::Application.shibboleth_host)
+      host = Metaslurp::Application.shibboleth_host
+      "/Shibboleth.sso/Login?target=https://#{host}/auth/shibboleth/callback"
     else
       "/auth/developer"
     end
