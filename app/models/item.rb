@@ -103,7 +103,7 @@ class Item
     CONTAINER_NAME = 'system_keyword_container_name'
     FULL_TEXT      = 'system_text_full_text'
     HARVEST_KEY    = 'system_keyword_harvest_key'
-    ID             = '_id'
+    ID             = ElasticsearchIndex::StandardFields::ID
     IMAGES         = 'system_object_images'
     LAST_INDEXED   = 'system_date_last_indexed'
     PARENT_ID      = 'system_keyword_parent_id'

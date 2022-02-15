@@ -28,6 +28,8 @@ class ElasticsearchIndex
   # Standard fields present in all documents.
   #
   class StandardFields
+    ID         = '_id'
+    SCORE      = '_score'
     SEARCH_ALL = 'search_all'
   end
 
