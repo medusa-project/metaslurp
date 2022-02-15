@@ -2,7 +2,7 @@
 # Dockerfile for use in continuous integration.
 #
 
-FROM ruby:2.7.1-slim
+FROM ruby:3.0.3-slim
 
 # This is checked in various places in the app & tests to tailer for a CI
 # environment (where adding another Rails environment would be overkill)
