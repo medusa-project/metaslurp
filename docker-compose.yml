@@ -8,7 +8,7 @@ services:
   metaslurp:
     build:
       context: .
-      dockerfile: docker/kumquat-test/Dockerfile
+      dockerfile: docker/metaslurp-test/Dockerfile
     command: bash -c "sleep 20 && bin/rails db:prepare && bin/rails \"elasticsearch:indexes:recreate[metaslurp]\" && bin/rails test && bin/rails zeitwerk:check"
     # docker-compose exec metaslurp /bin/bash
     #command: bash -c "tail -f /dev/null"
