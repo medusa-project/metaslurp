@@ -20,11 +20,12 @@ gem 'omniauth-shibboleth'
 gem "omniauth-rails_csrf_protection"
 gem 'pg'
 gem 'puma', '~> 5'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.0'
 gem 'sassc'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
     branch: 'release/bootstrap-4.4'
 #gem 'scars-bootstrap-theme', path: '../scars-bootstrap-theme'
+gem 'sprockets-rails'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
