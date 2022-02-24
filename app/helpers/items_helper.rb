@@ -122,11 +122,11 @@ module ItemsHelper
         end
       end
       if catalog_url.present?
-        info_parts << link_to("#{catalog_url.chomp('/Description')}/Description") do
+        info_parts << link_to(catalog_url) do
           raw('<i class="fas fa-external-link-alt"></i> Library Catalog')
         end
       end
-      if ht_url.blank? and ia_url.blank? and catalog_url.blank?
+      if ht_url.blank? && ia_url.blank? && catalog_url.blank?
         if item.container
           info_parts << link_to(item.container.source_uri) do
             raw("<i class=\"fas fa-folder-open\"></i> #{item.container.title}")
@@ -137,7 +137,7 @@ module ItemsHelper
         info_parts << "<i class=\"fas fa-database\"></i> #{item.content_service.name}"
       end
 
-      if item.score.to_i > 0 and options[:link_to_admin]
+      if item.score.to_i > 0 && options[:link_to_admin]
         info_parts << "Score: #{item.score.round(2)}"
       end
 
@@ -149,7 +149,7 @@ module ItemsHelper
       creators = item.local_elements.select{ |e| e.name == 'creator' }
 
       # "More Info" button
-      if creators.any? or item.date or item.description.present?
+      if creators.any? || item.date || item.description.present?
         html <<   "<a class=\"btn btn-light btn-sm result-collapse\" data-toggle=\"collapse\" "\
                       "href=\"#result-collapse-#{index}\" role=\"button\" "\
                       "aria-expanded=\"false\" aria-controls=\"result-collapse-#{index}\">"
