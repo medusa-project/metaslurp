@@ -107,7 +107,7 @@ module Admin
       @content_service = ContentService.find_by_key(params[:content_service_key])
       raise ActiveRecord::RecordNotFound unless @content_service
       begin
-        @content_service.delete_all_items_async
+        DeleteContentServiceItemsJob.perform_later(@content_service)
       rescue => e
         flash['error'] = "#{e}"
       else

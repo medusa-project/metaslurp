@@ -24,14 +24,6 @@ class ContentServiceTest < ActiveSupport::TestCase
     assert_not_equal @instance, @instance.key
   end
 
-  # delete_all_items_async()
-
-  test 'delete_all_items_async raises an error in the test environment' do
-    assert_raises RuntimeError do
-      @instance.delete_all_items_async
-    end
-  end
-
   # element_def_for_element()
 
   test 'element_def_for_element() with existing mapping' do
