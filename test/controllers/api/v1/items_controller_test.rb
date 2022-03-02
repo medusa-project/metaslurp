@@ -51,6 +51,10 @@ module Api
 
     test 'update() with valid credentials and valid entity updates content
     service element mappings' do
+      # This works around a bug in Rails as of version 7, see:
+      # https://github.com/rails/rails/issues/37270
+      queue_adapter_changed_jobs.each(&:disable_test_adapter)
+
       assert_nil @valid_item.content_service.element_mappings.
           find_by_source_name('name1')
       assert_nil @valid_item.content_service.element_mappings.
