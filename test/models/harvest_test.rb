@@ -23,7 +23,7 @@ class HarvestTest < ActiveSupport::TestCase
 
   # progress()
 
-  test 'progress() returns 0 when the status is  Status::NEW' do
+  test 'progress() returns 0 when the status is Status::NEW' do
     @instance               = harvests(:new)
     @instance.num_items     = 100
     @instance.num_succeeded = 75
@@ -31,20 +31,30 @@ class HarvestTest < ActiveSupport::TestCase
     assert_equal 0, @instance.progress
   end
 
-  test 'progress() reports a correct figure for empty harvests' do
-    @instance               = harvests(:running)
+  test 'progress() reports a correct figure for an empty harvest' do
+    @instance           = harvests(:running)
     @instance.num_items = 0
     assert_equal 1, @instance.progress
   end
 
-  test 'progress() reports a correct figure for non-empty harvests' do
-    @instance               = harvests(:running)
+  test 'progress() reports a correct figure for a non-empty harvest' do
+    @instance           = harvests(:running)
     @instance.num_items = 100
     assert_equal 0, @instance.progress
 
     @instance.num_succeeded = 20
-    @instance.num_failed = 5
+    @instance.num_failed    = 5
     assert_equal 0.25, @instance.progress
+  end
+
+  test 'progress() returns a correct figure when the max number of harvested
+  items is limited' do
+    @instance               = harvests(:running)
+    @instance.max_num_items = 100
+    @instance.num_items     = 200
+    @instance.num_succeeded = 75
+    @instance.num_failed    = 5
+    assert_equal 0.8, @instance.progress
   end
 
   test 'progress() clamps the max return value to 1' do

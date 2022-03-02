@@ -42,7 +42,7 @@
 #                        information about the failures.
 # * `num_items`          Number of items available in the {ContentService}.
 #                        This may be larger than the number of items that will
-#                        actually be harvested (see `max_items`).
+#                        actually be harvested (see `max_num_items`).
 # * `num_failed`         Number of items that failed to ingest.
 # * `num_succeeded`      Number of items successfully ingested.
 # * `status`             One of the {Harvest::Status} constant values.
@@ -175,8 +175,9 @@ class Harvest < ApplicationRecord
   #
   def progress
     return 0.0 if status == Status::NEW
-    value = (self.num_items > 0) ?
-        (self.num_succeeded + self.num_failed) / self.num_items.to_f : 1.0
+    count = (self.max_num_items.to_i > 0) ? self.max_num_items : self.num_items
+    value = (count > 0) ?
+        (self.num_succeeded + self.num_failed) / count.to_f : 1.0
     (value > 1) ? 1 : value
   end
 
