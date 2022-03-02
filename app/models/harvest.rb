@@ -153,11 +153,12 @@ class Harvest < ApplicationRecord
   def estimated_completion
     now = Time.zone.now
     if self.progress == 0.0
-      nil
+      Time.now + 1.year
     elsif self.progress == 1.0
       now
     elsif self.items_per_second > 0
-      Time.zone.at(now + ((self.num_items - self.num_succeeded - self.num_failed) / self.items_per_second))
+      count = (self.max_num_items.to_i > 0) ? self.max_num_items : self.num_items
+      Time.zone.at(now + ((count - self.num_succeeded - self.num_failed) / self.items_per_second))
     else
       nil
     end
