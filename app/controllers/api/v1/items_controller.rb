@@ -24,11 +24,8 @@ module Api
             # Doing these tasks asynchronously will enable us to return sooner,
             # which may speed up a harvest.
             UpdateElementMappingsJob.perform_later(item.id)
-            PurgeCachedItemImagesJob.perform_later(item.id)
             # we don't have an image server in test
-            if Rails.env.demo? || Rails.env.production?
-              PurgeCachedItemImagesJob.new.perform_later(item.id)
-            end
+            PurgeCachedItemImagesJob.perform_later(item.id) unless Rails.env.test?
             LOGGER.debug('Ingested %s: %s', item, json)
           end
         rescue HarvestAbortedError => e
