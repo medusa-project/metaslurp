@@ -7,8 +7,8 @@ module Api
       LOGGER = CustomLogger.new(ItemsController)
 
       ##
-      # Responds to PUT /api/v1/items. Used for both creating and updating
-      # items.
+      # Used for both creating and updating items. Responds to
+      # `PUT /api/v1/items`.
       #
       def update
         begin
@@ -23,17 +23,11 @@ module Api
             item.save!(json['index'])
             # Doing these tasks asynchronously will enable us to return sooner,
             # which may speed up a harvest.
-            # Unfortunately Rails as of 6.0.3 does not respect the
-            # config.active_job.queue_adapter = :test option in the test
-            # environment (see https://github.com/rails/rails/issues/37270).
-            # So we run them in the foreground there.
-            if Rails.env.test?
-              UpdateElementMappingsJob.new.perform(item.id)
-              # we don't have an image server in test
-              #PurgeCachedItemImagesJob.new.perform(item.id)
-            else
-              UpdateElementMappingsJob.perform_later(item.id)
-              PurgeCachedItemImagesJob.perform_later(item.id)
+            UpdateElementMappingsJob.perform_later(item.id)
+            PurgeCachedItemImagesJob.perform_later(item.id)
+            # we don't have an image server in test
+            if Rails.env.demo? || Rails.env.production?
+              PurgeCachedItemImagesJob.new.perform_later(item.id)
             end
             LOGGER.debug('Ingested %s: %s', item, json)
           end
