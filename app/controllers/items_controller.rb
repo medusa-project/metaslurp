@@ -25,7 +25,7 @@ class ItemsController < ApplicationController
     if image
       uri = URI(image.uri)
       if uri.scheme == 'http'
-        http = Net::HTTP.new(uri.host, uri.port)
+        http    = Net::HTTP.new(uri.host, uri.port)
         request = Net::HTTP::Get.new(uri)
 
         http.request(request) do |response|
@@ -35,7 +35,9 @@ class ItemsController < ApplicationController
                     filename: 'image.jpg'
         end
       else
-        redirect_to image.uri, status: :see_other
+        redirect_to image.uri,
+                    status:           :see_other,
+                    allow_other_host: true
       end
     else
       render plain: 'Not Found', status: :not_found
