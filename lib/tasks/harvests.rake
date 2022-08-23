@@ -1,5 +1,10 @@
 namespace :harvests do
 
+  desc 'Abort a harvest'
+  task :abort, [:key] => :environment do |task, args|
+    Harvest.find_by_key(args[:key]).abort
+  end
+
   desc 'Delete a harvest'
   task :delete, [:key] => :environment do |task, args|
     Harvest.find_by_key(args[:key]).destroy!
