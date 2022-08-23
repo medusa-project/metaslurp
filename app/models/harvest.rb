@@ -106,6 +106,10 @@ class Harvest < ApplicationRecord
   before_destroy :validate_destroyable
   after_save -> { purge_unharvested_items(wait_for_completion: false) }
 
+  def abort
+    self.update!(status: Status::ABORTED, ended_at: Time.zone.now)
+  end
+
   ##
   # @return [Integer] Total number of items to harvest, taking into account
   #                   {num_items} and {max_num_items}.
