@@ -10,11 +10,16 @@ class User < ApplicationRecord
   before_create :reset_api_key
 
   def medusa_admin?
-    if Rails.env.development? or Rails.env.test?
+    if Rails.env.development? || Rails.env.test?
       return self.username == DEVELOPMENT_ADMIN_USERNAME
     end
     group = Configuration.instance.medusa_admins_group
-    LdapQuery.new.is_member_of?(group, self.username)
+    user  = UiucLibAd::Entity.new(entity_cn: self.username)
+    begin
+      return user.is_member_of?(group_cn: group)
+    rescue UiucLibAd::NoDNFound
+      return false
+    end
   end
 
   def reset_api_key
