@@ -99,7 +99,7 @@ var Application = {
      * @constructor
      */
     FilterField: function() {
-        var INPUT_DELAY_MSEC = 500;
+        const INPUT_DELAY_MSEC = 1000;
 
         $('form.dl-filter').submit(function () {
             $.get(this.action, $(this).serialize(), null, 'script');
