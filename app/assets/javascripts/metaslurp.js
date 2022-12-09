@@ -99,15 +99,13 @@ var Application = {
      * @constructor
      */
     FilterField: function() {
-        const INPUT_DELAY_MSEC = 1000;
-
         $('form.dl-filter').submit(function () {
             $.get(this.action, $(this).serialize(), null, 'script');
             $(this).nextAll('input').addClass('active');
             return false;
         });
 
-        var submitForm = function () {
+        const submitForm = function () {
             var forms = $('form.dl-filter');
             var query = forms.serialize();
             $.ajax({
@@ -124,15 +122,8 @@ var Application = {
             return false;
         };
 
-        var input_timer;
-        // When text is typed in the filter field...
-        $('form.dl-filter input').off('keyup').on('keyup', function () {
-            // Reset the typing-delay counter.
-            clearTimeout(input_timer);
-
-            // After the user has stopped typing, wait a bit and then submit
-            // the form via AJAX.
-            input_timer = setTimeout(submitForm, INPUT_DELAY_MSEC);
+        $('form.dl-filter input[type=submit]').off("click").on('click', function () {
+            submitForm();
             return false;
         });
         // When form controls accompanying the filter field are changed,

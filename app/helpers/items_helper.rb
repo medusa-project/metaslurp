@@ -8,8 +8,10 @@ module ItemsHelper
   def filter_field
     html = StringIO.new
     html << '<div class="input-group dl-filter-field">'
-    html <<   search_field_tag(:q, params[:q], class: 'form-control',
-                               placeholder: 'Filter')
+    html <<   search_field_tag(:q, params[:q], class: 'form-control')
+    html <<   "<div class=\"input-group-append\">"
+    html <<     submit_tag("Filter", class: "btn btn-outline-secondary")
+    html <<   "</div>"
     html << '</div>'
     raw(html.string)
   end
