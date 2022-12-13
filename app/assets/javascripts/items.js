@@ -61,7 +61,7 @@ var DLItemsView = function() {
 
         $('.dl-thumbnail-container img[data-location="remote"]').one('load', function() {
             $(this).parent().next('.dl-load-indicator').hide();
-            $(this).animate({'opacity': 1}, 300);
+            $(this).css("opacity", 1);
         }).on('error', function() {
             $(this).parent().next('.dl-load-indicator').hide();
         }).each(function() {
