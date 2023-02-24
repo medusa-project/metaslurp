@@ -14,7 +14,12 @@ class User < ApplicationRecord
       return self.username == DEVELOPMENT_ADMIN_USERNAME
     end
     group = Configuration.instance.medusa_admins_group
-    LdapQuery.new.is_member_of?(group, self.username)
+    begin
+      user = UiucLibAd::User.new(cn: self.username)
+      user.is_member_of?(group_cn: group)
+    rescue UiucLibAd::NoDNFound
+      false
+    end
   end
 
   def reset_api_key
