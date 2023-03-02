@@ -13,12 +13,15 @@ class User < ApplicationRecord
     if Rails.env.development? || Rails.env.test?
       return self.username == DEVELOPMENT_ADMIN_USERNAME
     end
-    group = Configuration.instance.medusa_admins_group
-    begin
-      user = UiucLibAd::User.new(cn: self.username)
-      user.is_member_of?(group_cn: group)
-    rescue UiucLibAd::NoDNFound
-      false
+    group     = Configuration.instance.medusa_admins_group
+    cache_key = Digest::MD5.hexdigest("#{self.username} ismemberof #{group}")
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      begin
+        user = UiucLibAd::User.new(cn: self.username)
+        user.is_member_of?(group_cn: group)
+      rescue UiucLibAd::NoDNFound
+        false
+      end
     end
   end
 
