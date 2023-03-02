@@ -6,6 +6,15 @@ class HarvestTest < ActiveSupport::TestCase
     @instance = harvests(:new)
   end
 
+  # abort()
+
+  test 'abort() aborts the harvest' do
+    @instance = harvests(:running)
+    @instance.abort
+    assert_equal Harvest::Status::ABORTED, @instance.status
+    assert_not_nil @instance.ended_at
+  end
+
   # content_service()
 
   test 'content_service() returns the associated ContentService' do
