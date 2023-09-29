@@ -12,11 +12,11 @@ services:
     command: bash -c "sleep 20 && bin/rails db:prepare && bin/rails \"elasticsearch:indexes:recreate[metaslurp]\" && bin/rails test && bin/rails zeitwerk:check"
     # docker-compose exec metaslurp /bin/bash
     #command: bash -c "tail -f /dev/null"
-  elasticsearch:
-    hostname: elasticsearch
+  opensearch:
+    hostname: opensearch
     build:
       context: .
-      dockerfile: docker/elasticsearch/Dockerfile
+      dockerfile: docker/opensearch/Dockerfile
   postgres:
     hostname: postgres
     image: postgres:12-alpine
