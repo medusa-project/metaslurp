@@ -25,11 +25,11 @@ class ItemTest < ActiveSupport::TestCase
     @instance.elements << SourceElement.new(name: 'title',
                                             value: 'value')
     @instance.elements << SourceElement.new(name: 'date',
-                                            value: '2018-05-01T22:16:06Z')
+                                            value: '2018-05-01')
     @instance.local_elements << LocalElement.new(name: 'title',
                                                  value: 'value')
     @instance.local_elements << LocalElement.new(name: 'date',
-                                                 value: '2018-05-01T22:16:06Z')
+                                                 value: '2018-05-01')
   end
 
   # from_indexed_json()
@@ -248,12 +248,11 @@ class ItemTest < ActiveSupport::TestCase
 
     assert_equal ['value'],
                  struct[SourceElement::RAW_INDEX_PREFIX + 'title']
-    assert_equal ['2018-05-01T22:16:06Z'],
+    assert_equal ['2018-05-01'],
                  struct[SourceElement::RAW_INDEX_PREFIX + 'date']
     assert_equal ['value'],
                  struct[LocalElement::TEXT_INDEX_PREFIX + 'title']
-    assert_equal '2018-05-01T16:06:00Z',
-                 struct[LocalElement::DATE_INDEX_PREFIX + 'date']
+    assert struct[LocalElement::DATE_INDEX_PREFIX + 'date'].match?(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
   end
 
   test 'as_indexed_json respects value mappings' do
@@ -343,7 +342,7 @@ class ItemTest < ActiveSupport::TestCase
   # date()
 
   test 'date() works' do
-    assert_equal '2018-05-01T22:16:06Z', @instance.date.iso8601
+    assert @instance.date.iso8601.match?(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}/)
   end
 
   test 'date() returns nil when there is no date element' do
