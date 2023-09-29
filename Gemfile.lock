@@ -326,7 +326,7 @@ DEPENDENCIES
   uiuc_lib_ad!
 
 RUBY VERSION
-   ruby 3.0.3p157
+   ruby 3.2.2p53
 
 BUNDLED WITH
    2.2.32

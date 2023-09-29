@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.3'
+ruby '3.2.2'
 
 gem "autoprefixer-rails" # required to avoid some bootstrap CSS weirdness
 gem 'aws-sdk-ecs', '~> 1' # used to trigger harvests
@@ -26,7 +26,6 @@ gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
     branch: 'release/bootstrap-4.4'
 #gem 'scars-bootstrap-theme', path: '../scars-bootstrap-theme'
 gem 'sprockets-rails'
-gem 'uiuc_lib_ad', git: 'https://github.com/UIUCLibrary/uiuc_lib_ad.git'
 gem 'uglifier', '>= 1.3.0'
 gem 'uiuc_lib_ad', git: 'https://github.com/UIUCLibrary/uiuc_lib_ad.git'
 

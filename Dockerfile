@@ -2,7 +2,7 @@
 # Dockerfile for use in production.
 #
 
-FROM ruby:3.0.3-slim
+FROM ruby:3.2.2-slim
 
 ENV RAILS_ENV=production
 ENV RAILS_LOG_TO_STDOUT=true
