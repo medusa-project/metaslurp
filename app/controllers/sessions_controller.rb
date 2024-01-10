@@ -14,9 +14,6 @@ class SessionsController < WebsiteController
       if user.medusa_admin?
         return_url = clear_and_return_return_path
         sign_in user
-        # We can access other information via auth_hash[:extra][:raw_info][key]
-        # where key is one of the shibboleth* keys in shibboleth.yml
-        # (which have to correspond to passed attributes).
         redirect_to return_url
         return
       end
@@ -44,6 +41,7 @@ class SessionsController < WebsiteController
     redirect_to root_url
   end
 
+
   protected
 
   def clear_and_return_return_path
@@ -51,10 +49,6 @@ class SessionsController < WebsiteController
     session[:return_to] = session[:referer] = nil
     reset_session
     return_url
-  end
-
-  def shibboleth_login_path(host)
-    "/Shibboleth.sso/Login?target=https://#{host}/auth/shibboleth/callback"
   end
 
 end

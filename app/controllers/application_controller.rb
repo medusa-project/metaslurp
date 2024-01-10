@@ -55,12 +55,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signin_path
-    if Rails.env.demo? || Rails.env.production?
-      host = Metaslurp::Application.shibboleth_host
-      "/Shibboleth.sso/Login?target=https://#{host}/auth/shibboleth/callback"
-    else
-      "/auth/developer"
-    end
+    helpers.signin_path
   end
 
   ##

@@ -20,6 +20,7 @@ gem 'local_time'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
 gem 'omniauth'
 gem "omniauth-rails_csrf_protection"
+gem 'omniauth-saml'
 gem 'pg'
 gem 'puma', '~> 5'
 gem 'rails', '~> 7.0'
@@ -30,7 +31,3 @@ gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
 gem 'sprockets-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'uiuc_lib_ad', git: 'https://github.com/UIUCLibrary/uiuc_lib_ad.git'
-
-group :production do
-  gem 'omniauth-shibboleth'
-end

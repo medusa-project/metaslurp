@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     end
   end
 
-  ##################### Shibboleth-protected routes #########################
+  #################### Authentication-protected routes #######################
 
   namespace :admin do
     root 'dashboard#index'
