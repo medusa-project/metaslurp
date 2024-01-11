@@ -30,8 +30,13 @@ namespace :elasticsearch do
     end
 
     desc 'List indexes'
-    task :list => :environment do
+    task list: :environment do
       puts ElasticsearchClient.instance.indexes
+    end
+
+    desc 'Print the current index schema'
+    task print_schema: :environment do
+      puts JSON.pretty_generate(ElasticsearchIndex::SCHEMA)
     end
 
     # N.B.: This is used in the testing Dockerfile
