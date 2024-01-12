@@ -19,10 +19,19 @@ Option.set(Option::Keys::WEBSITE_NAME,
 User.create!(username: 'admin')
 
 # Elements
-ElementDef.create!(index: 0, name: 'title', label: 'Title',
-                   searchable: true, sortable: true, facetable: false)
-ElementDef.create!(index: 1, name: 'description', label: 'Description',
-                   searchable: true, sortable: false, facetable: false)
-ElementDef.create!(index: 2, name: 'date', label: 'Date',
-                   data_type: ElementDef::DataType::DATE,
-                   searchable: false, sortable: true, facetable: false)
+ElementDef.create!(name:       'title',
+                   label:      'Title',
+                   searchable: true,
+                   sortable:   true,
+                   facetable:  false)
+ElementDef.create!(name:       'description',
+                   label:      'Description',
+                   searchable: true,
+                   sortable:   false,
+                   facetable:  false)
+ElementDef.create!(name:       'date',
+                   label:      'Date',
+                   data_type:  ElementDef::DataType::DATE,
+                   searchable: false,
+                   sortable:   true,
+                   facetable:  false)
