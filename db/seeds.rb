@@ -21,11 +21,13 @@ User.create!(username: 'admin')
 # Elements
 ElementDef.create!(name:       'title',
                    label:      'Title',
+                   data_type:  ElementDef::DataType::STRING,
                    searchable: true,
                    sortable:   true,
                    facetable:  false)
 ElementDef.create!(name:       'description',
                    label:      'Description',
+                   data_type:  ElementDef::DataType::STRING,
                    searchable: true,
                    sortable:   false,
                    facetable:  false)
