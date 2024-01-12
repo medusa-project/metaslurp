@@ -17,8 +17,10 @@ class ActiveSupport::TestCase
   end
 
   def sign_in_as(user)
-    post '/auth/developer/callback', params: {
-        name: user.username, email: "#{user.username}@example.org"
+    post '/auth/developer/callback', env: {
+      'omniauth.auth': {
+        uid: user.username
+      }
     }
   end
 
