@@ -22,7 +22,7 @@ gem 'omniauth'
 gem "omniauth-rails_csrf_protection"
 gem 'omniauth-saml'
 gem 'pg'
-gem 'puma', '~> 5'
+gem 'puma'
 gem 'rails', '~> 7.0'
 gem 'sassc'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
