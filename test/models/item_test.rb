@@ -380,8 +380,8 @@ class ItemTest < ActiveSupport::TestCase
   # save()
 
   test 'save() works' do
-    client = ElasticsearchClient.instance
-    index = Configuration.instance.elasticsearch_index
+    client = OpenSearchClient.instance
+    index  = Configuration.instance.opensearch_index
     begin
       client.delete_index(index) if client.index_exists?(index)
 

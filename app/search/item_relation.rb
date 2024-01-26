@@ -122,7 +122,7 @@ class ItemRelation < AbstractRelation
           end
 
           # Boost the relevancy of collection-variant items.
-          # See: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html
+          # See: https://www.elastic.co/guide/en/opensearch/reference/current/query-dsl-function-score-query.html
           j.boost Boost::MAX_BOOST
           j.functions do
             Boost.all.each do |boost|
@@ -188,7 +188,7 @@ class ItemRelation < AbstractRelation
       query = @query[:query]
       query = '*' if query.blank?
       j.query query
-      j.fields [ElasticsearchIndex::StandardFields::SEARCH_ALL]
+      j.fields [OpenSearchIndex::StandardFields::SEARCH_ALL]
       j.flags 'NONE'
       j.default_operator 'AND'
       j.lenient true

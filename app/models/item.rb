@@ -37,7 +37,7 @@
 #
 # # Indexing
 #
-# Items are searchable via Elasticsearch. High-level search functionality is
+# Items are searchable via OpenSearch. High-level search functionality is
 # available via the [ItemRelation} class. {Item#search} is a convenient way of
 # obtaining an instance of this class.
 #
@@ -65,7 +65,7 @@
 #                    image.
 # * `local_elements` [Enumerable] of [LocalElement]s.
 # * `parent_id`      Identifier of a parent (not container) item.
-# * `score`          Relevance score assigned by Elasticsearch.
+# * `score`          Relevance score assigned by OpenSearch.
 # * `service_key`    Key of the [ContentService] in which the instance resides.
 # * `source_id`      Unique identifier of the instance.
 # * `variant`        Like a subclass. Used to differentiate types of instances
@@ -86,8 +86,8 @@
 #
 class Item
 
-  LOGGER              = CustomLogger.new(Item)
-  ELASTICSEARCH_INDEX = 'entities'
+  LOGGER           = CustomLogger.new(Item)
+  OPENSEARCH_INDEX = 'entities'
 
   attr_accessor :container_id, :container_name, :full_text, :harvest_key, :id,
                 :last_indexed, :media_type, :parent_id, :score, :service_key,
@@ -103,7 +103,7 @@ class Item
     CONTAINER_NAME = 'system_keyword_container_name'
     FULL_TEXT      = 'system_text_full_text'
     HARVEST_KEY    = 'system_keyword_harvest_key'
-    ID             = ElasticsearchIndex::StandardFields::ID
+    ID             = OpenSearchIndex::StandardFields::ID
     IMAGES         = 'system_object_images'
     LAST_INDEXED   = 'system_date_last_indexed'
     PARENT_ID      = 'system_keyword_parent_id'
@@ -146,7 +146,7 @@ class Item
   # @raises [IOError]
   #
   def self.fetch_indexed_json(id)
-    ElasticsearchClient.instance.get_document(id)
+    OpenSearchClient.instance.get_document(id)
   end
 
   ##
@@ -341,7 +341,7 @@ class Item
         when ElementDef::DataType::DATE
           begin
             date = Marc::Dates::parse(value).first&.utc
-            # Marc::Dates treats five-digit years as valid, but Elasticsearch
+            # Marc::Dates treats five-digit years as valid, but OpenSearch
             # doesn't accept them in date fields. Here we discard
             # distant-future years.
             if date.year < 2050
@@ -359,7 +359,7 @@ class Item
           if mapping
             value = mapping.local_value
           end
-          max_length = ElasticsearchClient::MAX_KEYWORD_FIELD_LENGTH
+          max_length = OpenSearchClient::MAX_KEYWORD_FIELD_LENGTH
           doc[e_def.indexed_sort_field]  << StringUtils.strip_leading_articles(value)[0..max_length]
           # We want to strip tags but not escape entities, which there is
           # apparently no easy way to do using Rails' built-in sanititzer. For
@@ -485,8 +485,8 @@ class Item
   # @raises [IOError]
   #
   def save(index = nil)
-    index ||= Configuration.instance.elasticsearch_index
-    ElasticsearchClient.instance.index_document(index,
+    index ||= Configuration.instance.opensearch_index
+    OpenSearchClient.instance.index_document(index,
                                                 self.id,
                                                 self.as_indexed_json)
   end

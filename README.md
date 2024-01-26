@@ -8,8 +8,8 @@ This is a getting-started guide for developers.
 # Dependencies
 
 * PostgreSQL
-* Elasticsearch 7
-    * The [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
+* OpenSearch >= 1.x
+    * The [ICU Analysis Plugin](https://opensearch.org/docs/1.3/install-and-configure/plugins/)
       is also required.
 * Cantaloupe 4.1.x (image server)
     * Required for thumbnails but otherwise optional.
@@ -62,14 +62,14 @@ Fill in the new files and **do not commit them to version control.**
 
 `$ bin/rails db:setup`
 
-## 8) Create the Elasticsearch indexes
+## 8) Create the OpenSearch indexes
 
 ```
-$ bin/rails elasticsearch:indexes:create[my_index]
-$ bin/rails elasticsearch:indexes:create_alias[my_index,my_index_alias]
+$ bin/rails opensearch:indexes:create[my_index]
+$ bin/rails opensearch:indexes:create_alias[my_index,my_index_alias]
 ```
 
-(`my_index_alias` is the value of the `elasticsearch_index` configuration key.)
+(`my_index_alias` is the value of the `opensearch_index` configuration key.)
 
 ## 9) Install Cantaloupe
 
@@ -85,19 +85,19 @@ repository. It is recommended to clone that and run it locally using Docker.
 
 `bin/rails db:migrate`
 
-## Migrating the Elasticsearch indexes
+## Migrating the OpenSearch indexes
 
 For the most part, once created, index schemas can't be modified. To migrate
 to an incompatible schema, the procedure would be something like:
 
 1. Update the index schema in `app/search/index_schema.yml`
 2. Create an index with the new schema:
-   `bin/rails elasticsearch:indexes:create[my_new_index]`
+   `bin/rails opensearch:indexes:create[my_new_index]`
 3. Populate the new index with documents. There are a couple of ways to do
    this:
     1. If the schema change was backwards-compatible with the source documents
        added to the index, invoke
-       `bin/rails elasticsearch:indexes:reindex[my_current_index,my_new_index]`.
+       `bin/rails opensearch:indexes:reindex[my_current_index,my_new_index]`.
        This will reindex all source documents from the current index into the
        new index.
     2. Otherwise, reharvest everything into the new index. This can be

@@ -3,7 +3,7 @@ require 'test_helper'
 class SearchControllerTest < ActionDispatch::IntegrationTest
 
   setup do
-    setup_elasticsearch
+    setup_opensearch
   end
 
   # index()

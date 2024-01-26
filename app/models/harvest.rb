@@ -200,8 +200,8 @@ class Harvest < ApplicationRecord
         aggregations(false).
         limit(9999999).
         build_query
-      ElasticsearchClient.instance.delete_by_query(query: json,
-                                                   wait_for_completion: wait_for_completion)
+      OpenSearchClient.instance.delete_by_query(query: json,
+                                                wait_for_completion: wait_for_completion)
     end
   end
 

@@ -4,15 +4,15 @@ class ItemRelationTest < ActiveSupport::TestCase
 
   setup do
     config = Configuration.instance
-    @index = config.elasticsearch_index
-    setup_elasticsearch
+    @index = config.opensearch_index
+    setup_opensearch
     seed
 
     @instance = ItemRelation.new
   end
 
   teardown do
-    ElasticsearchClient.instance.delete_index(@index)
+    OpenSearchClient.instance.delete_index(@index)
   end
 
   def seed
@@ -23,7 +23,7 @@ class ItemRelationTest < ActiveSupport::TestCase
                     variant: Item::Variants::ITEM)
     item.elements << SourceElement.new(name: 'name', value: 'value')
     item.save!
-    ElasticsearchClient.instance.refresh
+    OpenSearchClient.instance.refresh
   end
 
   test 'to_a() works' do

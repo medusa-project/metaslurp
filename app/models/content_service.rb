@@ -42,7 +42,7 @@ class ContentService < ApplicationRecord
             }
         }
     }
-    ElasticsearchClient.instance.delete_by_query(
+    OpenSearchClient.instance.delete_by_query(
         query: JSON.generate(query),
         wait_for_completion: true)
   end
@@ -75,7 +75,7 @@ class ContentService < ApplicationRecord
             }
         }
     }
-    ElasticsearchClient.instance.delete_by_query(
+    OpenSearchClient.instance.delete_by_query(
         query: JSON.generate(query),
         wait_for_completion: true)
   end
@@ -113,7 +113,7 @@ class ContentService < ApplicationRecord
     # N.B.: Multi-threaded harvesting is one of metaslurper's features, but
     # having more than four or so threads (across all concurrent harvests)
     # POSTing data back to the application at once can lead to write-block
-    # exceptions in Elasticsearch. The number of threads here is minimized in
+    # exceptions in OpenSearch. The number of threads here is minimized in
     # order to go easy on our computing resources and increase the number of
     # possible concurrent harvests.
     command = ['java', '-jar', 'metaslurper.jar',

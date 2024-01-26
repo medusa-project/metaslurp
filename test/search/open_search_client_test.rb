@@ -1,10 +1,10 @@
 require 'test_helper'
 
-class ElasticsearchClientTest < ActiveSupport::TestCase
+class OpenSearchClientTest < ActiveSupport::TestCase
 
   setup do
-    @instance   = ElasticsearchClient.instance
-    @test_index = Configuration.instance.elasticsearch_index
+    @instance   = OpenSearchClient.instance
+    @test_index = Configuration.instance.opensearch_index
     @instance.delete_index(@test_index, raise_on_not_found: false)
   end
 

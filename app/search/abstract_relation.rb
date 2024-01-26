@@ -5,14 +5,14 @@ class AbstractRelation
   attr_reader :request_json, :response_json
 
   def initialize
-    @client = ElasticsearchClient.instance
+    @client = OpenSearchClient.instance
 
     @aggregations    = true
     @bucket_limit    = AGGREGATION_TERM_LIMIT
     @content_service = nil
     @excludes        = {}  # Hash<String,Object>
     @filters         = {} # Hash<String,Object>
-    @limit           = ElasticsearchClient::MAX_RESULT_WINDOW
+    @limit           = OpenSearchClient::MAX_RESULT_WINDOW
     @orders          = [] # Array<Hash<Symbol,String>> with :field and :direction keys
     @query           = nil # Hash<Symbol,String> Hash with :field and :query keys
     @start           = 0
@@ -186,7 +186,7 @@ class AbstractRelation
   # @return [self]
   #
   def query_all(query)
-    query(ElasticsearchIndex::StandardFields::SEARCH_ALL, query)
+    query(OpenSearchIndex::StandardFields::SEARCH_ALL, query)
     self
   end
 

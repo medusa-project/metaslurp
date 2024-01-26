@@ -1,11 +1,11 @@
 ##
-# High-level Elasticsearch client.
+# High-level OpenSearch client.
 #
-class ElasticsearchClient
+class OpenSearchClient
 
   include Singleton
 
-  LOGGER = CustomLogger.new(ElasticsearchClient)
+  LOGGER = CustomLogger.new(OpenSearchClient)
 
   # Field values should be truncated to this length.
   # (32766 total / 3 bytes per character)
@@ -16,13 +16,13 @@ class ElasticsearchClient
   MAX_RESULT_WINDOW = 10000
 
   def initialize
-    @http_client = Faraday.new(url: Configuration.instance.elasticsearch_endpoint)
+    @http_client = Faraday.new(url: Configuration.instance.opensearch_endpoint)
   end
 
   ##
   # @param index_name [String] Index name.
   # @param num_shards [Integer] Supply a nonzero value to override the default
-  #                             assigned by Elasticsearch.
+  #                             assigned by OpenSearch.
   # @return [Boolean]
   # @raises [IOError]
   #
@@ -30,7 +30,7 @@ class ElasticsearchClient
     LOGGER.info('create_index(): creating %s...', index_name)
     index_path = '/' + index_name
 
-    schema = ElasticsearchIndex::SCHEMA
+    schema = OpenSearchIndex::SCHEMA
     schema['settings']['number_of_shards'] = num_shards if num_shards > 0
 
     response = @http_client.put do |request|
@@ -84,7 +84,7 @@ class ElasticsearchClient
   # @return [String] Response body.
   #
   def delete_by_query(query:, wait_for_completion: true)
-    index = Configuration.instance.elasticsearch_index
+    index = Configuration.instance.opensearch_index
     path = sprintf("/%s/_delete_by_query?pretty"\
         "&conflicts=proceed"\
         "&wait_for_completion=#{wait_for_completion}"\
@@ -107,7 +107,7 @@ class ElasticsearchClient
   def delete_index(index_name, raise_on_not_found: true)
     LOGGER.info('delete_index(): deleting %s...', index_name)
     url = sprintf('%s/%s',
-                  Configuration.instance.elasticsearch_endpoint,
+                  Configuration.instance.opensearch_endpoint,
                   index_name)
     response = @http_client.delete(url, nil,
                                    'Content-Type': 'application/json')
@@ -153,7 +153,7 @@ class ElasticsearchClient
   # @return [Hash, nil]
   #
   def get_document(id)
-    index_name = ::Configuration.instance.elasticsearch_index
+    index_name = ::Configuration.instance.opensearch_index
     path = sprintf('/%s/_doc/%s', index_name, id)
     LOGGER.debug('get_document(): %s/%s', index_name, id)
     response = @http_client.get(path)
@@ -189,7 +189,7 @@ class ElasticsearchClient
   # @param id [String]    Document ID.
   # @param doc [Hash]     Hash to serialize as JSON.
   # @return [void]
-  # @raises [IOError]     If Elasticsearch returns an error response.
+  # @raises [IOError]     If OpenSearch returns an error response.
   #
   def index_document(index, id, doc)
     path = sprintf('/%s/_doc/%s', index, id)
@@ -227,7 +227,7 @@ class ElasticsearchClient
   #
   def query(query)
     config = Configuration.instance
-    index  = config.elasticsearch_index
+    index  = config.opensearch_index
     path   = sprintf('/%s/_search?pretty', index)
     response = @http_client.post do |request|
       request.path = path
@@ -248,7 +248,7 @@ class ElasticsearchClient
   # @return [void]
   #
   def refresh
-    index = ::Configuration.instance.elasticsearch_index
+    index = ::Configuration.instance.opensearch_index
     path = sprintf('/%s/_refresh?pretty', index)
     @http_client.post do |request|
       request.path = path
@@ -287,7 +287,7 @@ class ElasticsearchClient
   private
 
   def endpoint
-    Configuration.instance.elasticsearch_endpoint
+    Configuration.instance.opensearch_endpoint
   end
 
 end

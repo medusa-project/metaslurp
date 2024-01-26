@@ -4,8 +4,8 @@ class ElementRelationTest < ActiveSupport::TestCase
 
   setup do
     config = Configuration.instance
-    @index = config.elasticsearch_index
-    setup_elasticsearch
+    @index = config.opensearch_index
+    setup_opensearch
     seed
   end
 
@@ -18,7 +18,7 @@ class ElementRelationTest < ActiveSupport::TestCase
     item.elements << SourceElement.new(name: 'subject', value: 'value1')
     item.elements << SourceElement.new(name: 'subject', value: 'value2')
     item.save!
-    ElasticsearchClient.instance.refresh
+    OpenSearchClient.instance.refresh
   end
 
   test 'to_a() works' do
