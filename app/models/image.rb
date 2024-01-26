@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Image attached to an Item.
 #

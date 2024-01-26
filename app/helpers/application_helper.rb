@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
 
   LOGGER = CustomLogger.new(ApplicationHelper)
 
-  MAX_PAGINATION_LINKS = 7
-  MAX_THUMBNAIL_SIZE = 512
+  MAX_PAGINATION_LINKS           = 7
+  MAX_THUMBNAIL_SIZE             = 512
   CONTENT_SERVICE_THUMBNAIL_SIZE = 4096
-  THUMBNAIL_JPEG_QUALITY = 60
+  THUMBNAIL_JPEG_QUALITY         = 60
 
   ##
   # Formats a boolean for display.

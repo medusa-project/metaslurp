@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Provides a convenient ActiveRecord-style Builder interface for retrieval of
 # element reports.

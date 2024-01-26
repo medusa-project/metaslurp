@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Maps an element in a ContentService to a local ElementDef.
 #

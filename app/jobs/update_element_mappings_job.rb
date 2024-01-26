@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Updates a [ContentService]'s element mappings based on the elements ascribed
 # to an [Item].

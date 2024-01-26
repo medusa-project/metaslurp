@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Purges all images associated with a given [Item] from the image server's
 # cache.

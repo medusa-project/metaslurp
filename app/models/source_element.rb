@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Metadata element ascribed to an item in a [ContentService]. The content
 # service may expose arbitrary such elements, which get normalized/mapped to
@@ -6,7 +8,7 @@
 class SourceElement < Element
 
   # N.B.: These must match dynamic templates in the index schema.
-  RAW_INDEX_PREFIX = 'source_raw_'
+  RAW_INDEX_PREFIX      = 'source_raw_'
   ANALYZED_INDEX_PREFIX = 'source_search_'
 
   ##

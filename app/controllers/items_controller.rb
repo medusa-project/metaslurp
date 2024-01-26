@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Searches items of non-Collection variant.
 #

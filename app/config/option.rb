@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Encapsulates a key-value option. Keys should be one of the Option::Keys
 # constants. Values are stored as JSON internally. Simple values can be

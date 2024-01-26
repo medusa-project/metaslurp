@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Represents a process of harvesting one or more records from a
 # {ContentService} into the application.

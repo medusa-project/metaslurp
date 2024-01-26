@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ElementsController < ApplicationController
 
   protect_from_forgery with: :null_session
@@ -8,12 +10,12 @@ class ElementsController < ApplicationController
   def index
     render json: ElementDef.all.order(:name).map { |e|
       {
-          name: e.name,
-          label: e.label,
-          data_type: ElementDef::DataType::to_s(e.data_type),
-          searchable: e.searchable,
-          sortable: e.sortable,
-          facetable: e.facetable,
+          name:               e.name,
+          label:              e.label,
+          data_type:          ElementDef::DataType::to_s(e.data_type),
+          searchable:         e.searchable,
+          sortable:           e.sortable,
+          facetable:          e.facetable,
           indexed_sort_field: e.sortable ? e.indexed_sort_field : nil
       }
     }

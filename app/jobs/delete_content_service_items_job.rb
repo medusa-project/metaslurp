@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Deletes all indexed documents in a given [ContentService].
 #

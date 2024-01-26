@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ItemsHelper
 
   MAX_MEDIA_TITLE_LENGTH = 120

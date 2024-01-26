@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Logging class that wraps Rails.logger with string formatting.
 #

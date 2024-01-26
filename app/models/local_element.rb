@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 ##
-# Local element to which a [SourceElement] has been mapped.
+# Local element to which a {SourceElement} has been mapped.
 #
 class LocalElement < Element
 

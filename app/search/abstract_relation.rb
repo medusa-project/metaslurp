@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AbstractRelation
 
   AGGREGATION_TERM_LIMIT = 100

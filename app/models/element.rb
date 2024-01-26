@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # "Abstract" base class for LocalElements and SourceElements.
 #

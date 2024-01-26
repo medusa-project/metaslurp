@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContentService < ApplicationRecord
 
   SUPPORTED_IMAGE_TYPES = %w(image/jpeg image/png image/tiff)

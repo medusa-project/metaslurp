@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Searches across items of all variants, a.k.a. everything.
 #

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValueMapping < ApplicationRecord
 
   belongs_to :element_def, inverse_of: :value_mappings
