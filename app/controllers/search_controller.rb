@@ -13,8 +13,8 @@ class SearchController < ApplicationController
   before_action :set_sanitized_params
 
   def index
-    @start = params[:start]&.to_i || 0
-    @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
+    @start = [@permitted_params[:start].to_i.abs, max_start].min
+    @limit = window_size
 
     relation = Item.search.
         query_all(params[:q]).

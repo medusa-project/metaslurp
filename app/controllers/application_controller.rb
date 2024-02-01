@@ -56,6 +56,14 @@ class ApplicationController < ActionController::Base
     @keep_flash = true
   end
 
+  ##
+  # @return Maximum OpenSearch-safe start/offset within a results list.
+  # @see window_size
+  #
+  def max_start
+    OpenSearchClient::MAX_RESULT_WINDOW - window_size
+  end
+
   def signin_path
     helpers.signin_path
   end
@@ -91,6 +99,27 @@ class ApplicationController < ActionController::Base
       flash.clear unless @keep_flash
     end
   end
+
+  ##
+  # @return [Integer] Effective window size a.k.a. result limit based on the
+  #                   application configuration and `window` query argument.
+  # @see max_start
+  #
+  def window_size
+    default_default = 30
+    default_min     = 20
+    default_max     = 100
+    default = Option.integer(Option::Keys::DEFAULT_RESULT_WINDOW, default_default)
+    default = default_default if default < 1
+    min     = default_min
+    max     = default_max
+    client  = params[:window].to_i
+    if client < min || client > max
+      return default
+    end
+    client
+  end
+
 
   private
 

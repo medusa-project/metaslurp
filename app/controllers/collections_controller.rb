@@ -10,11 +10,11 @@ class CollectionsController < ApplicationController
 
   PERMITTED_PARAMS = [:df, { fq: [] }, :id, :q, :sort, :start]
 
-  before_action :set_sanitized_params
+  before_action :set_permitted_params
 
   def index
-    @start = params[:start]&.to_i || 0
-    @limit = Option::integer(Option::Keys::DEFAULT_RESULT_WINDOW)
+    @start = [@permitted_params[:start].to_i.abs, max_start].min
+    @limit = window_size
 
     relation = Item.search.
         query_all(params[:q]).
@@ -45,7 +45,7 @@ class CollectionsController < ApplicationController
 
   private
 
-  def set_sanitized_params
+  def set_permitted_params
     @permitted_params = params.permit(PERMITTED_PARAMS)
   end
 
