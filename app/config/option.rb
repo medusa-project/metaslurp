@@ -32,18 +32,18 @@ class Option < ApplicationRecord
   # @return [Boolean] Value associated with the given key as a boolean, or nil
   #                   if there is no value associated with the given key.
   #
-  def self.boolean(key)
+  def self.boolean(key, default = nil)
     v = value_for(key)
-    v ? ['true', '1', true, 1].include?(v) : nil
+    v ? ['true', '1', true, 1].include?(v) : default
   end
 
   ##
   # @return [Integer] Value associated with the given key as an integer, or nil
   #                   if there is no value associated with the given key.
   #
-  def self.integer(key)
+  def self.integer(key, default = nil)
     v = value_for(key)
-    v ? v.to_i : nil
+    v ? v.to_i : default
   end
 
   ##
@@ -67,9 +67,9 @@ class Option < ApplicationRecord
   # @return [String,nil] Value associated with the given key as a string, or nil
   #                      if there is no value associated with the given key.
   #
-  def self.string(key)
+  def self.string(key, default = nil)
     v = value_for(key)
-    v ? v.to_s : nil
+    v ? v.to_s : default
   end
 
   ##
