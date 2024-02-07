@@ -15,29 +15,29 @@
     icon: 'fa-upload' },                            |
     { label: 'Export',                              |
     icon: 'fa-download',                            |
-    url: @permitted_params.merge(format: 'json') }) |
+    url: admin_element_defs_path(format: 'json') }) |
 
 %h1 Elements
 %form.form-inline.mb-3
   %label{for: "dl-sort"} Sort by:
   %select#dl-sort.custom-select{name: "sort"}
     %option{value: "name" } Name
-    %option{value: "weight" , selected: (params[:sort] == 'weight')} Facet Weight
+    %option{value: "weight", selected: (params[:sort] == 'weight')} Facet Weight
 
 %table.table
   %thead
     %tr
-      %th{style: "width: 1px"}
-      %th>Name
-      %th>Label
-      %th>Data Type
-      %th>Description
-      %th>Searchable
-      %th>Sortable
-      %th>Facetable
-      %th>Facet Weight
+      %th
+      %th Name
+      %th Label
+      %th Data Type
+      %th Description
+      %th Searchable
+      %th Sortable
+      %th Facetable
+      %th Facet Weight
   %tbody
-    - @elements.each do |element|
+    - @element_defs.each do |element|
       %tr
         %td
           - if current_user.medusa_admin?
