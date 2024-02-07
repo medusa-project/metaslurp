@@ -154,12 +154,12 @@ class ItemRelation < AbstractRelation
                 j.set! :field, element.indexed_facet_field
                 case element.facet_order
                 when ElementDef::FacetOrder::ALPHANUMERIC
-                  j.size 10000 # OpenSearch limit is 65536
+                  j.size AGGREGATION_ALPHANUMERIC_BUCKET_LIMIT
                   j.order do
                     j.set! :_key, "asc"
                   end
                 else
-                  j.size @bucket_limit
+                  j.size AGGREGATION_COUNT_BUCKET_LIMIT
                 end
               end
             end

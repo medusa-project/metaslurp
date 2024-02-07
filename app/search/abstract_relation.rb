@@ -2,7 +2,8 @@
 
 class AbstractRelation
 
-  AGGREGATION_TERM_LIMIT = 100
+  AGGREGATION_COUNT_BUCKET_LIMIT        = 100
+  AGGREGATION_ALPHANUMERIC_BUCKET_LIMIT = 1000
 
   attr_reader :request_json, :response_json
 
@@ -10,7 +11,6 @@ class AbstractRelation
     @client = OpenSearchClient.instance
 
     @aggregations    = true
-    @bucket_limit    = AGGREGATION_TERM_LIMIT
     @content_service = nil
     @excludes        = {}  # Hash<String,Object>
     @filters         = {} # Hash<String,Object>
@@ -77,15 +77,6 @@ class AbstractRelation
       end
     end
     self
-  end
-
-  ##
-  # @param limit [Integer] Maximum number of buckets that will be returned in a
-  #                        facet.
-  # @return [self]
-  #
-  def bucket_limit(limit)
-    @bucket_limit = limit
   end
 
   ##
