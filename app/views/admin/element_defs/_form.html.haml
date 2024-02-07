@@ -1,7 +1,8 @@
 -# @param element_def [ElementDef]
 -# @param context [Symbol] :new or :edit
 
-- data_type_options_for_select = ElementDef::DataType::all.map { |c| [ ElementDef::DataType::to_s(c), c ] }
+- data_type_options_for_select = ElementDef::DataType::all.map { |c| [ElementDef::DataType::to_s(c), c] }
+- facet_order_options_for_select = ElementDef::FacetOrder::all.map { |c| [ElementDef::FacetOrder::to_s(c), c] }
 
 = form_for([:admin, element_def], remote: true) do |f|
   .dl-error-messages
@@ -22,7 +23,7 @@
   .form-group
     = f.label :data_type
     = f.select(:data_type, data_type_options_for_select,
-               { selected: element_def.data_type },
+               { selected: f.object.data_type },
                class: 'custom-select')
   .checkbox
     %label
@@ -36,6 +37,11 @@
     %label
       = f.check_box :facetable
       Facetable
+  .form-group
+    = f.label :facet_order, 'Facet Order'
+    = f.select(:facet_order, facet_order_options_for_select,
+               { selected: f.object.facet_order },
+               class: 'custom-select')
   .form-group
     = f.label :weight, 'Facet Weight'
     = f.number_field :weight, class: 'form-control'

@@ -12,8 +12,8 @@ module Admin
     end
 
     NEWLINE = "\n"
-    PERMITTED_PARAMS = [:data_type, :description, :facetable, :label, :name,
-                        :searchable, :sortable, :weight]
+    PERMITTED_PARAMS = [:data_type, :description, :facet_order, :facetable,
+                        :label, :name, :searchable, :sortable, :weight]
 
     before_action :require_admin, except: :index
     before_action :set_element_def, except: [:create, :import, :index]

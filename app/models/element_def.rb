@@ -5,23 +5,25 @@
 #
 # # Attributes
 #
-# * created_at:  Managed by Rails.
-# * data_type:   Expected data type of the element values, which influences how
-#                they are indexed.
-# * description: Element description, for administrative purposes. Does not
-#                appear in public.
-# * facetable:   Whether a facet for the element may appear in results views.
-# * label:       Public, human-readable element name.
-# * name:        Element name.
-# * searchable:  Whether the element is searchable.
-# * sortable:    Whether the element can be sorted on in results views.
-# * updated_at:  Managed by Rails.
+# * `created_at`:  Managed by Rails.
+# * `data_type`:   Expected data type of the element values, which influences
+#                  how they are indexed.
+# * `description`: Element description, for administrative purposes. Does not
+#                  appear in public.
+# * `facet_order`: One of the {ElementDef::FacetOrder} constant values.
+# * `facetable`:   Whether a facet for the element may appear in results views.
+# * `label`:       Public, human-readable element name.
+# * `name`:        Element name.
+# * `searchable`:  Whether the element is searchable.
+# * `sortable`:    Whether the element can be sorted on in results views.
+# * `updated_at`:  Managed by Rails.
+# * `weight`:      Affects OpenSearch boosts.
 #
 class ElementDef < ApplicationRecord
 
   ##
-  # Type of data expected to be stored in an element defined by an ElementDef
-  # instance.
+  # Type of data expected to be stored in an element defined by an
+  # {ElementDef}.
   #
   class DataType
 
@@ -42,14 +44,44 @@ class ElementDef < ApplicationRecord
     # @param data_type [Integer] One of the DataType constants.
     # @return                    Human-readable data type.
     #
-    def self.to_s(data_type = nil)
+    def self.to_s(data_type)
       case data_type
-        when DataType::DATE
+        when DATE
           'Date'
-        when DataType::STRING
+        when STRING
           'String'
         else
           ''
+      end
+    end
+  end
+
+  ##
+  # Order of the terms appearing in an element's facet.
+  #
+  class FacetOrder
+    FREQUENCY    = 0
+    ALPHANUMERIC = 1
+
+    ##
+    # @return [Enumerable<Integer>] Integer values of all facet orders.
+    #
+    def self.all
+      self.constants.map{ |c| self.const_get(c) }
+    end
+
+    ##
+    # @param data_type [Integer] One of the constant values.
+    # @return                    Human-readable facet order.
+    #
+    def self.to_s(facet_order)
+      case facet_order
+      when ALPHANUMERIC
+        'Alphanumeric'
+      when FREQUENCY
+        'Frequency'
+      else
+        ''
       end
     end
   end
@@ -60,6 +92,7 @@ class ElementDef < ApplicationRecord
   has_many :value_mappings, inverse_of: :element_def
 
   validates :data_type, inclusion: { in: DataType.all }, allow_blank: false
+  validates :facet_order, inclusion: { in: FacetOrder.all }, allow_blank: true
   validates :label, presence: true, uniqueness: { case_sensitive: false }
   validates :name, presence: true, format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             uniqueness: { case_sensitive: false }

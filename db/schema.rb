@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
-
+ActiveRecord::Schema[7.1].define(version: 2024_02_07_172310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,8 +18,8 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
     t.string "field", null: false
     t.string "value", null: false
     t.integer "boost", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["field", "value"], name: "index_boosts_on_field_and_value", unique: true
   end
 
@@ -28,8 +27,8 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
     t.string "name", null: false
     t.string "key", null: false
     t.string "uri"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["key"], name: "index_content_services_on_key", unique: true
     t.index ["name"], name: "index_content_services_on_name", unique: true
   end
@@ -41,10 +40,11 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
     t.boolean "searchable", default: true
     t.boolean "sortable", default: true
     t.boolean "facetable", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "data_type", null: false
     t.integer "weight", default: 0, null: false
+    t.integer "facet_order", default: 0, null: false
     t.index ["facetable"], name: "index_element_defs_on_facetable"
     t.index ["name"], name: "index_element_defs_on_name", unique: true
     t.index ["searchable"], name: "index_element_defs_on_searchable"
@@ -56,8 +56,8 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
     t.bigint "content_service_id"
     t.string "source_name"
     t.bigint "element_def_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["content_service_id", "source_name"], name: "index_element_mappings_on_content_service_id_and_source_name", unique: true
   end
 
@@ -68,10 +68,10 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
     t.integer "num_items", default: 0, null: false
     t.integer "num_succeeded", default: 0, null: false
     t.integer "num_failed", default: 0, null: false
-    t.datetime "ended_at"
+    t.datetime "ended_at", precision: nil
     t.text "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.boolean "incremental", default: false, null: false
     t.string "ecs_task_uuid"
@@ -84,15 +84,15 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
   create_table "options", force: :cascade do |t|
     t.string "key"
     t.string "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["key"], name: "index_options_on_key"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "api_key"
     t.boolean "human", default: true
     t.index ["username"], name: "index_users_on_username"
@@ -102,8 +102,8 @@ ActiveRecord::Schema[6.1].define(version: 2019_11_19_185724) do
     t.string "source_value"
     t.string "local_value"
     t.bigint "element_def_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["element_def_id", "source_value"], name: "index_value_mappings_on_element_def_id_and_source_value", unique: true
   end
 
