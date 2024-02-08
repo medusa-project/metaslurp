@@ -61,8 +61,18 @@ Rails.application.routes.draw do
 
   ############################## Root route ##################################
 
-  match '/', to: redirect(Configuration.instance.dls_url, status: 303),
-        via: :all, as: 'root'
+  if Rails.env.development?
+    match '/', to: proc { [200, { "Content-Type": "text/html" }, [
+      "<p>In development, this is a placeholder page. In all other
+       environments, it redirects to <code>dls_url</code> (in the configuration)</p>
+       <p><a href=\"/items\">Items</a></p>
+       <p><a href=\"/admin\">Control Panel</a></p>"]] },
+          via: :all, as: 'root'
+  else
+    match '/', to: redirect(Configuration.instance.dls_url, status: 303),
+          via: :all, as: 'root'
+  end
+
 
   # catch unknown routes
   match '*path', to: 'errors#not_found', via: :all
