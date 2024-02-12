@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   def signed_in_user
     unless signed_in?
       store_location
-      redirect_to signin_path, notice: 'Please log in.'
+      redirect_to items_path, notice: 'Please log in.'
     end
   end
 
