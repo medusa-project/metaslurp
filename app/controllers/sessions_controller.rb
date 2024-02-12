@@ -35,14 +35,6 @@ class SessionsController < WebsiteController
     redirect_to root_url
   end
 
-  ##
-  # N.B.: OmniAuth responds to `/auth/developer` only via `POST`. This route
-  # responds only via `GET`.
-  #
-  def new
-    redirect_to root_url
-  end
-
 
   protected
 

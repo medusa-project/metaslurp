@@ -5,7 +5,6 @@ Rails.application.routes.draw do
 
   ######################## Public website routes ############################
 
-  match '/auth/:provider', to: 'sessions#new', via: :get, as: 'signin'
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
         as: 'auth' # used by omniauth
   resources :collections, only: :index
