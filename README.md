@@ -106,6 +106,10 @@ Rather than documenting all of that here, see the README in the
 [metaslurp-cantaloupe](https://github.com/medusa-project/metaslurp-cantaloupe)
 repository. It is recommended to clone that and run it locally using Docker.
 
+Note that Cantaloupe plays a relatively minor role in the application (only
+rendering thumbnails) and it is perfectly possible to do 99% of development on
+Metaslurp without it running.
+
 # Upgrading
 
 ## Migrating the database schema
@@ -145,18 +149,18 @@ should be invoked manually. Here is an example that will harvest the DLS into a
 local Metaslurp instance:
 
 ```sh
-export SERVICE_SOURCE_DLS_KEY=dls
-export SERVICE_SOURCE_DLS_ENDPOINT=https://digital.library.illinois.edu
+SERVICE_SOURCE_DLS_KEY=dls
+SERVICE_SOURCE_DLS_ENDPOINT=https://digital.library.illinois.edu
 # your NetID
-export SERVICE_SOURCE_DLS_USERNAME=...
+SERVICE_SOURCE_DLS_USERNAME=...
 # your API key; see https://digital.library.illinois.edu/admin/users/{NetID}
-export SERVICE_SOURCE_DLS_SECRET=...
-export SERVICE_SINK_METASLURP_KEY=metaslurp
-export SERVICE_SINK_METASLURP_ENDPOINT=http://localhost:3000
+SERVICE_SOURCE_DLS_SECRET=...
+SERVICE_SINK_METASLURP_KEY=metaslurp
+SERVICE_SINK_METASLURP_ENDPOINT=http://localhost:3000
 # username of a "non-human user"; see http://localhost:3000/admin/users
-export SERVICE_SINK_METASLURP_USERNAME=...
+SERVICE_SINK_METASLURP_USERNAME=...
 # the above user's API key
-export SERVICE_SINK_METASLURP_SECRET=...
+SERVICE_SINK_METASLURP_SECRET=...
 
 java -jar target/metaslurper-VERSION.jar \
     -source $SERVICE_SOURCE_DLS_KEY \
