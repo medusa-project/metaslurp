@@ -62,7 +62,34 @@ Fill in the new files and **do not commit them to version control.**
 
 `$ bin/rails db:setup`
 
-## 8) Create the OpenSearch indexes
+## 8) Configure Opensearch
+
+### Support a single node
+
+Uncomment `discovery.type: single-node` in `config/opensearch.yml`. Also add
+the following lines:
+
+```yaml
+plugins.security.disabled: true
+plugins.index_state_management.enabled: false
+reindex.remote.whitelist: "localhost:*"
+```
+
+### Install the analysis-icu plugin
+
+```sh
+$ bin/opensearch-plugin install analysis-icu
+```
+
+### Start OpenSearch
+```sh
+$ bin/opensearch
+```
+
+To confirm that it's running, try to access
+[http://localhost:9200](http://localhost:9200).
+
+### Create the OpenSearch indexes
 
 ```
 $ bin/rails opensearch:indexes:create[my_index]
