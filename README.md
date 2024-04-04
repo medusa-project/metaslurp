@@ -110,6 +110,20 @@ Note that Cantaloupe plays a relatively minor role in the application (only
 rendering thumbnails) and it is perfectly possible to do 99% of development on
 Metaslurp without it running.
 
+## 10) Start Metaslurp
+
+```sh
+bin/rails server
+```
+
+N.B.: In macOS, if you get an error like "+[__NSCFConstantString initialize]
+may have been in progress in another thread when fork() was called" in macOS,
+try setting this envrionment variable:
+
+```sh
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+```
+
 # Upgrading
 
 ## Migrating the database schema
