@@ -1,10 +1,10 @@
-var Application = {
+const Application = {
 
     /**
      * Enables the facets returned by one of the facets_as_x() helpers.
      */
     initFacets: function() {
-        var addFacetEventListeners = function() {
+        const addFacetEventListeners = function() {
             $('[name="fq[]"]').off('change').on('change', function() {
                 var form  = $(this).parents('form:first').find(':not(input[name=dl-results-style])');
                 var path  = $('[name=dl-current-path]').val();
@@ -46,6 +46,11 @@ var Application = {
             return false;
         });
 
+        $('.sensitive-toggle-btn').off("click").on("click", function() {
+            $('#sensitive-pane-content').toggleClass('d-none');
+            $(this).toggleClass('expanded');
+        });
+
         // make the active nav bar nav active
         $('nav:last-child .navbar-nav li').removeClass('active');
         $('.navbar-nav li#' + $('body').attr('data-nav') + '-nav')
@@ -60,8 +65,8 @@ var Application = {
         // another header that, if set, can contain "success" or "error",
         // indicating the result of a form submission.
         $(document).ajaxSuccess(function(event, request) {
-            var result_type = request.getResponseHeader('X-DL-Message-Type');
-            var edit_panel = $('.pt-edit-panel.in');
+            const result_type = request.getResponseHeader('X-DL-Message-Type');
+            const edit_panel  = $('.pt-edit-panel.in');
 
             if (result_type && edit_panel.length) {
                 if (result_type === 'success') {
@@ -69,7 +74,7 @@ var Application = {
                 } else if (result_type === 'error') {
                     edit_panel.find('.modal-body').animate({ scrollTop: 0 }, 'fast');
                 }
-                var message = request.getResponseHeader('X-DL-Message');
+                const message = request.getResponseHeader('X-DL-Message');
                 if (message && result_type) {
                     Application.Flash.set(message, result_type);
                 }
@@ -106,8 +111,8 @@ var Application = {
         });
 
         const submitForm = function () {
-            var forms = $('form.dl-filter');
-            var query = forms.serialize();
+            const forms = $('form.dl-filter');
+            const query = forms.serialize();
             $.ajax({
                 url: forms.attr('action'),
                 method: 'GET',
@@ -136,8 +141,6 @@ var Application = {
 
 };
 
-var ready = function() {
+$(document).ready(function() {
     Application.init();
-};
-
-$(document).ready(ready);
+});

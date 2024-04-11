@@ -81,3 +81,44 @@ nav.navbar form.form-inline input[type=search] {
     }
   }
 }
+
+#sensitive-pane {
+  margin: -16px 0 15px 0;
+
+  .sensitive-toggle-btn {
+    border: 0;
+    cursor: pointer;
+    color: white;
+    background-color: $uofi-blue;
+    padding: 5px;
+    width: 100%;
+    font-size: 0.8em;
+    display: flex;
+  }
+
+  .sensitive-toggle-btn:focus {
+    outline: none !important;
+  }
+
+  .sensitive-toggle-btn::before {
+    content: image_url("fontawesome-play.svg");
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .sensitive-toggle-btn.expanded::before {
+    content: image_url("fontawesome-sort-down.svg");
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}
+
+#sensitive-pane-content {
+  padding: 0 1em 1em 1em;
+}
