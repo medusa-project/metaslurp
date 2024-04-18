@@ -181,6 +181,10 @@ java -jar target/metaslurper-VERSION.jar \
     -sink $SERVICE_SINK_METASLURP_KEY \
     -threads 2
 ```
+(These environment variable values are just examples. The variables used in
+production are stored in Metaslurp's ECS task definition, which is
+[Terraformed](https://github.com/UIUCLibrary/aws-metadata-prod-service/blob/master/container_defs/metaslurper.json.tpl).)
+
 See the
 [metaslurper README](https://github.com/medusa-project/metaslurper) for more
 information about using metaslurper.
