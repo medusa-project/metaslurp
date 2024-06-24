@@ -200,7 +200,7 @@ class Harvest < ApplicationRecord
         exclude(Item::IndexFields::HARVEST_KEY, self.key).
         include_children(true).
         aggregations(false).
-        limit(9999999).
+        limit(10000).
         build_query
       OpenSearchClient.instance.delete_by_query(query: json,
                                                 wait_for_completion: wait_for_completion)

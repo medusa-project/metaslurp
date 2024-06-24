@@ -27,3 +27,6 @@
 # Ignore developer-specific unencrypted credentials.
 /config/credentials/development.yml
 /config/credentials/test.yml
+
+# Ignore idea files
+.idea/
