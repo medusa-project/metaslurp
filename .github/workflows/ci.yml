@@ -9,4 +9,4 @@ jobs:
         uses: actions/checkout@v2
       - name: Run the tests
         run: |
-          docker-compose up --build --exit-code-from metaslurp
+          docker compose up --build --exit-code-from metaslurp
