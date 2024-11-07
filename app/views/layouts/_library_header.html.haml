@@ -31,3 +31,6 @@
             = link_to 'Log Out', signout_path, method: :delete, class: 'dropdown-item'
       - else
         = link_to 'Staff Login', signin_path, method: :post, class: 'stripe-link'
+
+      .btn-group{role: "group"}
+        %a#about-link.btn.btn-sm{href: "https://guides.library.illinois.edu/digital-special-collections/", target: "_blank"} About
