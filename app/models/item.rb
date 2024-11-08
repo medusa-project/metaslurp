@@ -124,6 +124,7 @@ class Item
   #    aware of it
   #
   class Variants
+    ABOUT          = 'About'
     BOOK           = 'Book'
     COLLECTION     = 'Collection'
     DATA_SET       = 'DataSet'

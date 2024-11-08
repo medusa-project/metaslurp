@@ -19,6 +19,10 @@
           = link_to items_path, class: 'nav-link' do
             = icon_for(Item)
             Items
+        %li#about-nav.nav-item
+          = link_to "https://guides.library.illinois.edu/digital-special-collections/", class: 'nav-link' do
+            = icon_for(Item.new(variant: Item::Variants::ABOUT))
+            About
       = form_tag(search_path, method: :get, enforce_utf8: false, class: 'form-inline mr-2') do
         .input-group
           = search_field_tag(:q, '',

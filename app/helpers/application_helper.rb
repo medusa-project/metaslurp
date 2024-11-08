@@ -157,6 +157,8 @@ module ApplicationHelper
       icon = 'fa-cube'
     elsif entity.kind_of?(Item)
       case entity.variant
+        when Item::Variants::ABOUT
+          icon = 'fa-info-circle'
         when Item::Variants::BOOK
           icon = 'fa-book'
         when Item::Variants::COLLECTION
@@ -288,6 +290,8 @@ module ApplicationHelper
       else
         # Fall back to a generic icon based on variant.
         case entity.variant
+        when Item::Variants::ABOUT
+          icon = 'info-circle'
         when Item::Variants::BOOK
           icon = 'book'
         when Item::Variants::COLLECTION
