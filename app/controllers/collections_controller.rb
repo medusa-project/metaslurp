@@ -19,6 +19,7 @@ class CollectionsController < ApplicationController
     relation = Item.search.
         query_all(params[:q]).
         facet_filters(params[:fq]).
+        include_children(true).
         include_variants(Item::Variants::COLLECTION).
         order(ElementDef.new(name: 'title').indexed_sort_field).
         start(@start).
