@@ -20,6 +20,7 @@ class SearchController < ApplicationController
         query_all(params[:q]).
         facet_filters(params[:fq]).
         order(params[:sort]).
+        include_children(true).
         start(@start).
         limit(@limit)
     @items             = relation.to_a
