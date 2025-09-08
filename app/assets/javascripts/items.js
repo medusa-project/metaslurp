@@ -107,7 +107,7 @@ var DLItemsView = function() {
 };
 
 $(document).ready(function() {
-    if ($('body#items_index, body#collections_index').length) {
+    if ($('body#items_index, body#collections_index, body#search_index').length) {
         Application.view = new DLItemsView();
         Application.view.init();
     }
@@ -119,7 +119,7 @@ $(document).ready(function() {
  * fire on back/forward.
  */
 $(window).on("pageshow", function(event) {
-    if ($('body#items_index, body#collections_index').length) {
+    if ($('body#items_index, body#collections_index, body#search_index').length) {
         if (!event.originalEvent.persisted) {
             var query = window.location.hash;
             if (query.length) {

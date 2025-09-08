@@ -19,6 +19,7 @@ class SearchController < ApplicationController
     relation = Item.search.
         query_all(params[:q]).
         facet_filters(params[:fq]).
+        include_children(true).
         order(params[:sort]).
         start(@start).
         limit(@limit)
@@ -31,8 +32,8 @@ class SearchController < ApplicationController
     @es_response_json  = relation.response_json
 
     respond_to do |format|
-      format.html { render 'items/index' }
-      format.js { render 'items/index' }
+      format.html { render 'search/index' }
+      format.js { render 'search/index' }
     end
   end
 

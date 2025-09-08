@@ -149,6 +149,8 @@ class ItemRelation < AbstractRelation
         if @aggregations
           # Facetable elements of the content service
           facetable_elements.each do |element|
+            next if element.name == 'variant' && (@exclude_variants.present? || @include_variants.present?)
+
             j.set! element.indexed_facet_field do
               j.terms do
                 j.set! :field, element.indexed_facet_field
