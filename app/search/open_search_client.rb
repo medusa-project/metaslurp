@@ -18,7 +18,8 @@ class OpenSearchClient
   MAX_RESULT_WINDOW = 10000
 
   def initialize
-    @http_client = Faraday.new(url: Configuration.instance.opensearch_endpoint)
+    @http_client = Faraday.new(url: Configuration.instance.opensearch_endpoint,
+                               ssl: { min_version: :TLS1_2 })
   end
 
   ##
