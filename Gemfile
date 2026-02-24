@@ -20,7 +20,7 @@ gem 'local_time'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
 gem 'omniauth'
 gem "omniauth-rails_csrf_protection"
-gem 'omniauth-saml'
+gem 'omniauth-saml', '>= 2.1.3'
 gem 'pg'
 gem 'puma'
 gem 'rails', '~> 7.0'
