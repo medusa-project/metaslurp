@@ -8,7 +8,7 @@ gem "autoprefixer-rails"
 # Helps us send requests to the ECS API to trigger harvests
 gem 'aws-sdk-ecs', '~> 1'
 # Our HTTP client
-gem 'faraday'
+gem 'faraday', '>= 2.14.1'
 # Our icon set
 gem "font-awesome-sass", "~> 5.6"
 # Our template language
@@ -17,12 +17,16 @@ gem 'jbuilder'
 gem 'jquery-rails'
 gem 'js_cookie_rails'
 gem 'local_time'
+gem 'loofah', '>= 2.25.1'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
+gem 'net-imap', '>= 0.4.24'
+gem 'nokogiri', '>= 1.19.3'
 gem 'omniauth'
-gem "omniauth-rails_csrf_protection"
+gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-saml', '>= 2.1.3'
 gem 'pg'
-gem 'puma'
+gem 'puma', '>= 6.4.3'
+gem 'rack', '>= 2.2.23'
 gem 'rails', '~> 7.0'
 gem 'sassc'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
@@ -31,3 +35,4 @@ gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
 gem 'sprockets-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'uiuc_lib_ad', git: 'https://github.com/UIUCLibrary/uiuc_lib_ad.git'
+gem 'webrick', '>= 1.8.2'
