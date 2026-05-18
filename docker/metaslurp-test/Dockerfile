@@ -16,6 +16,7 @@ ENV WEB_CONCURRENCY=4
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    libyaml-dev \
     curl \
     git \
     nodejs \
