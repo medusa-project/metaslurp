@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.2'
+ruby '3.4.5'
 
 # Required to avoid some bootstrap CSS weirdness
 gem "autoprefixer-rails"
@@ -19,7 +19,7 @@ gem 'js_cookie_rails'
 gem 'local_time'
 gem 'loofah', '>= 2.25.1'
 gem 'marc-dates', git: 'https://github.com/medusa-project/marc-dates.git'
-gem 'net-imap', '>= 0.4.24'
+gem 'net-imap', '>= 0.6.4'
 gem 'nokogiri', '>= 1.19.3'
 gem 'omniauth'
 gem 'omniauth-rails_csrf_protection'
@@ -27,7 +27,7 @@ gem 'omniauth-saml', '>= 2.1.3'
 gem 'pg'
 gem 'puma', '>= 6.4.3'
 gem 'rack', '>= 2.2.23'
-gem 'rails', '~> 7.0'
+gem 'rails', '~> 7.2.3.1'
 gem 'sassc'
 gem 'scars-bootstrap-theme', github: 'medusa-project/scars-bootstrap-theme',
     branch: 'release/bootstrap-4.4'
